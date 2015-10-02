@@ -12,3 +12,5 @@ Preuzima:
 - Krug u kojem je učenik upisan
 
 Generiše oko 60k fajlova, za obradu je preporučljivo spojiti ih u jedan koji je velik 66,7MB koristeći metode iz FileMerger klase.
+
+Za obradu podataka, poželjno je koristiti klasu `Exec` koja koristi reflekciju za pozivanje datih metoda i `UcenikWrapper` koji ima mnoge vrednosti prekalkulisane i pretvorene u odgovarajuć format, pa je samim tim pogodan za razna izračunavanja (`Ucenik` se sastoji isključivo iz stringova).
