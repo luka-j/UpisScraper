@@ -22,7 +22,7 @@ public class DownloadController {
         Smerovi.load();
         Smerovi.save();
         System.out.println("Ucitao sifre smerova");
-        System.exit(0);
+        //System.exit(0); //uncomment to prevent loading (dirty)
         Sifre.setStart(loadProgress().a);
         Sifre.setVreme(loadProgress().b);
         Sifre.go();
