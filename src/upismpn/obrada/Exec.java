@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class Exec {
 
-    public static final Set<Class> executableClasses = new HashSet<>(); //kad je ovde radi, kad je u Exec ne radi
+    public static final Set<Class> executableClasses = new HashSet<>();
 
     private static boolean hasMethod(Class cls, String method) {
         Method[] methods = cls.getDeclaredMethods();
