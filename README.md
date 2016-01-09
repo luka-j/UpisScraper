@@ -11,9 +11,13 @@ Preuzima:
 - Lista želja
 - Krug u kojem je učenik upisan
 
-Generiše oko 60k fajlova, za obradu je preporučljivo spojiti ih u jedan koji je velik 66,7MB koristeći metode iz FileMerger klase.
+Generiše oko 60k fajlova, za obradu je preporučljivo spojiti ih u jedan koji je velik 66,7MB koristeći `exec merge` komandu.
 
-Za obradu podataka, poželjno je koristiti klasu `Exec` koja koristi reflekciju za pozivanje datih metoda i `UcenikWrapper` koji ima mnoge vrednosti prekalkulisane i pretvorene u odgovarajuć format, pa je samim tim pogodan za razna izračunavanja (`Ucenik` se sastoji isključivo od stringova).
+Za obradu podataka, poželjno je koristiti klasu `Exec` koja koristi reflekciju za pozivanje datih metoda i `UcenikWrapper` koji ima mnoge vrednosti prekalkulisane i pretvorene u odgovarajuć format, pa je samim tim pogodan za razna izračunavanja (`Ucenik` se sastoji isključivo od stringova). Klase iz kojih se uzimaju metode se mogu nalaziti bilo gde, jedino ograničenje je da se njihovi Class objekti nalaze u `Exec#executableClasses` (videti `Exec#registerExecutables`).
+Izlaz može biti u obliku System.out ili tabele (videti Spreadsheets klasu)
+
+Dependencies:
+- Apache POI
 
 Argumenti:
 - `dl` za preuzimanje podataka i čuvanje na disk
