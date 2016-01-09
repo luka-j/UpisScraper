@@ -21,6 +21,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import static upismpn.UpisMpn.DEBUG;
 
+/**
+ * Predstavlja Ucenika u obliku pogodnom za preuzimanje s neta i cuvanje u fajl (Stringovi)
+ */
 public class Ucenik {
 
     private static final boolean OVERWRITE_OLD = false;
@@ -126,6 +129,11 @@ public class Ucenik {
         return this;
     }
 
+    /**
+     * Ucitava podatke o uceniku s neta
+     * @return
+     * @throws IOException
+     */
     public Ucenik loadFromNet() throws IOException {
         if (DEBUG) {
             System.out.println("loading ucenik: " + id);
@@ -211,6 +219,11 @@ public class Ucenik {
         return l;
     }
 
+    /**
+     * Ucitava podatke o Uceniku iz fajla
+     * @param folder folder u kome se nalaze podaci o ucenicima
+     * @return
+     */
     public Ucenik loadFromFile(File folder) {
         File f = new File(folder, id);
         try {
@@ -222,6 +235,10 @@ public class Ucenik {
         return this;
     }
 
+    /**
+     * Cuva ovog ucenika u fajl
+     * @param folder folder u kom treba sacuvati ucenika
+     */
     public void saveToFile(File folder) {
         if (DEBUG) {
             System.out.println("saving ucenik: " + id);

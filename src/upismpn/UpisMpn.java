@@ -1,7 +1,13 @@
 package upismpn;
 
 import upismpn.download.DownloadController;
+import upismpn.exec.Zavrsni;
 import upismpn.obrada.Exec;
+
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  *
@@ -9,7 +15,11 @@ import upismpn.obrada.Exec;
  */
 public class UpisMpn {
 
-    public static final boolean DEBUG = false;
+    //(kada je i Exec deo executableClasses), detaljnije objasnjenje nemam; verovatno zato sto prvo radi <clinit> u ovoj
+    //klasi (iako ne mora)
+    //todo naci resenje koje je elegantno, ali se oslanja na nesto sto je zapravo garantovano da uvek radi
+
+    public static final boolean    DEBUG             = false;
 
     /**
      * @param args the command line arguments
@@ -20,10 +30,12 @@ public class UpisMpn {
         else {
             if(args[0].equalsIgnoreCase("dl"))
                 DownloadController.startDownload();
-            if(args[0].equalsIgnoreCase("exec"))
-                Exec.doExec(args[1]);
+            if(args[0].equalsIgnoreCase("exec")) {
+                String[] semPrvog = new String[args.length-1];
+                System.arraycopy(args, 1, semPrvog, 0, semPrvog.length);
+                Exec.doExec(semPrvog);
+            }
         }
     }
-    
 
 }

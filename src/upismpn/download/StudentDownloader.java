@@ -13,18 +13,18 @@ import upismpn.download.UceniciManager.UcData;
 import upismpn.UpisMpn;
 import static upismpn.UpisMpn.DEBUG;
 
-public class Sifre {
+public class StudentDownloader {
     
     static long spentTime;
     static long startTime = System.currentTimeMillis();
 
     public static void setStart(int start) {
         if(DEBUG)System.out.println("set progress: " + start);
-        START_FROM = start;
+        currentSmer = start;
     }
 
-    public static int getStart() {
-        return START_FROM;
+    public static int getCurrentSmer() {
+        return currentSmer;
     }
     
     public static long getVreme() {
@@ -34,12 +34,15 @@ public class Sifre {
         spentTime = vreme;
     }
 
-    private static volatile int START_FROM = 0;
+    private static volatile int currentSmer = 0; //nisam sasvim siguran zasto je ovo volatile
 
-    public static void go() {
+    /**
+     * Preuzima podatke o ucenicima sa sajta
+     */
+    public static void downloadStudentData() {
         if(DEBUG)System.out.println("starting program");
         Deque<UcData> uc;
-        Smerovi.iterate(START_FROM);
+        Smerovi.iterate(currentSmer);
         double time, est; char oznaka='s';
         if(DEBUG)System.out.println("starting iteration");
         while (Smerovi.hasNext()) {
@@ -48,7 +51,7 @@ public class Sifre {
             uc = getSifreUcenika(smerSifra);
             if(DEBUG)System.out.println("Uzeo sifre za " + smerSifra);
             UceniciManager.add(uc);
-            START_FROM++;
+            currentSmer++;
             System.out.print(String.format("%.2f%s", Smerovi.getPercentageIterated(), "% - "));
             time = (System.currentTimeMillis() - startTime + spentTime)/1000;
             est = ((100/Smerovi.getPercentageIterated()-1)*time) / 3600;
@@ -97,7 +100,7 @@ public class Sifre {
                         if(DEBUG)System.out.print("added new ucenik: " + data);
                     }
                 } catch (NullPointerException ex) {
-                    Logger.getLogger(Sifre.class.getName()).log(Level.WARNING, "NPE@ucenici: poslednji put");
+                    Logger.getLogger(StudentDownloader.class.getName()).log(Level.WARNING, "NPE@ucenici: poslednji put");
                     break;
                 }
                 i++;
@@ -113,16 +116,16 @@ public class Sifre {
         try {
             return Jsoup.connect(UCENICI_URL + sifraProfila + "&broj_strane=" + i).post();
         } catch (SocketTimeoutException ex) {
-            System.err.println("Socket timeout @ downloadDoc (Sifre)");
+            System.err.println("Socket timeout @ downloadDoc (StudentDownloader)");
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException ex1) {
-                Logger.getLogger(Sifre.class.getName()).log(Level.SEVERE, null, ex1);
+                Logger.getLogger(StudentDownloader.class.getName()).log(Level.SEVERE, null, ex1);
             }
             return null;
         }
     }
 
-    private Sifre() {
+    private StudentDownloader() {
     }
 }

@@ -3,7 +3,6 @@ package upismpn.download;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -34,6 +33,9 @@ public class Smerovi {
     private static final int SMER_IDOVA_PO_TR = 8;
     private static final String SAVEFILE_NAME = "smerovi";
 
+    /**
+     * Ucitava podatke o smerovima, ako postoje iz fajla, ako ne s neta
+     */
     public static void load() {
         File f = new File(UceniciManager.DATA_FOLDER, SAVEFILE_NAME);
         if(f.exists())
@@ -56,12 +58,12 @@ public class Smerovi {
                         base.add(new Smer(trSifra.text(), trPodrucje.text(), trKvota.text()));
                     }
                 } catch (NullPointerException ex) {
-                    Logger.getLogger(Sifre.class.getName()).log(Level.FINE, "NPE@smerovi: poslednji put");
+                    Logger.getLogger(StudentDownloader.class.getName()).log(Level.FINE, "NPE@smerovi: poslednji put");
                 }
                 System.out.println(String.valueOf(((double)i/END_AT) * 100) + "%...");
             }
         } catch (IOException ex) {
-            Logger.getLogger(Sifre.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StudentDownloader.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -78,6 +80,9 @@ public class Smerovi {
         }
     }
 
+    /**
+     * Cuva podatke o smerovima u fajl
+     */
     public static void save() {
         StringBuilder out = new StringBuilder();
         base.forEach((Smer s) -> out.append(s.toCompactString()));
@@ -90,6 +95,8 @@ public class Smerovi {
             Logger.getLogger(Smerovi.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    //todo make this implement Iterable
 
     public static void iterate(int i) {
         it = i;

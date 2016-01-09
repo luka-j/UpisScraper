@@ -1,7 +1,7 @@
 package upismpn.download;
 
 /**
- *
+ * Predstavlja podatke o jednom smeru; sifru, podrucje i kvotu
  * @author Luka
  */
 public class Smer {

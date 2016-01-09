@@ -1,27 +1,31 @@
 package upismpn.obrada;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
+
 import upismpn.download.UceniciManager;
 import upismpn.download.Ucenik;
-import upismpn.obrada.UceniciGroup.UcenikWrapper;
 
 /**
  *
  * @author Luka
  */
 public class UceniciGroupBuilder {
-    Predicate<UcenikWrapper> op = null;
-    static UceniciGroup everyone;
+    private Predicate<UcenikWrapper> op = null;
+    private static UceniciGroup everyone;
+
+    public UceniciGroupBuilder(Predicate<UcenikWrapper> op) {
+        if(op == null) {
+            this.op = ucenikWrapper -> true;
+        } else {
+            this.op = op;
+        }
+    }
     
-    private static void init() {
+    private static void loadEveryone() {
         Ucenik uc;
         String[] ucData;
         everyone = new UceniciGroup();
@@ -35,29 +39,49 @@ public class UceniciGroupBuilder {
     }
     
     void addOp(Predicate<UcenikWrapper> o) {
-        if(op == null) op = o;
-        else op.and(o);
+        op.and(o);
     }
     
     public UceniciGroup getGroup() {
-        if(everyone == null) init();
-        UceniciGroup ret = new UceniciGroup(everyone).filter(op);
-        clearOps();
-        return ret;
+        if(everyone == null) loadEveryone();
+        return new UceniciGroup(everyone).filter(op);
     }
-    
-    public void clearOps() {
-        op = null;
-    }
-    
-    Map<UcenikWrapper.OsnovnaSkola, UceniciGroup> getByOS() {
+
+    //grouping utilities
+
+    public Map<UcenikWrapper.OsnovnaSkola, UceniciGroup> getByOS() {
         Map<UcenikWrapper.OsnovnaSkola, UceniciGroup> map = new HashMap<>();
-        if(everyone == null) init();
+        if(everyone == null) loadEveryone();
         everyone.forEach((uc) -> {
             if(map.get(uc.osInfo) == null) {
                 map.put(uc.osInfo, new UceniciGroup(uc));
             } else {
                 map.get(uc.osInfo).add(uc);
+            }
+        });
+        return map;
+    }
+
+    public Map<String, UceniciGroup> getByCity() {
+        Map<String, UceniciGroup> map = new HashMap<>();
+        if(everyone == null) loadEveryone();
+        everyone.forEach((uc) -> {
+            if(map.get(uc.osInfo.mesto) == null) {
+                map.put(uc.osInfo.mesto, new UceniciGroup(uc));
+            } else {
+                map.get(uc.osInfo.mesto).add(uc);
+            }
+        });
+        return map;
+    }
+    public Map<String, UceniciGroup> getByRegion() {
+        Map<String, UceniciGroup> map = new HashMap<>();
+        if(everyone == null) loadEveryone();
+        everyone.forEach((uc) -> {
+            if(map.get(uc.osInfo.okrug) == null) {
+                map.put(uc.osInfo.okrug, new UceniciGroup(uc));
+            } else {
+                map.get(uc.osInfo.okrug).add(uc);
             }
         });
         return map;

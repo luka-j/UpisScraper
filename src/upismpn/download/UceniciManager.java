@@ -38,7 +38,9 @@ public class UceniciManager {
         }
     }
 
-    public static final File DATA_FOLDER = new File("E:\\Shared\\mined\\UpisMpn\\");
+    public static final File DATA_FOLDER = System.getProperty("os.name").toLowerCase().contains("win") ?
+            new File("E:\\Shared\\mined\\UpisMpn\\")
+            : new File("/media/luka/Data/Shared/mined/UpisMpn/");
     private static final int SAVE_AT = 400;
     private static final Executor executor = Executors.newSingleThreadExecutor();
     
