@@ -11,6 +11,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import static upismpn.UpisMpn.DEBUG;
 
 /**
@@ -18,6 +19,18 @@ import static upismpn.UpisMpn.DEBUG;
  * @author Luka
  */
 public class UceniciManager {
+
+    private static UceniciManager instance;
+    private DownloadConfig config;
+
+    public static UceniciManager getInstance(DownloadConfig config) {
+        if(instance == null) instance = new UceniciManager(config);
+        return instance;
+    }
+
+    private UceniciManager(DownloadConfig config) {
+        this.config = config;
+    }
 
     static class UcData {
 
@@ -38,13 +51,14 @@ public class UceniciManager {
         }
     }
 
-    public static final File DATA_FOLDER = System.getProperty("os.name").toLowerCase().contains("win") ?
-            new File("E:\\Shared\\mined\\UpisMpn\\")
-            : new File("/media/luka/Data/Shared/mined/UpisMpn/");
+    public static final File DATA_FOLDER = System.getProperty("os.name").toLowerCase().contains("nix")
+            || System.getProperty("os.name").toLowerCase().contains("nux") ?
+            new File("/data/Shared/mined/UpisData/16")
+            : new File("E:\\Shared\\mined\\UpisData\\16");
     private static final int SAVE_AT = 400;
     private static final Executor executor = Executors.newSingleThreadExecutor();
     
-    static void add(Deque<UcData> data) {
+    protected void add(Deque<UcData> data) {
         if(DEBUG) System.out.println("adding new chunk");
         sifre.addAll(data);
         if (sifre.size() >= SAVE_AT) {
@@ -58,11 +72,11 @@ public class UceniciManager {
         }
     }
 
-    private static final Deque<Ucenik> ucenici = new ArrayDeque<>(SAVE_AT + 161);
-    private static final Deque<UcData> sifre = new ArrayDeque<>(SAVE_AT + 161);
-    private static final Deque<UcData> failed = new ArrayDeque<>();
+    private final Deque<Ucenik> ucenici = new ArrayDeque<>(SAVE_AT + 161);
+    private final Deque<UcData> sifre = new ArrayDeque<>(SAVE_AT + 161);
+    private final Deque<UcData> failed = new ArrayDeque<>();
 
-    static void download() {
+    protected void download() {
         if(DEBUG)System.out.println("downloading ucenik info");
         sifre.forEach((UcData datum) -> {
             Ucenik uc = loadUcenik(datum.sifra, datum.ukBodova, datum.mestoOS);
@@ -76,14 +90,14 @@ public class UceniciManager {
         if(DEBUG)System.out.println("downloaded ucenik info");
     }
 
-    private static Ucenik loadUcenik(String sifra, String ukBodova, String mestoOS) {
+    private Ucenik loadUcenik(String sifra, String ukBodova, String mestoOS) {
         Ucenik uc = null;
         try {
-            uc = new Ucenik(sifra).setDetails(ukBodova, mestoOS).loadFromNet();
+            uc = config.createUcenik(sifra).setDetails(ukBodova, mestoOS).loadFromNet();
         } catch (SocketTimeoutException | SocketException ex) {
             try {
                 Thread.sleep(15000);
-                uc = new Ucenik(sifra).setDetails(ukBodova, mestoOS).loadFromNet();
+                uc = config.createUcenik(sifra).setDetails(ukBodova, mestoOS).loadFromNet();
             } catch (SocketTimeoutException nestedex) {
                 System.err.println("Socket timeout @ loadFromNet: " + sifra);
             } catch (IOException | InterruptedException nestedex) {
@@ -98,9 +112,9 @@ public class UceniciManager {
 
     /**
      * ConcurrentModificationException: what are the odds?
-     * *2h later*: fk SBB.
+     * *2h later*: fk SBB. (1 year later: and buggy wifi drivers)
      */
-    private synchronized static void attemptToDownloadFailed() {
+    private synchronized void attemptToDownloadFailed() {
         failed.forEach((UcData datum) -> {
             Ucenik uc = loadUcenik(datum.sifra, datum.ukBodova, datum.mestoOS);
             if (uc != null) {
@@ -110,11 +124,11 @@ public class UceniciManager {
         });
     }
 
-    public static int getFailedCount() {
+    public int getFailedCount() {
         return failed.size();
     }
 
-    public static void saveFailed() {
+    public void saveFailed() {
         File f = new File(DATA_FOLDER, "failed");
         final StringBuilder sb = new StringBuilder();
         failed.forEach((datum) -> sb.append(datum.toString()));
@@ -126,12 +140,12 @@ public class UceniciManager {
         }
     }
     
-    public static void onExit() {
+    public void onExit() {
         DownloadController.mainThread.interrupt();
         new Saver().run();
     }
 
-    static class Saver implements Runnable {
+    class Saver implements Runnable {
 
         private final Deque<Ucenik> data;
         

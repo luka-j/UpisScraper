@@ -1,69 +1,72 @@
 package upismpn.download;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+import upismpn.UpisMpn;
+import upismpn.download.UceniciManager.UcData;
+
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-import upismpn.download.UceniciManager.UcData;
-import upismpn.UpisMpn;
+
 import static upismpn.UpisMpn.DEBUG;
 
 public class StudentDownloader {
-    
-    static long spentTime;
-    static long startTime = System.currentTimeMillis();
+    private static StudentDownloader instance;
 
-    public static void setStart(int start) {
-        if(DEBUG)System.out.println("set progress: " + start);
-        currentSmer = start;
+    public static StudentDownloader getInstance(int startingIndex, long time) {
+        if(instance == null) instance = new StudentDownloader(startingIndex, time);
+        return instance;
     }
 
-    public static int getCurrentSmer() {
+    private long spentTime;
+    private long startTime = System.currentTimeMillis();
+
+
+    public int getCurrentSmer() {
         return currentSmer;
     }
     
-    public static long getVreme() {
+    public long getVreme() {
         return System.currentTimeMillis() - startTime + spentTime;
     }
-    public static void setVreme(long vreme) {
-        spentTime = vreme;
-    }
 
-    private static volatile int currentSmer = 0; //nisam sasvim siguran zasto je ovo volatile
+    private volatile int currentSmer = 0; //nisam sasvim siguran zasto je ovo volatile
 
     /**
      * Preuzima podatke o ucenicima sa sajta
      */
-    public static void downloadStudentData() {
+    public void downloadStudentData(DownloadConfig config) {
         if(DEBUG)System.out.println("starting program");
         Deque<UcData> uc;
-        Smerovi.iterate(currentSmer);
+        Smerovi smerovi = config.getSmerovi();
+        smerovi.iterate(currentSmer);
         double time, est; char oznaka='s';
         if(DEBUG)System.out.println("starting iteration");
-        while (Smerovi.hasNext()) {
-            String smerSifra = Smerovi.getNextSifra();
+        UceniciManager ucenici = UceniciManager.getInstance(config);
+        while (smerovi.hasNext()) {
+            String smerSifra = smerovi.getNextSifra();
             if(DEBUG)System.out.println("Uzimam sifre ucenika za " + smerSifra);
             uc = getSifreUcenika(smerSifra);
             if(DEBUG)System.out.println("Uzeo sifre za " + smerSifra);
-            UceniciManager.add(uc);
+            ucenici.add(uc);
             currentSmer++;
-            System.out.print(String.format("%.2f%s", Smerovi.getPercentageIterated(), "% - "));
+            System.out.print(String.format("%.2f%s", smerovi.getPercentageIterated(), "% - "));
             time = (System.currentTimeMillis() - startTime + spentTime)/1000;
-            est = ((100/Smerovi.getPercentageIterated()-1)*time) / 3600;
+            est = ((100/smerovi.getPercentageIterated()-1)*time) / 3600;
             if(time > 10800) {time = time/60; oznaka='m';}
             if(time > 43200) {time = time/3600; oznaka='h';}
             System.out.print(String.format("%.2f%s", time, String.valueOf(oznaka)));
             System.out.println(String.format("%s%.2f%s", ". Preostalo još ", est, "h..."));
         }
         System.out.println("downloading last batch");
-        UceniciManager.download();
+        ucenici.download();
         System.out.println("saving last batch");
-        new UceniciManager.Saver().run();
+        ucenici.new Saver().run(); //my fav piece of syntax
         System.out.println("all done");
     }
 
@@ -72,7 +75,7 @@ public class StudentDownloader {
     private static final int UCENIKA_PO_STRANI = 25;
     private static final int UCENIK_IDOVA_PO_TR = 5;
 
-    private static Deque<UcData> getSifreUcenika(String sifraProfila) {
+    private Deque<UcData> getSifreUcenika(String sifraProfila) {
         Deque<UcData> sifre = new ArrayDeque<>();
         boolean end = false;
         try {
@@ -112,7 +115,7 @@ public class StudentDownloader {
         return sifre;
     }
 
-    private static Document downloadDoc(String sifraProfila, int i) throws IOException {
+    private Document downloadDoc(String sifraProfila, int i) throws IOException {
         try {
             return Jsoup.connect(UCENICI_URL + sifraProfila + "&broj_strane=" + i).post();
         } catch (SocketTimeoutException ex) {
@@ -126,6 +129,8 @@ public class StudentDownloader {
         }
     }
 
-    private StudentDownloader() {
+    private StudentDownloader(int startingIndex, long time) {
+        spentTime = time;
+        currentSmer = startingIndex;
     }
 }

@@ -1,6 +1,5 @@
 package upismpn.exec;
 
-import upismpn.obrada.Exec;
 import upismpn.obrada.UceniciGroup;
 import upismpn.obrada.UceniciGroupBuilder;
 import upismpn.obrada.UcenikWrapper;

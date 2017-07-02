@@ -1,11 +1,11 @@
 package upismpn.obrada;
 
+import upismpn.download.UcenikUtils;
+
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import upismpn.download.UcenikUtils;
 
 /**
  * Predstavlja grupu UcenikWrapper-a (HashSet) sa nekim korisnim metodama

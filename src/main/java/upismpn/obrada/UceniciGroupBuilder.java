@@ -1,13 +1,13 @@
 package upismpn.obrada;
 
+import upismpn.download.UceniciManager;
+import upismpn.download.Ucenik;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-
-import upismpn.download.UceniciManager;
-import upismpn.download.Ucenik;
 
 /**
  *

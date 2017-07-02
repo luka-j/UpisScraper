@@ -1,6 +1,7 @@
 package upismpn.obrada;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -30,7 +31,7 @@ public class Spreadsheets {
             Row row = sheet.createRow(j);
             for (int k = 0; k < out[j].length; k++) {
                 Cell cell = row.createCell(k);
-                cell.setCellType(Cell.CELL_TYPE_STRING);
+                cell.setCellType(CellType.STRING);
                 cell.setCellValue(out[j][k]);
             }
         }

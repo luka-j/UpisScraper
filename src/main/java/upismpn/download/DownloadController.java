@@ -1,10 +1,6 @@
 package upismpn.download;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,22 +11,21 @@ import java.util.logging.Logger;
 public class DownloadController {
     public static Thread mainThread;
     private static final String SAVE_FILENAME = "save";
+    private static StudentDownloader studentDownloader;
 
     /**
      * Ucitava sve smerova, a zatim ucitava ucenike
      * @see Smerovi#load()
      * @see StudentDownloader#downloadStudentData()
      */
-    public static void startDownload() {
-        Runtime.getRuntime().addShutdownHook(new Thread(new Save()));
+    public static void startDownload(DownloadConfig config) {
+        Runtime.getRuntime().addShutdownHook(new Thread(new Save(config)));
         mainThread = Thread.currentThread();
-        Smerovi.load();
-        Smerovi.save();
+        config.loadSmerovi();
+        config.saveSmerovi();
         System.out.println("Ucitao sifre smerova");
         IntLongPair progress = loadProgress();
-        StudentDownloader.setStart(progress.a);
-        StudentDownloader.setVreme(progress.b);
-        StudentDownloader.downloadStudentData();
+        studentDownloader = config.downloadStudents(progress.a, progress.b);
     }
 
     /**
@@ -42,7 +37,7 @@ public class DownloadController {
         try (final FileWriter fw = new FileWriter(saveData)) {
             saveData.delete();
             saveData.createNewFile();
-            fw.write(String.valueOf(StudentDownloader.getCurrentSmer()) + "\\" + String.valueOf(StudentDownloader.getVreme()));
+            fw.write(String.valueOf(studentDownloader.getCurrentSmer()) + "\\" + String.valueOf(studentDownloader.getVreme()));
         } catch (IOException ex) {
             Logger.getLogger(Ucenik.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -82,13 +77,20 @@ public class DownloadController {
     
     public static class Save implements Runnable {
 
+        private DownloadConfig config;
+
+        public Save(DownloadConfig config) {
+            this.config = config;
+        }
+
         @Override
         public void run() {
-            UceniciManager.onExit();
-            if (UceniciManager.getFailedCount() > 0) {
-                System.err.println("Failed downloads: " + UceniciManager.getFailedCount());
+            UceniciManager inst = UceniciManager.getInstance(config);
+            inst.onExit();
+            if (inst.getFailedCount() > 0) {
+                System.err.println("Failed downloads: " + inst.getFailedCount());
                 System.err.println("saving...");
-                UceniciManager.saveFailed();
+                inst.saveFailed();
             }
         }
 

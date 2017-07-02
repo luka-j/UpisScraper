@@ -1,5 +1,6 @@
 package upismpn.exec;
 
+import jdk.nashorn.internal.runtime.regexp.joni.Config;
 import upismpn.obrada.UceniciGroup;
 import upismpn.obrada.UceniciGroupBuilder;
 import upismpn.obrada.UcenikWrapper;
@@ -53,12 +54,17 @@ public class Ocene {
 
 
     public static void za5() {
+        if(Config.DEBUG) System.out.println("Building groups");
+        long time = System.currentTimeMillis();
         Map<UcenikWrapper.OsnovnaSkola, UceniciGroup> skole  = new UceniciGroupBuilder(null).getByOS();
+        long end = System.currentTimeMillis();
+        if(Config.DEBUG) System.out.println("Done Building. Time: " + (end-time));
         double                                        maxMat = Double.MIN_VALUE, maxSrp = Double.MIN_VALUE, maxKom = Double.MIN_VALUE;
         double                                        minMat = Double.MAX_VALUE, minSrp = Double.MAX_VALUE, minKom = Double.MIN_VALUE;
         UcenikWrapper.OsnovnaSkola                    maxMos = null, minMos = null, maxSos = null, minSos = null, maxKos = null, minKos = null;
         System.out.println("dataset: " + skole.size());
         List<OSKriterijum> sk = new LinkedList<>();
+        time = System.currentTimeMillis();
         skole.entrySet().stream().forEach((e) -> {
             if (e.getValue().size() > 30) {
                 double srpski = e.getValue().filterOdlicneSrpski().size() == 0
@@ -70,6 +76,9 @@ public class Ocene {
                 sk.add(new OSKriterijum(e.getKey(), srpski, matematika, kombinovani));
             }
         });
+        end = System.currentTimeMillis();
+        if(Config.DEBUG) System.out.println("Built schools for: " + (end-time));
+        time = System.currentTimeMillis();
         for (OSKriterijum e : sk) {
             if (e.matematika > maxMat) {
                 maxMat = e.matematika;
@@ -96,6 +105,8 @@ public class Ocene {
                 minKos = e.os;
             }
         }
+        end=System.currentTimeMillis();
+        if(Config.DEBUG)System.out.println("Found max in " + (end-time));
         System.out.println("Najvise za 5 iz srpskog treba u skoli " + maxSos.ime
                                    + " iz " + maxSos.mesto + " (" + maxSos.okrug + " okrug) i to "
                                    + maxSrp + "%");
@@ -130,7 +141,6 @@ public class Ocene {
         do {
             System.out.println(sorted.get(i) + "\n\n ---NEXT--- \n\n");
             i++;
-        } while(sorted.get(i).bodoviSaZavrsnog == sorted.get(i-1
-        ).bodoviSaZavrsnog);
+        } while(sorted.get(i).bodoviSaZavrsnog == sorted.get(i-1).bodoviSaZavrsnog);
     }
 }

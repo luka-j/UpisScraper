@@ -1,10 +1,11 @@
 package upismpn.obrada;
 
+import upismpn.download.Smer;
+import upismpn.download.Smerovi;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import upismpn.download.Smer;
-import upismpn.download.Smerovi;
 
 /**
  *
@@ -15,11 +16,12 @@ public class SmeroviBase {
     
     public static void load() {
         base = new HashMap<>();
-        Smerovi.loadFromFile();
-        Smerovi.iterate(0);
+        Smerovi smerovi = Smerovi.getInstance();
+        smerovi.loadFromFile();
+        smerovi.iterate(0);
         Smer s;
-        while(Smerovi.hasNext()) {
-            s = Smerovi.getNext();
+        while(smerovi.hasNext()) {
+            s = smerovi.getNext();
             base.put(s.getSifra().toUpperCase(), new SmerData(s));
         }
     }

@@ -1,42 +1,45 @@
 package upismpn.download;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
 /**
  *
  * @author Luka
  */
 public class Smerovi {
-
-    private static final List<Smer> base = new ArrayList<>(2_363);
-    private static int it;
-
     private static final String SVI_SMEROVI_URL
             = "http://195.222.98.59/srednja_skola_opsta.php?sort_type=nazivSkole,%20sifraukupno%20asc&prikazi_spisak=1&prikazi_details=1&podrada_id=0&opstina_id=0&okrug_id=0&id_profila=0&broj_strane=";
     private static final int START_FROM = 1;
     private static final int END_AT = 95; //moze i da se odredi dok ucitava, ali ovako je lakse //95 default
     private static final int SMEROVA_PO_STRANI = 25; //takodje
     private static final int SMER_IDOVA_PO_TR = 8;
-    private static final String SAVEFILE_NAME = "smerovi";
+
+    static final String SAVEFILE_NAME = "smerovi";
+
+    private static Smerovi instance;
+    public static Smerovi getInstance() {
+        if(instance == null) instance = new Smerovi();
+        return instance;
+    }
+
+    private final List<Smer> base = new ArrayList<>(2_363);
+    private int it;
+
 
     /**
      * Ucitava podatke o smerovima, ako postoje iz fajla, ako ne s neta
      */
-    public static void load() {
+    public void load() {
         File f = new File(UceniciManager.DATA_FOLDER, SAVEFILE_NAME);
         if(f.exists())
             loadFromFile();
@@ -44,7 +47,7 @@ public class Smerovi {
             loadFromNet();
     }
     
-    public static void loadFromNet() {
+    public void loadFromNet() {
         try {
             Document doc;
             Elements trSifra, trPodrucje, trKvota;
@@ -67,8 +70,13 @@ public class Smerovi {
         }
     }
     
-    public static void loadFromFile() {
+    public void loadFromFile() {
         File f = new File(UceniciManager.DATA_FOLDER, SAVEFILE_NAME);
+        try {
+            System.out.println(f.getCanonicalPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         try {
             String text = new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8);
             String[] smerovi = text.split("\\n");
@@ -83,7 +91,7 @@ public class Smerovi {
     /**
      * Cuva podatke o smerovima u fajl
      */
-    public static void save() {
+    public void save() {
         StringBuilder out = new StringBuilder();
         base.forEach((Smer s) -> out.append(s.toCompactString()));
         File f = new File(UceniciManager.DATA_FOLDER, SAVEFILE_NAME);
@@ -98,27 +106,27 @@ public class Smerovi {
 
     //todo make this implement Iterable
 
-    public static void iterate(int i) {
+    public void iterate(int i) {
         it = i;
     }
 
-    public static boolean hasNext() {
+    public boolean hasNext() {
         return it < base.size();
     }
 
-    public static String getNextSifra() {
+    public String getNextSifra() {
         it++;
         return base.get(it-1).getSifra();
     }
     
-    public static Smer getNext() {
+    public Smer getNext() {
         it++;
         return base.get(it-1);
     }
     
-    public static int getCurrentIndex() {return it-1;}
+    public int getCurrentIndex() {return it-1;}
     
-    public static double getPercentageIterated() {
+    public double getPercentageIterated() {
         return ((double)(it+1)/(base.size()+1)) * 100;
     }
 

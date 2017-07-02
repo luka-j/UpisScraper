@@ -2,6 +2,7 @@ package upismpn.obrada;
 
 import upismpn.download.UceniciManager;
 import upismpn.exec.Ocene;
+import upismpn.exec.PrintNames;
 import upismpn.exec.Teritorijalno;
 import upismpn.exec.Zavrsni;
 
@@ -17,7 +18,6 @@ import java.util.logging.Logger;
  * @author Luka
  */
 public class Exec {
-
     public static final Set<Class> executableClasses = new HashSet<>();
 
     private static boolean hasMethod(Class cls, String method) {
@@ -35,7 +35,7 @@ public class Exec {
         for(String method : methods) {
             try {
                 boolean found = false;
-                for(Class cls : executableClasses) {
+                for(Class<?> cls : executableClasses) { //? used to shut up IDEA warnings
                     if(hasMethod(cls, method)) {
                         System.out.println("Pokrecem " + method);
                         Method m = cls.getDeclaredMethod(method);
@@ -65,6 +65,8 @@ public class Exec {
         executableClasses.add(Ocene.class);
         executableClasses.add(Teritorijalno.class);
         executableClasses.add(Zavrsni.class);
+        executableClasses.add(MetaTools.class);
+        executableClasses.add(PrintNames.class);
         //...
     }
 }

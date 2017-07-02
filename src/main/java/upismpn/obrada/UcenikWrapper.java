@@ -146,13 +146,13 @@ public class UcenikWrapper {
 
     public final Map<Takmicenje, Integer> takmicenja;
 
-    public final float matematika;
-    public final float srpski;
-    public final float kombinovani;
-    public final float bodoviSaZavrsnog;
+    public final double matematika;
+    public final double srpski;
+    public final double kombinovani;
+    public final double bodoviSaZavrsnog;
 
-    public final float ukupnoBodova;
-    public final float bodoviSaPrijemnog;
+    public final double ukupnoBodova;
+    public final double bodoviSaPrijemnog;
 
     public final List<SrednjaSkola> listaZelja;
     public final int                brojZelja;
@@ -197,12 +197,16 @@ public class UcenikWrapper {
                            Integer.parseInt(e.getValue()));
         }
 
-        matematika = Float.parseFloat(uc.getMatematika());
-        srpski = Float.parseFloat(uc.getSrpski());
-        kombinovani = Float.parseFloat(uc.getKombinovani());
+        matematika = uc.getMatematika().equals("null") ? 0 : Double.parseDouble(uc.getMatematika());
+        srpski = uc.getSrpski().equals("null") ? 0 : Double.parseDouble(uc.getSrpski());
+        kombinovani = uc.getKombinovani().equals("null") ? 0 : Double.parseDouble(uc.getKombinovani());
 
         bodoviSaZavrsnog = matematika + srpski + kombinovani;
-        ukupnoBodova = Float.parseFloat(uc.getUkupnoBodova());
+        if(uc.getUkupnoBodova().equals("*")) {
+            ukupnoBodova = bodoviIzSkole + bodoviSaZavrsnog;
+        } else {
+            ukupnoBodova = Double.parseDouble(uc.getUkupnoBodova());
+        }
         bodoviSaPrijemnog = (float) (ukupnoBodova - (bodoviIzSkole + bodoviSaZavrsnog));
 
         listaZelja = uc.getListaZelja().stream().map(SrednjaSkola::new).collect(Collectors.toList());

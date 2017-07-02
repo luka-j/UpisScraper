@@ -1,11 +1,11 @@
 package upismpn.download;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -15,10 +15,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+
 import static upismpn.UpisMpn.DEBUG;
 
 /**
@@ -27,7 +24,7 @@ import static upismpn.UpisMpn.DEBUG;
 public class Ucenik {
 
     private static final boolean OVERWRITE_OLD = false;
-    private static final boolean PRINT_MISSING = true;
+    private static final boolean PRINT_MISSING = false;
     private boolean exists = false;
 
     private static final String UCENICI_URL = "http://195.222.98.40/ucenik_info.php?id_ucenika=";
@@ -141,13 +138,16 @@ public class Ucenik {
         if (exists && !OVERWRITE_OLD) {
             return this;
         }
-        if(PRINT_MISSING && Smerovi.getCurrentIndex()<2355)
+        if(PRINT_MISSING && Smerovi.getInstance().getCurrentIndex()<2355)
             System.out.println("missing");
         Document doc = Jsoup.connect(UCENICI_URL + id).post();
         osnovnaSkola = doc.select(".ospod_malo_naznaceno .home_link").text().trim();
-        okrugOS = doc.select(".ospod_malo_naznaceno").stream().filter((Element e) -> {
-            return UcenikUtils.isAllCaps(e.text());
-        }).collect(Collectors.toList()).get(0).text().trim();
+        okrugOS = doc.select(".ospod_malo_naznaceno").stream()
+                .filter((Element e) -> UcenikUtils.isAllCaps(e.text()))
+                .collect(Collectors.toList())
+                .get(0)
+                .text()
+                .trim();
         sestiRaz = loadOcene("6");
         sedmiRaz = loadOcene("7");
         osmiRaz = loadOcene("8");
