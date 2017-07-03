@@ -51,10 +51,6 @@ public class UceniciManager {
         }
     }
 
-    public static final File DATA_FOLDER = System.getProperty("os.name").toLowerCase().contains("nix")
-            || System.getProperty("os.name").toLowerCase().contains("nux") ?
-            new File("/data/Shared/mined/UpisData/16")
-            : new File("E:\\Shared\\mined\\UpisData\\16");
     private static final int SAVE_AT = 400;
     private static final Executor executor = Executors.newSingleThreadExecutor();
     
@@ -130,7 +126,7 @@ public class UceniciManager {
     }
 
     public void saveFailed() {
-        File f = new File(DATA_FOLDER, "failed");
+        File f = new File(DownloadController.DATA_FOLDER, "failed");
         final StringBuilder sb = new StringBuilder();
         failed.forEach((datum) -> sb.append(datum.toString()));
         try (FileWriter fw = new FileWriter(f)) {
@@ -156,7 +152,7 @@ public class UceniciManager {
         @Override
         public void run() {
             attemptToDownloadFailed();
-            data.forEach((Ucenik uc) -> uc.saveToFile(DATA_FOLDER));
+            data.forEach((Ucenik uc) -> uc.saveToFile(DownloadController.DATA_FOLDER));
             if(DEBUG)System.out.println("Saved ucenici");
             DownloadController.saveProgress();
         }

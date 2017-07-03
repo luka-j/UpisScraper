@@ -10,11 +10,23 @@ public abstract class DownloadConfig {
     public void saveSmerovi() {
         getSmerovi().save();
     }
+    public void loadOsnovneIds() {
+        OsnovneDownloader2017 downloader = getOsnovneDownloader();
+        if(downloader != null)
+            downloader.loadIdsFromFile();
+    }
+    public void downloadOsnovne() {
+        OsnovneDownloader2017 downloader = getOsnovneDownloader();
+        if(downloader != null)
+            downloader.download();
+    }
 
     public abstract StudentDownloader downloadStudents(int startingSmer, long startTime);
     public abstract Smerovi getSmerovi();
     public abstract UceniciManager getUceniciManager();
     public abstract Ucenik generateUcenik(String sifra, String ukBodova, String prop);
+    public abstract OsnovneDownloader2017 getOsnovneDownloader();
+    //original OsnovneDownloader really has nothing to do with anything
 
 
     public static class Old extends DownloadConfig {
@@ -40,6 +52,11 @@ public abstract class DownloadConfig {
         public Ucenik generateUcenik(String sifra, String ukBodova, String mestoOs) {
             return new Ucenik(sifra).setDetails(ukBodova, mestoOs);
         }
+
+        @Override
+        public OsnovneDownloader2017 getOsnovneDownloader() {
+            return null; //no way to systematically download osnovne in old version
+        }
     }
 
 
@@ -64,6 +81,11 @@ public abstract class DownloadConfig {
         @Override
         public Ucenik generateUcenik(String sifra, String ukBodova, String krug) {
             return new Ucenik2017(sifra).setDetails(ukBodova, krug);
+        }
+
+        @Override
+        public OsnovneDownloader2017 getOsnovneDownloader() {
+            return OsnovneDownloader2017.getInstance();
         }
     }
 }

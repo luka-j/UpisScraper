@@ -25,7 +25,7 @@ public class Smerovi {
     private static final int SMER_IDOVA_PO_TR = 8;
 
     static final String SAVEFILE_NAME = "smerovi";
-    static final File SMEROVI_FOLDER = new File(UceniciManager.DATA_FOLDER, "smerovi");
+    static final File SMEROVI_FOLDER = new File(DownloadController.DATA_FOLDER, "smerovi");
     static {
         if(!SMEROVI_FOLDER.isDirectory()) SMEROVI_FOLDER.mkdirs();
     }
@@ -44,7 +44,7 @@ public class Smerovi {
      * Ucitava podatke o smerovima, ako postoje iz fajla, ako ne s neta
      */
     public void load() {
-        File f = new File(UceniciManager.DATA_FOLDER, SAVEFILE_NAME);
+        File f = new File(DownloadController.DATA_FOLDER, SAVEFILE_NAME);
         if(f.exists())
             loadFromFile();
         else
@@ -82,7 +82,7 @@ public class Smerovi {
     }
     
     public void loadFromFile() {
-        File f = new File(UceniciManager.DATA_FOLDER, SAVEFILE_NAME);
+        File f = new File(DownloadController.DATA_FOLDER, SAVEFILE_NAME);
         try {
             System.out.println(f.getCanonicalPath());
         } catch (IOException e) {
@@ -109,7 +109,7 @@ public class Smerovi {
     public void save() {
         StringBuilder out = new StringBuilder();
         base.values().forEach((Smer s) -> out.append(s.toCompactString()));
-        File f = new File(UceniciManager.DATA_FOLDER, SAVEFILE_NAME);
+        File f = new File(DownloadController.DATA_FOLDER, SAVEFILE_NAME);
         try (Writer bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"))) {
             f.delete();
             f.createNewFile();

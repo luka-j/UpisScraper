@@ -117,7 +117,7 @@ public class Ucenik {
 
     public Ucenik(String id) {
         this.id = id;
-        exists = new File(UceniciManager.DATA_FOLDER, id).exists();
+        exists = new File(DownloadController.DATA_FOLDER, id).exists();
     }
 
     public Ucenik setDetails(String ukBodova, String mestoOS) {

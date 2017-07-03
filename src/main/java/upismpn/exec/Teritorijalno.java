@@ -1,6 +1,6 @@
 package upismpn.exec;
 
-import upismpn.download.UceniciManager;
+import upismpn.download.DownloadController;
 import upismpn.obrada.Spreadsheets;
 import upismpn.obrada.UceniciGroup;
 import upismpn.obrada.UceniciGroupBuilder;
@@ -63,7 +63,7 @@ public class Teritorijalno {
                                                                                          en.getValue().getProsekNaZavrsnom()))
                                         .collect(Collectors.toList());
         list.sort(StringGroup.poZavrsnom);
-        Spreadsheets.writeStringGroup(new File(UceniciManager.DATA_FOLDER, "zavrsni_mesta.xlsx"), list, "Broj bodova");
+        Spreadsheets.writeStringGroup(new File(DownloadController.DATA_FOLDER, "zavrsni_mesta.xlsx"), list, "Broj bodova");
     }
 
     public static void gradoviOcene() throws IOException {
@@ -74,7 +74,7 @@ public class Teritorijalno {
                                                                                          en.getValue().getProsekOcena()))
                                         .collect(Collectors.toList());
         list.sort(StringGroup.poOcenama);
-        Spreadsheets.writeStringGroup(new File(UceniciManager.DATA_FOLDER, "ocene_mesta.xlsx"), list, "Prosecna ocena");
+        Spreadsheets.writeStringGroup(new File(DownloadController.DATA_FOLDER, "ocene_mesta.xlsx"), list, "Prosecna ocena");
     }
     public static void okruziNaZavrsnom() throws IOException {
         UceniciGroupBuilder builder = new UceniciGroupBuilder(null);
@@ -84,7 +84,7 @@ public class Teritorijalno {
                                                                                          en.getValue().getProsekNaZavrsnom()))
                                         .collect(Collectors.toList());
         list.sort(StringGroup.poZavrsnom);
-        Spreadsheets.writeStringGroup(new File(UceniciManager.DATA_FOLDER, "zavrsni_okruzi.xlsx"), list, "Broj bodova");
+        Spreadsheets.writeStringGroup(new File(DownloadController.DATA_FOLDER, "zavrsni_okruzi.xlsx"), list, "Broj bodova");
     }
 
     public static void okruziOcene() throws IOException {
@@ -95,6 +95,6 @@ public class Teritorijalno {
                                                                                          en.getValue().getProsekOcena()))
                                         .collect(Collectors.toList());
         list.sort(StringGroup.poOcenama);
-        Spreadsheets.writeStringGroup(new File(UceniciManager.DATA_FOLDER, "ocene_okruzi.xlsx"), list, "Prosecna ocena");
+        Spreadsheets.writeStringGroup(new File(DownloadController.DATA_FOLDER, "ocene_okruzi.xlsx"), list, "Prosecna ocena");
     }
 }

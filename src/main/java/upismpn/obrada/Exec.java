@@ -1,6 +1,6 @@
 package upismpn.obrada;
 
-import upismpn.download.UceniciManager;
+import upismpn.download.DownloadController;
 import upismpn.exec.Ocene;
 import upismpn.exec.PrintNames;
 import upismpn.exec.Teritorijalno;
@@ -52,7 +52,7 @@ public class Exec {
     }
 
     public static void merge() {
-        FileMerger.mergeToOne(UceniciManager.DATA_FOLDER);
+        FileMerger.mergeToOne(DownloadController.DATA_FOLDER);
     }
 
     /**

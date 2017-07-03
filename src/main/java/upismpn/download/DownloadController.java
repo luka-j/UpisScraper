@@ -9,6 +9,10 @@ import java.util.logging.Logger;
  * @author Luka
  */
 public class DownloadController {
+    public static final File DATA_FOLDER = System.getProperty("os.name").toLowerCase().contains("nix")
+            || System.getProperty("os.name").toLowerCase().contains("nux") ?
+            new File("/data/Shared/mined/UpisData/16")
+            : new File("E:\\Shared\\mined\\UpisData\\16");
     public static Thread mainThread;
     private static final String SAVE_FILENAME = "save";
     private static StudentDownloader studentDownloader;
@@ -24,16 +28,19 @@ public class DownloadController {
         config.loadSmerovi();
         config.saveSmerovi();
         System.out.println("Ucitao sifre smerova");
+        config.loadOsnovneIds();
+        System.err.println("Ucitao id-jeve osnovnih skola");
         IntLongPair progress = loadProgress();
         studentDownloader = config.downloadStudents(progress.a, progress.b);
+        config.downloadOsnovne();
     }
 
     /**
-     * Cuva poslednji ucitan smer i potroseno vreme u fajl odredjen s {@link UceniciManager#DATA_FOLDER} i
+     * Cuva poslednji ucitan smer i potroseno vreme u fajl odredjen s {@link DownloadController#DATA_FOLDER} i
      * {@link DownloadController#SAVE_FILENAME}
      */
     public static void saveProgress() {
-        File saveData = new File(UceniciManager.DATA_FOLDER, SAVE_FILENAME);
+        File saveData = new File(DATA_FOLDER, SAVE_FILENAME);
         try (final FileWriter fw = new FileWriter(saveData)) {
             saveData.delete();
             saveData.createNewFile();
@@ -46,7 +53,7 @@ public class DownloadController {
     private static class IntLongPair {int a; long b;}
     private static IntLongPair loadProgress() {
         IntLongPair ret = new IntLongPair(); ret.a = 0; ret.b = 0;
-        File saveData = new File(UceniciManager.DATA_FOLDER, SAVE_FILENAME);
+        File saveData = new File(DATA_FOLDER, SAVE_FILENAME);
         char[] buff = new char[16];
         try (final FileReader fr = new FileReader(saveData)) {
             fr.read(buff);
@@ -66,12 +73,12 @@ public class DownloadController {
 
     public static void test() throws InterruptedException {
         try {
-            new Ucenik("418062").loadFromNet().saveToFile(UceniciManager.DATA_FOLDER);
+            new Ucenik("418062").loadFromNet().saveToFile(DATA_FOLDER);
         } catch (IOException ex) {
             Logger.getLogger(DownloadController.class.getName()).log(Level.SEVERE, null, ex);
         }
         Ucenik loaded = new Ucenik("418062");
-        loaded.loadFromFile(UceniciManager.DATA_FOLDER);
+        loaded.loadFromFile(DATA_FOLDER);
         System.exit(1);
     }
     

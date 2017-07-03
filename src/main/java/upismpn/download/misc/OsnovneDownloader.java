@@ -2,8 +2,8 @@ package upismpn.download.misc;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import upismpn.download.DownloadController;
 import upismpn.download.StudentDownloader;
-import upismpn.download.UceniciManager;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,7 +23,7 @@ import static upismpn.UpisMpn.DEBUG;
 public class OsnovneDownloader {
     private static final String OSNOVNE_URL =
             "http://upis.mpn.gov.rs/skola_homepage.php?prikazi_details=1&ucitaj_podatke=1&skola_id=";
-    private static final File SAVEFILE = new File(UceniciManager.DATA_FOLDER, "osnovne");
+    private static final File SAVEFILE = new File(DownloadController.DATA_FOLDER, "osnovne");
 
 
     public static void downloadOsnovneData() {
@@ -61,7 +61,7 @@ public class OsnovneDownloader {
         try {
             return Jsoup.connect(OSNOVNE_URL + id).get();
         } catch (SocketTimeoutException ex) {
-            System.err.println("Socket timeout @ downloadDoc (OsnovneDownloader)");
+            System.err.println("Socket timeout @ downloadDoc (OsnovneDownloader2017)");
         } catch (IOException e) {
             e.printStackTrace();
         }

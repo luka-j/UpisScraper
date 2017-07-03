@@ -80,6 +80,7 @@ public class Ucenik2017 extends Ucenik {
         String prijemni = data[5].split("=")[1].trim();
         String zelje = data[7].split("=")[1].trim();
         parseBasic(basic);
+        OsnovneDownloader2017.getInstance().addOsnovna(Integer.parseInt(osId));
         sestiRaz = parseOcene(sesti);
         sedmiRaz = parseOcene(sedmi);
         osmiRaz = parseOcene(osmi);

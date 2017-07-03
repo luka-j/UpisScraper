@@ -1,6 +1,6 @@
 package upismpn.obrada;
 
-import upismpn.download.UceniciManager;
+import upismpn.download.DownloadController;
 import upismpn.download.Ucenik;
 import upismpn.download.UcenikUtils;
 
@@ -161,7 +161,7 @@ public class UcenikWrapper {
     public final int                krug;
 
     public UcenikWrapper(String id) {
-        this(new Ucenik(id).loadFromFile(UceniciManager.DATA_FOLDER));
+        this(new Ucenik(id).loadFromFile(DownloadController.DATA_FOLDER));
     }
 
     public UcenikWrapper(Ucenik uc) {

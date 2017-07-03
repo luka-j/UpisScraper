@@ -1,6 +1,6 @@
 package upismpn.obrada;
 
-import upismpn.download.UceniciManager;
+import upismpn.download.DownloadController;
 import upismpn.download.Ucenik;
 
 import java.io.File;
@@ -29,7 +29,7 @@ public class UceniciGroupBuilder {
         Ucenik uc;
         String[] ucData;
         everyone = new UceniciGroup();
-        List<String> ucenici = FileMerger.readFromOne(new File(UceniciManager.DATA_FOLDER, FileMerger.FILENAME));
+        List<String> ucenici = FileMerger.readFromOne(new File(DownloadController.DATA_FOLDER, FileMerger.FILENAME));
         for(String ucStr : ucenici) {
             ucData = ucStr.split("\\n", 2);
             uc = new Ucenik(ucData[0]);
