@@ -85,7 +85,7 @@ public class DownloadController {
 
         @Override
         public void run() {
-            UceniciManager inst = UceniciManager.getInstance(config);
+            UceniciManager inst = config.getUceniciManager();
             inst.onExit();
             if (inst.getFailedCount() > 0) {
                 System.err.println("Failed downloads: " + inst.getFailedCount());

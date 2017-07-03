@@ -1,9 +1,9 @@
 package upismpn.download;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import upismpn.UpisMpn;
 import upismpn.download.UceniciManager.UcData;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class StudentDownloader {
         smerovi.iterate(currentSmer);
         double time, est; char oznaka='s';
         if(DEBUG)System.out.println("starting iteration");
-        UceniciManager ucenici = UceniciManager.getInstance(config);
+        UceniciManager ucenici = config.getUceniciManager();
         while (smerovi.hasNext()) {
             String smerSifra = smerovi.getNextSifra();
             if(DEBUG)System.out.println("Uzimam sifre ucenika za " + smerSifra);
@@ -75,7 +75,7 @@ public class StudentDownloader {
     private static final int UCENIKA_PO_STRANI = 25;
     private static final int UCENIK_IDOVA_PO_TR = 5;
 
-    private Deque<UcData> getSifreUcenika(String sifraProfila) {
+    protected Deque<UcData> getSifreUcenika(String sifraProfila) {
         Deque<UcData> sifre = new ArrayDeque<>();
         boolean end = false;
         try {
@@ -88,7 +88,7 @@ public class StudentDownloader {
                 try {
                     do {
                         if(DEBUG)System.out.println("downloading doc " + i + " za " + sifraProfila);
-                    doc = downloadDoc(sifraProfila, i);
+                    doc = downloadDoc(generateUrl(sifraProfila, i), "", true);
                     } while(doc == null);
                     if(DEBUG)System.out.println("starting download of ucenici");
                     for (int j = 2; j <= UCENIKA_PO_STRANI * UCENIK_IDOVA_PO_TR; j += UCENIK_IDOVA_PO_TR) {
@@ -109,19 +109,20 @@ public class StudentDownloader {
                 i++;
             }
         } catch (IOException ex) {
-            Logger.getLogger(UpisMpn.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(StudentDownloader.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return sifre;
     }
 
-    private Document downloadDoc(String sifraProfila, int i) throws IOException {
+    protected Document downloadDoc(String url, String requestBody, boolean post) throws IOException {
         try {
-            return Jsoup.connect(UCENICI_URL + sifraProfila + "&broj_strane=" + i).post();
+            Connection c =  Jsoup.connect(url).requestBody(requestBody);
+            return post ? c.post() : c.get();
         } catch (SocketTimeoutException ex) {
             System.err.println("Socket timeout @ downloadDoc (StudentDownloader)");
             try {
-                Thread.sleep(3000);
+                Thread.sleep(5000);
             } catch (InterruptedException ex1) {
                 Logger.getLogger(StudentDownloader.class.getName()).log(Level.SEVERE, null, ex1);
             }
@@ -129,7 +130,11 @@ public class StudentDownloader {
         }
     }
 
-    private StudentDownloader(int startingIndex, long time) {
+    private static String generateUrl(String sifra, int brojStrane) {
+        return UCENICI_URL + sifra + "&broj_strane=" + brojStrane;
+    }
+
+    protected StudentDownloader(int startingIndex, long time) {
         spentTime = time;
         currentSmer = startingIndex;
     }

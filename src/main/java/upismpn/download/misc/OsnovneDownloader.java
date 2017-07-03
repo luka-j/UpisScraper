@@ -1,7 +1,9 @@
-package upismpn.download;
+package upismpn.download.misc;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import upismpn.download.StudentDownloader;
+import upismpn.download.UceniciManager;
 
 import java.io.BufferedWriter;
 import java.io.File;

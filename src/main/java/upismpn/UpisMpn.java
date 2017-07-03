@@ -2,7 +2,7 @@ package upismpn;
 
 import upismpn.download.DownloadConfig;
 import upismpn.download.DownloadController;
-import upismpn.download.OsnovneDownloader;
+import upismpn.download.misc.OsnovneDownloader;
 import upismpn.obrada.Exec;
 
 /**
@@ -22,7 +22,7 @@ public class UpisMpn {
         else {
             if(args[0].equalsIgnoreCase("dl") &&
                     (args.length == 1 || args[1].equalsIgnoreCase("uc")))
-                DownloadController.startDownload(new DownloadConfig.Old());
+                DownloadController.startDownload(new DownloadConfig.New());
             if(args[0].equalsIgnoreCase("dl") && args[1].equalsIgnoreCase("os"))
                 OsnovneDownloader.downloadOsnovneData();
             if(args[0].equalsIgnoreCase("exec")) {

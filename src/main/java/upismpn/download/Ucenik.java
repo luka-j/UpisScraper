@@ -31,29 +31,29 @@ public class Ucenik {
 
     public final String id; //filename
 
-    private String osnovnaSkola; //ime_skole
-    private String mestoOS; //ime_mesta\\
-    private String okrugOS; //ime_okruga\n
+    protected String osnovnaSkola; //ime_skole
+    protected String mestoOS; //ime_mesta\\
+    protected String okrugOS; //ime_okruga\n
 
-    private Map<String, String> sestiRaz; //predmet:ocena\\predmet:ocena... \n
-    private Map<String, String> sedmiRaz; //predmet:ocena\\predmet:ocena... \n
-    private Map<String, String> osmiRaz; //predmet:ocena\\predmet:ocena... \n
+    protected Map<String, String> sestiRaz; //predmet:ocena\\predmet:ocena... \n
+    protected Map<String, String> sedmiRaz; //predmet:ocena\\predmet:ocena... \n
+    protected Map<String, String> osmiRaz; //predmet:ocena\\predmet:ocena... \n
 
-    private Map<String, String> takmicenja; //predmet:bodova\\predmet:bodova... \n
+    protected Map<String, String> takmicenja; //predmet:bodova\\predmet:bodova... \n
 
-    private String matematika; //broj_bodova\\
-    private String srpski; //broj_bodova\\
-    private String kombinovani; //broj_bodova\n
+    protected String matematika; //broj_bodova\\
+    protected String srpski; //broj_bodova\\
+    protected String kombinovani; //broj_bodova\n
 
     /**
      * !! Zajedno sa prijemnim.
      */
-    private String ukupnoBodova; //broj_bodova\n
+    protected String ukupnoBodova; //broj_bodova\n
 
-    private List<Skola> listaZelja; //skola_1\\skola_2\\skola_3... \n
-    private Skola upisanaSkola; //ime_skole\\
-    private String upisanaZelja; //redni_broj_u_listi_zelja
-    private String krug;
+    protected List<Skola> listaZelja; //skola_1\\skola_2\\skola_3... \n
+    protected Skola upisanaSkola; //ime_skole\\
+    protected String upisanaZelja; //redni_broj_u_listi_zelja
+    protected String krug;
 
     public String getOsnovnaSkola() {
         return osnovnaSkola;

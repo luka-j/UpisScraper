@@ -28,7 +28,7 @@ public class UceniciManager {
         return instance;
     }
 
-    private UceniciManager(DownloadConfig config) {
+    protected UceniciManager(DownloadConfig config) {
         this.config = config;
     }
 
@@ -72,9 +72,10 @@ public class UceniciManager {
         }
     }
 
-    private final Deque<Ucenik> ucenici = new ArrayDeque<>(SAVE_AT + 161);
-    private final Deque<UcData> sifre = new ArrayDeque<>(SAVE_AT + 161);
-    private final Deque<UcData> failed = new ArrayDeque<>();
+    protected final Deque<Ucenik> ucenici = new ArrayDeque<>(SAVE_AT + 161);
+    protected final Deque<UcData> sifre = new ArrayDeque<>(SAVE_AT + 161);
+    protected final Deque<UcData> failed = new ArrayDeque<>();
+
 
     protected void download() {
         if(DEBUG)System.out.println("downloading ucenik info");
@@ -93,11 +94,11 @@ public class UceniciManager {
     private Ucenik loadUcenik(String sifra, String ukBodova, String mestoOS) {
         Ucenik uc = null;
         try {
-            uc = config.createUcenik(sifra).setDetails(ukBodova, mestoOS).loadFromNet();
+            uc = config.generateUcenik(sifra, ukBodova, mestoOS).loadFromNet();
         } catch (SocketTimeoutException | SocketException ex) {
             try {
                 Thread.sleep(15000);
-                uc = config.createUcenik(sifra).setDetails(ukBodova, mestoOS).loadFromNet();
+                uc = config.generateUcenik(sifra, ukBodova, mestoOS).loadFromNet();
             } catch (SocketTimeoutException nestedex) {
                 System.err.println("Socket timeout @ loadFromNet: " + sifra);
             } catch (IOException | InterruptedException nestedex) {
@@ -155,9 +156,7 @@ public class UceniciManager {
         @Override
         public void run() {
             attemptToDownloadFailed();
-            data.forEach((Ucenik uc) -> {
-                uc.saveToFile(DATA_FOLDER);
-            });
+            data.forEach((Ucenik uc) -> uc.saveToFile(DATA_FOLDER));
             if(DEBUG)System.out.println("Saved ucenici");
             DownloadController.saveProgress();
         }

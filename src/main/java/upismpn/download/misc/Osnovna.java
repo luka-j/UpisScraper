@@ -1,4 +1,4 @@
-package upismpn.download;
+package upismpn.download.misc;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;

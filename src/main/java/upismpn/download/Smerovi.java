@@ -7,8 +7,8 @@ import org.jsoup.select.Elements;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,6 +25,10 @@ public class Smerovi {
     private static final int SMER_IDOVA_PO_TR = 8;
 
     static final String SAVEFILE_NAME = "smerovi";
+    static final File SMEROVI_FOLDER = new File(UceniciManager.DATA_FOLDER, "smerovi");
+    static {
+        if(!SMEROVI_FOLDER.isDirectory()) SMEROVI_FOLDER.mkdirs();
+    }
 
     private static Smerovi instance;
     public static Smerovi getInstance() {
@@ -32,7 +36,7 @@ public class Smerovi {
         return instance;
     }
 
-    private final List<Smer> base = new ArrayList<>(2_363);
+    private final Map<String, Smer> base = new HashMap<>(2_363);
     private int it;
 
 
@@ -58,7 +62,7 @@ public class Smerovi {
                         trSifra = doc.select("#" + String.valueOf(j));
                         trPodrucje = doc.select("#" + String.valueOf(j + 3));
                         trKvota = doc.select("#" + String.valueOf(j + 4));
-                        base.add(new Smer(trSifra.text(), trPodrucje.text(), trKvota.text()));
+                        addToBase(new Smer(trSifra.text(), trPodrucje.text(), trKvota.text()));
                     }
                 } catch (NullPointerException ex) {
                     Logger.getLogger(StudentDownloader.class.getName()).log(Level.FINE, "NPE@smerovi: poslednji put");
@@ -68,6 +72,13 @@ public class Smerovi {
         } catch (IOException ex) {
             Logger.getLogger(StudentDownloader.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    protected void addToBase(Smer s) {
+        base.put(s.getSifra(), s);
+    }
+    protected Smer createSmer(String compactString) {
+        return new Smer(compactString);
     }
     
     public void loadFromFile() {
@@ -81,11 +92,15 @@ public class Smerovi {
             String text = new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8);
             String[] smerovi = text.split("\\n");
             for(String smer : smerovi) {
-                base.add(new Smer(smer));
+                addToBase(createSmer(smer));
             }
         } catch (IOException ex) {
             Logger.getLogger(Ucenik.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public Smer get(String sifra) {
+        return base.get(sifra);
     }
 
     /**
@@ -93,7 +108,7 @@ public class Smerovi {
      */
     public void save() {
         StringBuilder out = new StringBuilder();
-        base.forEach((Smer s) -> out.append(s.toCompactString()));
+        base.values().forEach((Smer s) -> out.append(s.toCompactString()));
         File f = new File(UceniciManager.DATA_FOLDER, SAVEFILE_NAME);
         try (Writer bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"))) {
             f.delete();
@@ -130,6 +145,6 @@ public class Smerovi {
         return ((double)(it+1)/(base.size()+1)) * 100;
     }
 
-    private Smerovi() {
+    protected Smerovi() {
     }
 }
