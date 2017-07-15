@@ -7,7 +7,8 @@ import org.jsoup.select.Elements;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,7 +26,7 @@ public class Smerovi {
     private static final int SMER_IDOVA_PO_TR = 8;
 
     static final String SAVEFILE_NAME = "smerovi";
-    static final File SMEROVI_FOLDER = new File(DownloadController.DATA_FOLDER, "smerovi");
+    static final File SMEROVI_FOLDER = new File(DownloadController.DATA_FOLDER, "smeroviData");
     static {
         if(!SMEROVI_FOLDER.isDirectory()) SMEROVI_FOLDER.mkdirs();
     }
@@ -36,16 +37,14 @@ public class Smerovi {
         return instance;
     }
 
-    private final Map<String, Smer> base = new HashMap<>(2_363);
-    private int it;
-
+    private final LinkedHashMap<String, Smer> base = new LinkedHashMap<>(2_280);
 
     /**
      * Ucitava podatke o smerovima, ako postoje iz fajla, ako ne s neta
      */
     public void load() {
         File f = new File(DownloadController.DATA_FOLDER, SAVEFILE_NAME);
-        if(f.exists())
+        if(f.exists() && f.length() > 0)
             loadFromFile();
         else
             loadFromNet();
@@ -111,9 +110,8 @@ public class Smerovi {
         base.values().forEach((Smer s) -> out.append(s.toCompactString()));
         File f = new File(DownloadController.DATA_FOLDER, SAVEFILE_NAME);
         try (Writer bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"))) {
-            f.delete();
-            f.createNewFile();
             bw.write(out.toString());
+            //if(UpisMpn.DEBUG) System.out.println("wrote to file");
         } catch (IOException ex) {
             Logger.getLogger(Smerovi.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -121,28 +119,32 @@ public class Smerovi {
 
     //todo make this implement Iterable
 
-    public void iterate(int i) {
-        it = i;
+    private Iterator<Map.Entry<String, Smer>> baseIterator;
+    private int count=0;
+    public void iterate(int pos) {
+        baseIterator = base.entrySet().iterator();
+        for(int i=0; i<pos; i++) baseIterator.next();
+        count = pos;
     }
 
     public boolean hasNext() {
-        return it < base.size();
+        return baseIterator.hasNext();
     }
 
     public String getNextSifra() {
-        it++;
-        return base.get(it-1).getSifra();
+        count++;
+        return baseIterator.next().getKey();
     }
     
     public Smer getNext() {
-        it++;
-        return base.get(it-1);
+        count++;
+        return baseIterator.next().getValue();
     }
     
-    public int getCurrentIndex() {return it-1;}
+    public int getCurrentIndex() {return count-1;}
     
     public double getPercentageIterated() {
-        return ((double)(it+1)/(base.size()+1)) * 100;
+        return ((double)(count+1)/(base.size()+1)) * 100;
     }
 
     protected Smerovi() {

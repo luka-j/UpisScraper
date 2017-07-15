@@ -9,6 +9,7 @@ import org.jsoup.select.Elements;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -31,7 +32,7 @@ public class Ucenik2017 extends Ucenik {
     protected String maternji, prviStrani, drugiStrani;
 
     //naziv testa -> broj bodova
-    protected Map<String, String> prijemni;
+    protected Map<String, String> prijemni = new HashMap<>();
     protected List<Zelja> listaZelja1 = new ArrayList<>();
     protected List<Zelja> listaZelja2 = new ArrayList<>();
     protected String upisana;
@@ -67,18 +68,21 @@ public class Ucenik2017 extends Ucenik {
         if (DEBUG) {
             System.out.println("loading ucenik: " + id);
         }
+        if(exists && !OVERWRITE_OLD) return this;
 
         Document doc = Jsoup.connect("http://upis.mpn.gov.rs/Lat/Ucenici/" + id).get();
         Elements scripts = doc.getElementsByTag("script");
         String script = scripts.get(scripts.size()-3).data();
-        String[] data = script.split("\\n", 10);
-        String basic = data[0].split("=")[1].trim();
-        String sesti = data[1].split("=")[1].trim();
-        String sedmi = data[2].split("=")[1].trim();
-        String osmi  = data[3].split("=")[1].trim();
-        String nagrade = data[4].split("=")[1].trim();
-        String prijemni = data[5].split("=")[1].trim();
-        String zelje = data[7].split("=")[1].trim();
+        String[] data = script.split("\\n", 12);
+        //data[0] is only \r
+        String basic = data[1].split(" = ")[1].trim().replace("];", "]");
+        String sesti = data[2].split(" = ")[1].trim().replace("];", "]");
+        String sedmi = data[3].split(" = ")[1].trim().replace("];", "]");
+        String osmi  = data[4].split(" = ")[1].trim().replace("];", "]");
+        String nagrade = data[5].split(" = ")[1].trim().replace("];", "]");
+        String prijemni = data[6].split(" = ")[1].trim().replace("];", "]");
+        String zelje = data[8].split(" = ")[1].trim().replace("];", "]");
+        String zelje2 = data[9].split(" = ")[1].trim().replace("];", "]");
         parseBasic(basic);
         OsnovneDownloader2017.getInstance().addOsnovna(Integer.parseInt(osId));
         sestiRaz = parseOcene(sesti);
@@ -87,9 +91,10 @@ public class Ucenik2017 extends Ucenik {
         parseNagrade(nagrade);
         parsePrijemni(prijemni);
         parseZelje(zelje, listaZelja1);
+        parseZelje(zelje2, listaZelja2);
 
         StringBuilder sb = new StringBuilder();
-        for(int i=0; i<9; i++) sb.append(data[i]);
+        for(int i=1; i<10; i++) sb.append(data[i]);
         jsonData = sb.toString();
         return this;
     }
@@ -115,12 +120,6 @@ public class Ucenik2017 extends Ucenik {
         Type type = new TypeToken<Map<String, String>>(){}.getType();
         Map<String, String> map = gson.fromJson(json.substring(1, json.length()-1), type);
         map.remove("IDUcenik");
-        map.remove("ZbirOcena");
-        map.remove("BrojOcena");
-        map.remove("prosek6");
-        map.remove("prosek7");
-        map.remove("prosek8");
-        map.remove("vukovaDiploma");
         return map;
     }
 
@@ -136,7 +135,7 @@ public class Ucenik2017 extends Ucenik {
         JsonArray data = new JsonParser().parse(json).getAsJsonArray();
         for(JsonElement el : data) {
             JsonObject obj = el.getAsJsonObject();
-            prijemni.put(obj.get("Prijemni").getAsString(), obj.get("Bodova").getAsString());
+            prijemni.put(obj.get("Prijemni").getAsString().trim(), obj.get("Bodova").getAsString());
         }
     }
 
@@ -174,8 +173,6 @@ public class Ucenik2017 extends Ucenik {
         super.saveToFile(folder);
         File f = new File(folder, id + ".json");
         try (Writer fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"))) {
-            f.delete();
-            f.createNewFile();
             fw.write(jsonData);
         } catch (IOException ex) {
             Logger.getLogger(Ucenik.class.getName()).log(Level.SEVERE, null, ex);

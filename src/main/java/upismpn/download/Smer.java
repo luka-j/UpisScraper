@@ -10,7 +10,7 @@ public class Smer {
     private final String kvota;
     
     public Smer(String sifra, String podrucje, String kvota) {
-        this.sifra = sifra;
+        this.sifra = sifra.trim();
         this.podrucje = podrucje;
         this.kvota = kvota;
     }
@@ -25,5 +25,5 @@ public class Smer {
     public String getSifra() {return sifra;}
     public String getPodrucje() {return podrucje;}
     public String getKvota() {return kvota;}
-    public String toCompactString() {return sifra + "\\" + podrucje + "\\" + kvota + "\n";}
+    public String toCompactString() {return sifra.trim() + "\\" + podrucje + "\\" + kvota + "\n";}
 }

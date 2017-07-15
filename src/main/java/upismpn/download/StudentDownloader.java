@@ -117,8 +117,8 @@ public class StudentDownloader {
 
     protected Document downloadDoc(String url, String requestBody, boolean post) throws IOException {
         try {
-            Connection c =  Jsoup.connect(url).requestBody(requestBody);
-            return post ? c.post() : c.get();
+            Connection c =  Jsoup.connect(url);
+            return post ? c.requestBody(requestBody).post() : c.get();
         } catch (SocketTimeoutException ex) {
             System.err.println("Socket timeout @ downloadDoc (StudentDownloader)");
             try {

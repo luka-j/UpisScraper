@@ -34,7 +34,8 @@ public class Smer2017 extends Smer {
     public String toCompactString() {
         StringBuilder str = new StringBuilder(super.toCompactString());
         str.deleteCharAt(str.length()-1); //removing newline
-        str.append("\\").append(ime).append("\\").append(jezik).append("\\")
+        if(ime.endsWith(",")) ime = ime.substring(0, ime.length()-1);
+        str.append("\\").append(ime).append("\\").append(jezik.trim()).append("\\")
         .append(opstina).append("\\").append(okrug).append("\\").append(podrucje).append("\n");
         return str.toString();
     }

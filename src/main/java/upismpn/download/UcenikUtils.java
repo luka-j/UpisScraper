@@ -91,8 +91,18 @@ public class UcenikUtils {
         public static final String FIZICKO2017 = "fizicko";
         public static final String DRUGI_STRANI = "drugiStrani";
         public static final String SPORT2017 = "izborniSport";
+        public static final String SPORT2017_LOWER = "izbornisport"; //yeah that exists
         public static final String VLADANJE2017 = "vladanje";
 
+        public static final String ZBIR2017 = "ZbirOcena";
+        public static final String BROJ2017 = "BrojOcena";
+        public static final String PROSEK6_2017 = "prosek6";
+        public static final String PROSEK7_2017 = "prosek7";
+        public static final String PROSEK8_2017 = "prosek8";
+        public static final String BOD6_2017 = "bod6";
+        public static final String BOD7_2017 = "bod7";
+        public static final String BOD8_2017 = "bod8";
+        public static final String VUKOVA2017 = "vukovaDiploma";
         
         private static final Map<String, String> nameToSifra;
         static {
@@ -131,8 +141,19 @@ public class UcenikUtils {
             nameToSifra.put(TEHNICKO2017, "l");
             nameToSifra.put(FIZICKO2017, "m");
             nameToSifra.put(DRUGI_STRANI, "n");
-            nameToSifra.put(SPORT2017, "o");
+            nameToSifra.put(SPORT2017, "O");
+            nameToSifra.put(SPORT2017_LOWER, "o");
             nameToSifra.put(VLADANJE2017, "p");
+
+            nameToSifra.put(PROSEK6_2017, "!");
+            nameToSifra.put(PROSEK7_2017, "@");
+            nameToSifra.put(PROSEK8_2017, "#");
+            nameToSifra.put(ZBIR2017, "$");
+            nameToSifra.put(BROJ2017, "%");
+            nameToSifra.put(BOD6_2017, "^");
+            nameToSifra.put(BOD7_2017, "&");
+            nameToSifra.put(BOD8_2017, "*");
+            nameToSifra.put(VUKOVA2017, "-");
         }
         private static Map<String, String> inverse;
         

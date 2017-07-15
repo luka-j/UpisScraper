@@ -33,7 +33,7 @@ public class Smerovi2017 extends Smerovi {
                 int page = 1;
                 while(true) {
                     Document doc = Jsoup.connect(generateOkrugUrl(i))
-                            .requestBody(generatePageParams(page++))
+                            .requestBody(generatePageParams(page++, i))
                             .post();
                     Elements skole = doc.select(".tbody .kolona2");
                     Elements kvote = doc.select(".tbody .kolona3");
@@ -58,8 +58,8 @@ public class Smerovi2017 extends Smerovi {
         return "http://upis.mpn.gov.rs/Lat/Srednje-skole-pretraga/" + df.format(okrug) + "0000000000000000";
     }
 
-    private static String generatePageParams(int page) {
-        return "id_grid=wuc_Grid1&grid_refresh=1&filter=(IDJezik+%3D+1)+AND+(PodrucjeRadaID+%3D+16)+AND+(ObrazovniProfilID+%3D+685)&sort=&page=" + page + "&page_size=-1&IDPocetniFilter=0&IDStalniFilter=0&multiselect=0&Pretraga=&executeUCMethod=wuc_Grid%3FDBID%3D8%26ID%3Dwuc_Grid1%26PageSize%3D-1%26ClientMode%3D1&methodName=InitGrid";
+    private static String generatePageParams(int page, int okrug) {
+        return "id_grid=wuc_Grid1&grid_refresh=1&filter=(IDOkrug+%3D+" + okrug + ")&sort=&page=" + page + "&page_size=-1&IDPocetniFilter=0&IDStalniFilter=0&multiselect=0&Pretraga=&executeUCMethod=wuc_Grid%3FDBID%3D1%26ID%3Dwuc_Grid1%26PageSize%3D-1%26ClientMode%3D1&methodName=InitGrid";
     }
 
     //sifra, ime, mesto, jezik

@@ -21,7 +21,7 @@ public abstract class DownloadConfig {
             downloader.download();
     }
 
-    public abstract StudentDownloader downloadStudents(int startingSmer, long startTime);
+    public abstract StudentDownloader getStudentDownloader(int startingSmer, long startTime);
     public abstract Smerovi getSmerovi();
     public abstract UceniciManager getUceniciManager();
     public abstract Ucenik generateUcenik(String sifra, String ukBodova, String prop);
@@ -32,10 +32,8 @@ public abstract class DownloadConfig {
     public static class Old extends DownloadConfig {
 
         @Override
-        public StudentDownloader downloadStudents(int startingSmer, long startTime) {
-            StudentDownloader instance = StudentDownloader.getInstance(startingSmer, startTime);
-            instance.downloadStudentData(this);
-            return instance;
+        public StudentDownloader getStudentDownloader(int startingSmer, long startTime) {
+            return StudentDownloader.getInstance(startingSmer, startTime);
         }
 
         @Override
@@ -62,10 +60,8 @@ public abstract class DownloadConfig {
 
     public static class New extends DownloadConfig {
         @Override
-        public StudentDownloader downloadStudents(int startingSmer, long startTime) {
-            StudentDownloader instance = StudentDownloader2017.getInstance(startingSmer, startTime);
-            instance.downloadStudentData(this);
-            return instance;
+        public StudentDownloader2017 getStudentDownloader(int startingSmer, long startTime) {
+            return StudentDownloader2017.getInstance(startingSmer, startTime);
         }
 
         @Override

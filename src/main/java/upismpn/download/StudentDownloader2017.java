@@ -22,10 +22,10 @@ public class StudentDownloader2017 extends StudentDownloader {
         super(startingIndex, time);
     }
 
-    private static StudentDownloader instance;
+    private static StudentDownloader2017 instance;
 
-    public static StudentDownloader getInstance(int startingIndex, long time) {
-        if(instance == null) instance = new StudentDownloader(startingIndex, time);
+    public static StudentDownloader2017 getInstance(int startingIndex, long time) {
+        if(instance == null) instance = new StudentDownloader2017(startingIndex, time);
         return instance;
     }
 
@@ -80,7 +80,7 @@ public class StudentDownloader2017 extends StudentDownloader {
     }
 
     private static String generateSmerUrl(String sifra) {
-        return "http://upis.mpn.gov.rs/Cir/Srednje-skole/" + sifra;
+        return "http://upis.mpn.gov.rs/Cir/Srednje-skole/" + sifra.replace(' ', '-');
     }
     private static String generatePageParams(int page) {
         return "id_grid=wuc_Grid1&grid_refresh=1&filter=&sort=&page=" + page + "&page_size=-1&IDPocetniFilter=0&IDStalniFilter=0&multiselect=0&Pretraga=&executeUCMethod=wuc_Grid%3FDBID%3D9%26ID%3Dwuc_Grid1%26PageSize%3D-1%26ClientMode%3D1&methodName=InitGrid";

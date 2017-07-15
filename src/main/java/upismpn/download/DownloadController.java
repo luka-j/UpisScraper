@@ -9,10 +9,12 @@ import java.util.logging.Logger;
  * @author Luka
  */
 public class DownloadController {
+    public static final int YEAR = 17;
+
     public static final File DATA_FOLDER = System.getProperty("os.name").toLowerCase().contains("nix")
             || System.getProperty("os.name").toLowerCase().contains("nux") ?
-            new File("/data/Shared/mined/UpisData/16")
-            : new File("E:\\Shared\\mined\\UpisData\\16");
+            new File("/data/Shared/mined/UpisData/" + YEAR)
+            : new File("E:\\Shared\\mined\\UpisData\\" + YEAR);
     public static Thread mainThread;
     private static final String SAVE_FILENAME = "save";
     private static StudentDownloader studentDownloader;
@@ -29,9 +31,11 @@ public class DownloadController {
         config.saveSmerovi();
         System.out.println("Ucitao sifre smerova");
         config.loadOsnovneIds();
-        System.err.println("Ucitao id-jeve osnovnih skola");
+        System.out.println("Ucitao id-jeve osnovnih skola");
         IntLongPair progress = loadProgress();
-        studentDownloader = config.downloadStudents(progress.a, progress.b);
+        studentDownloader = config.getStudentDownloader(progress.a, progress.b);
+        studentDownloader.downloadStudentData(config);
+        System.out.println("Ucitao ucenike; ucitavam osnovne");
         config.downloadOsnovne();
     }
 
@@ -40,10 +44,9 @@ public class DownloadController {
      * {@link DownloadController#SAVE_FILENAME}
      */
     public static void saveProgress() {
+        if(studentDownloader == null) return;
         File saveData = new File(DATA_FOLDER, SAVE_FILENAME);
         try (final FileWriter fw = new FileWriter(saveData)) {
-            saveData.delete();
-            saveData.createNewFile();
             fw.write(String.valueOf(studentDownloader.getCurrentSmer()) + "\\" + String.valueOf(studentDownloader.getVreme()));
         } catch (IOException ex) {
             Logger.getLogger(Ucenik.class.getName()).log(Level.SEVERE, null, ex);
@@ -56,6 +59,7 @@ public class DownloadController {
         File saveData = new File(DATA_FOLDER, SAVE_FILENAME);
         char[] buff = new char[16];
         try (final FileReader fr = new FileReader(saveData)) {
+            if(saveData.length() == 0) return ret;
             fr.read(buff);
             String[] data = String.valueOf(buff).trim().split("\\\\");
             ret.a = Integer.valueOf(data[0]);
@@ -71,14 +75,14 @@ public class DownloadController {
     
     
 
-    public static void test() throws InterruptedException {
+    public static void test() {
         try {
-            new Ucenik("418062").loadFromNet().saveToFile(DATA_FOLDER);
+            new Ucenik2017("131564").loadFromNet().saveToFile(DATA_FOLDER);
         } catch (IOException ex) {
             Logger.getLogger(DownloadController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        Ucenik loaded = new Ucenik("418062");
-        loaded.loadFromFile(DATA_FOLDER);
+        //Ucenik loaded = new Ucenik("418062");
+        //loaded.loadFromFile(DATA_FOLDER);
         System.exit(1);
     }
     

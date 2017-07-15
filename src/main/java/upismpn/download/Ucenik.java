@@ -23,9 +23,9 @@ import static upismpn.UpisMpn.DEBUG;
  */
 public class Ucenik {
 
-    private static final boolean OVERWRITE_OLD = false;
+    protected static final boolean OVERWRITE_OLD = false;
     private static final boolean PRINT_MISSING = false;
-    private boolean exists = false;
+    protected boolean exists = false;
 
     private static final String UCENICI_URL = "http://195.222.98.40/ucenik_info.php?id_ucenika=";
 
@@ -39,7 +39,7 @@ public class Ucenik {
     protected Map<String, String> sedmiRaz; //predmet:ocena\\predmet:ocena... \n
     protected Map<String, String> osmiRaz; //predmet:ocena\\predmet:ocena... \n
 
-    protected Map<String, String> takmicenja; //predmet:bodova\\predmet:bodova... \n
+    protected Map<String, String> takmicenja = new HashMap<>(); //predmet:bodova\\predmet:bodova... \n
 
     protected String matematika; //broj_bodova\\
     protected String srpski; //broj_bodova\\
@@ -248,8 +248,6 @@ public class Ucenik {
         }
         File f = new File(folder, id);
         try (Writer fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"))) {
-            f.delete();
-            f.createNewFile();
             fw.write(this.toCompactString());
         } catch (IOException ex) {
             Logger.getLogger(Ucenik.class.getName()).log(Level.SEVERE, null, ex);

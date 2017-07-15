@@ -64,7 +64,9 @@ public class UceniciManager {
             executor.execute(s);
             sifre.clear();
             ucenici.clear();
-            if(DEBUG) System.out.println("lists cleared");
+            if(DEBUG) {
+                System.out.println("lists cleared");
+            }
         }
     }
 
