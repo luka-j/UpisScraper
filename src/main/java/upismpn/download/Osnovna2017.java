@@ -29,18 +29,47 @@ public class Osnovna2017 {
     public Osnovna2017(int id) {
         this.id = id;
     }
+    public Osnovna2017(String str) {
+        String[] lines = str.split("\n");
+        String[] basic = lines[0].split("\\\\");
+        id = Integer.parseInt(basic[0]);
+        naziv = basic[1];
+        sediste = basic[2];
+        opstina = basic[3];
+        okrug = basic[4];
+        String[] ocene = lines[1].split("\\\\");
+        bodova6 = ocene[0];
+        bodova7 = ocene[1];
+        bodova8 = ocene[2];
+        matematika = ocene[3];
+        srpski = ocene[4];
+        kombinovani = ocene[5];
+        String[] ucenici = lines[3].split("\\\\");
+        brojUcenika = ucenici[0];
+        ucenikaZavrsilo = ucenici[1];
+        vukovaca = ucenici[2];
+        nagradjenih = ucenici[3];
+    }
+
+    public String toCompactString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(id).append("\\").append(naziv).append("\\").append(sediste).append("\\").append(opstina).append("\\").append(okrug).append("\n");
+        sb.append(bodova6).append("\\").append(bodova7).append("\\").append(bodova8).append("\\").append(matematika).append("\\").append(srpski).append("\\").append(kombinovani).append("\n");
+        sb.append(brojUcenika).append("\\").append(ucenikaZavrsilo).append("\\").append(vukovaca).append("\\").append(nagradjenih).append("\n");
+        return sb.toString();
+    }
 
     public void loadFromNet() {
         try {
             Document doc = Jsoup.connect(generateUrl(id)).get();
             Elements scripts = doc.getElementsByTag("script");
             String script = scripts.get(scripts.size()-3).data();
-            json = script.trim().split(";", 2)[0].split(" = ", 2)[1];
+            json = script.trim().split("}];", 2)[0].split(" = ", 2)[1] + "}]";
             JsonObject data = new JsonParser().parse(json).getAsJsonArray().get(0).getAsJsonObject();
-            naziv = data.get("NazivSkole1").getAsString();
-            sediste = data.get("SedisteSkole1").getAsString();
-            opstina = data.get("Opstina1").getAsString();
-            okrug = data.get("NazivOkruga1").getAsString();
+            naziv = data.get("NazivSkole2").getAsString(); //2 je za latinicu. Na cirilicnom sajtu je NazivSkole1
+            sediste = data.get("SedisteSkole2").getAsString(); //ponekad se zaista pitam kakvi ljudi rade ovakve stvari
+            opstina = data.get("Opstina2").getAsString();
+            okrug = data.get("NazivOkruga2").getAsString();
             bodova6 = data.get("B6").getAsString();
             bodova7 = data.get("B7").getAsString();
             bodova8 = data.get("B8").getAsString();
@@ -76,16 +105,6 @@ public class Osnovna2017 {
                 e1.printStackTrace();
             }
         }
-    }
-    public String toCompactString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(id).append("\\").append(naziv).append("\\").append(sediste).append("\\").append(opstina).append("\\").append(okrug).append("\n");
-        sb.append(bodova6).append("\\").append(bodova7).append("\\").append(bodova8).append("\\").append(matematika).append("\\").append(srpski).append("\\").append(kombinovani).append("\n");
-        sb.append(brojUcenika).append("\\").append(ucenikaZavrsilo).append("\\").append(vukovaca).append("\\").append(nagradjenih).append("\n");
-        return sb.toString();
-    }
-    public void loadFromString() {
-        //todo
     }
 
     private static String generateUrl(int id) {

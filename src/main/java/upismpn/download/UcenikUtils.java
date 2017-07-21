@@ -18,6 +18,15 @@ public class UcenikUtils {
         }
         return l;
     }
+    static List<Ucenik2017.Zelja> stringToListZelja(String[] zelje) {
+        List<Ucenik2017.Zelja> l = new ArrayList<>();
+        for (String zelja : zelje) {
+            if (!zelja.isEmpty()) {
+                l.add(new Ucenik2017.Zelja(zelja));
+            }
+        }
+        return l;
+    }
 
     public static StringBuilder mapToStringBuilder(Map<String, String> m) {
         StringBuilder sb = new StringBuilder();

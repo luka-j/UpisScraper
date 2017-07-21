@@ -3,33 +3,33 @@ package upismpn.download;
 /**
  * Created by luka on 2.7.17..
  */
-public abstract class DownloadConfig {
-    public void loadSmerovi() {
+public interface DownloadConfig {
+    default void loadSmerovi() {
         getSmerovi().load();
     }
-    public void saveSmerovi() {
+    default void saveSmerovi() {
         getSmerovi().save();
     }
-    public void loadOsnovneIds() {
+    default void loadOsnovneIds() {
         OsnovneDownloader2017 downloader = getOsnovneDownloader();
         if(downloader != null)
             downloader.loadIdsFromFile();
     }
-    public void downloadOsnovne() {
+    default void downloadOsnovne() {
         OsnovneDownloader2017 downloader = getOsnovneDownloader();
         if(downloader != null)
             downloader.download();
     }
 
-    public abstract StudentDownloader getStudentDownloader(int startingSmer, long startTime);
-    public abstract Smerovi getSmerovi();
-    public abstract UceniciManager getUceniciManager();
-    public abstract Ucenik generateUcenik(String sifra, String ukBodova, String prop);
-    public abstract OsnovneDownloader2017 getOsnovneDownloader();
+    StudentDownloader getStudentDownloader(int startingSmer, long startTime);
+    Smerovi getSmerovi();
+    UceniciManager getUceniciManager();
+    Ucenik generateUcenik(String sifra, String ukBodova, String prop);
+    OsnovneDownloader2017 getOsnovneDownloader();
     //original OsnovneDownloader really has nothing to do with anything
 
 
-    public static class Old extends DownloadConfig {
+    public static class Old implements DownloadConfig {
 
         @Override
         public StudentDownloader getStudentDownloader(int startingSmer, long startTime) {
@@ -58,7 +58,7 @@ public abstract class DownloadConfig {
     }
 
 
-    public static class New extends DownloadConfig {
+    public static class New implements DownloadConfig {
         @Override
         public StudentDownloader2017 getStudentDownloader(int startingSmer, long startTime) {
             return StudentDownloader2017.getInstance(startingSmer, startTime);

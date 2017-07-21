@@ -33,7 +33,8 @@ public class OsnovneDownloader2017 {
         if(!SAVEFILE.exists() || SAVEFILE.length()==0) return;
         try {
             List<String> ids = Files.readAllLines(SAVEFILE.toPath());
-            base = ids.stream().filter(String::isEmpty).map(Integer::parseInt).collect(Collectors.toSet());
+            for(String id :ids)
+                base.add(Integer.parseInt(id));
         } catch (IOException e) {
             e.printStackTrace();
         }

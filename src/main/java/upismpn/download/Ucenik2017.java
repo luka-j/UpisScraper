@@ -50,6 +50,11 @@ public class Ucenik2017 extends Ucenik {
             this.sifraSmera = sifraSmera;
             this.uslov = uslov;
         }
+        public Zelja(String compactString) {
+            String[] tokens = compactString.split(",");
+            sifraSmera = tokens[0];
+            uslov = tokens[1];
+        }
         public String getSifraSmera() {
             return sifraSmera;
         }
@@ -165,7 +170,40 @@ public class Ucenik2017 extends Ucenik {
 
     @Override
     public void loadFromString(String compactString) {
-        //todo
+        String[] chunks = compactString.split("\n");
+
+        String[] basics = chunks[0].split("\\\\");
+        String[] bodovi = chunks[1].split("\\\\");
+        String[] jezici = chunks[2].split("\\\\");
+        String[] sesti = chunks[3].split("\\\\", 0);
+        String[] sedmi = chunks[4].split("\\\\", 0);
+        String[] osmi = chunks[5].split("\\\\", 0);
+        String[] takmicenja = chunks[6].split("\\\\", 0);
+        String[] prijemni = chunks[7].split("\\\\", 0);
+        String[] zelje1 = chunks[8].split("\\\\", 0);
+        String[] zelje2 = chunks[9].split("\\\\", 0);
+
+        osId = basics[0];
+        upisana = basics[1];
+        krug = basics[2];
+        blizanac = basics[3];
+        najboljiBlizanacBodovi = basics[4];
+        srpski = bodovi[0];
+        matematika = bodovi[1];
+        kombinovani = bodovi[2];
+        bodovaAM = bodovi[3];
+        ukupnoBodova = bodovi[4];
+        maternji = jezici[0];
+        prviStrani = jezici[1];
+        drugiStrani = jezici[2];
+
+        sestiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(sesti));
+        sedmiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(sedmi));
+        osmiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(osmi));
+        this.takmicenja = UcenikUtils.stringArrayToMap(takmicenja);
+        this.prijemni = UcenikUtils.stringArrayToMap(prijemni);
+        listaZelja1 = UcenikUtils.stringToListZelja(zelje1);
+        listaZelja2 = UcenikUtils.stringToListZelja(zelje2);
     }
 
     @Override
