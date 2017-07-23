@@ -1,5 +1,5 @@
-# Upis15Crawler
-Crawls upin.mpn.gov.rs for data. 
+# UpisScrapper
+Scraps data from upis.mpn.gov.rs.
 
 ## Preuzima:
 - Rezultate na završnom (broj bodova na svakom testu)
@@ -10,21 +10,23 @@ Crawls upin.mpn.gov.rs for data.
 - Podaci o upisanoj školi: ime, mesto, okrug, smer, područje rada, kvota
 - Listu želja
 - Krug u kojem je učenik upisan
+- 2017: ... i ostale stvari koje su dostupne na sajtu
 
 ## Zašto?
 
-Smatram da se radi o podacima koji bi bilo lepo da su organizovani i dostupni u lepšem obliku od onog na zvaničnom sajtu za upis, kako bi se lakše iz njih izvukle ionako dostupne (samo dosta teže) informacije. Program sam pokretao tek kad se saobraćaj na sajtu "stiša" kako ne bih remetio server, a crawler je generalno nežan po tom pitanju i pravi oko tri zahteva po sekundi. Ovo naravno ne bi bilo neophodno da se ovi podaci nalaze u sklopu OpenData portala, međutim to nije slučaj iz meni nepoznatog razloga, iako mi se čini da imaju svako pravo biti tamo: mogu biti itekako značajni javnosti, a ovaj program ne može obuhvatiti sve učenike (to jest, ne računa one koji nisu upisali srednju školu iz prostog razloga što se ne nalaze na sajtu). 
+Zašto da ne? Podaci su tu, mogu reći svašta uz dovoljno (dobrih) ideja, a možda još nekom sem meni ovo bude korisno. Godišnji izveštaji od završnom ispitu Zavoda za vrednovanje kvaliteta obrazovanja su fin početak.
+
 Za zanimljive stvari koje se mogu uraditi s ovim podacima, videti [UpisStats](https://github.com/luq-0/UpisStats) projekat koji se direktno nadovezuje na ovaj.
 
 ## Kako?
 
-Generiše oko 60k fajlova, za obradu je preporučljivo spojiti ih u jedan koji je velik 60-70MB koristeći `exec merge` komandu.
+Generiše oko 60k fajlova, za obradu je preporučljivo spojiti ih u jedan koji je velik 60-70MB koristeći `exec merge` komandu. (2017 update: generiše duplo više fajlova jer čuva i raw json za sve, ali je spojeni fajl duplo manji).
 
 Za obradu podataka, poželjno je koristiti klasu `Exec` koja koristi reflekciju za pozivanje datih metoda i `UcenikWrapper` koji ima mnoge vrednosti prekalkulisane i pretvorene u odgovarajuć format, pa je samim tim pogodan za razna izračunavanja (`Ucenik` se sastoji isključivo od stringova). Klase iz kojih se uzimaju metode se mogu nalaziti bilo gde, jedino ograničenje je da se njihovi Class objekti nalaze u `Exec#executableClasses` (videti `Exec#registerExecutables`).
 Izlaz može biti u obliku System.out ili tabele (videti Spreadsheets klasu)
 
 Dependencies:
-- Apache POI
+- Apache POI for Spreadsheets
 
 Argumenti:
 - `dl` za preuzimanje podataka i čuvanje na disk
