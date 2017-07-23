@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class OsnovneDownloader2017 {
     public static final String FILENAME = "osnovne";
     private static final File SAVEFILE = new File(DownloadController.DATA_FOLDER, "osnovneIds");
-    private static final File DATAFILE = new File(DownloadController.DATA_FOLDER, FILENAME);
+    public static final File DATAFILE = new File(DownloadController.DATA_FOLDER, FILENAME);
 
     private static OsnovneDownloader2017 instance;
 

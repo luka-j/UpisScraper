@@ -1,5 +1,7 @@
 package upismpn.download;
 
+import upismpn.obrada2017.LetterUtils;
+
 /**
  * Predstavlja podatke o jednom smeru; sifru, podrucje i kvotu
  * @author Luka
@@ -18,7 +20,7 @@ public class Smer {
     public Smer(String compactString) {
         String[] tokens = compactString.split("\\\\");
         sifra = tokens[0];
-        podrucje = tokens[1];
+        podrucje = LetterUtils.toLatin(tokens[1].trim());
         kvota = tokens[2];
     }
     

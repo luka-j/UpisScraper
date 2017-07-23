@@ -21,8 +21,7 @@ public class FileMerger {
         List<String> lines = new LinkedList<>();
         System.out.println("ucitavam fajlove");
         for (File file : files) {
-            if (file.isFile() && !file.getName().equals("save") && 
-                    !file.getName().equals("failed") && !file.getName().equals("smerovi")) {
+            if (file.isFile() && file.getName().chars().allMatch(Character::isDigit)) {
                 try {
                     lines.add(file.getName());
                     lines.addAll(Files.readAllLines(file.toPath()));
@@ -44,6 +43,11 @@ public class FileMerger {
         System.out.println("gotovo.");
     }
 
+    /**
+     * Vraća listu učenika u formatu u kom su sačuvani u fajlu
+     * @param db
+     * @return
+     */
     public static List<String> readFromOne(File db) {
         List<String> ret = new LinkedList<>();
         StringBuilder curr = new StringBuilder();

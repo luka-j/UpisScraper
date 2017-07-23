@@ -1,10 +1,7 @@
 package upismpn.obrada;
 
 import upismpn.download.DownloadController;
-import upismpn.exec.Ocene;
-import upismpn.exec.PrintNames;
-import upismpn.exec.Teritorijalno;
-import upismpn.exec.Zavrsni;
+import upismpn.exec.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -35,7 +32,7 @@ public class Exec {
         for(String method : methods) {
             try {
                 boolean found = false;
-                for(Class<?> cls : executableClasses) { //? used to shut up IDEA warnings
+                for(Class<?> cls : executableClasses) {
                     if(hasMethod(cls, method)) {
                         System.out.println("Pokrecem " + method);
                         Method m = cls.getDeclaredMethod(method);
@@ -67,6 +64,7 @@ public class Exec {
         executableClasses.add(Zavrsni.class);
         executableClasses.add(MetaTools.class);
         executableClasses.add(PrintNames.class);
+        executableClasses.add(Cleanup2017.class);
         //...
     }
 }

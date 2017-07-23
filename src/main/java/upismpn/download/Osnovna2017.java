@@ -20,6 +20,66 @@ public class Osnovna2017 {
     protected String bodova6, bodova7, bodova8, matematika, srpski, kombinovani;
     protected String brojUcenika, ucenikaZavrsilo, vukovaca, nagradjenih;
 
+    public int getId() {
+        return id;
+    }
+
+    public String getNaziv() {
+        return naziv;
+    }
+
+    public String getSediste() {
+        return sediste;
+    }
+
+    public String getOpstina() {
+        return opstina;
+    }
+
+    public String getOkrug() {
+        return okrug;
+    }
+
+    public String getBodova6() {
+        return bodova6;
+    }
+
+    public String getBodova7() {
+        return bodova7;
+    }
+
+    public String getBodova8() {
+        return bodova8;
+    }
+
+    public String getMatematika() {
+        return matematika;
+    }
+
+    public String getSrpski() {
+        return srpski;
+    }
+
+    public String getKombinovani() {
+        return kombinovani;
+    }
+
+    public String getBrojUcenika() {
+        return brojUcenika;
+    }
+
+    public String getUcenikaZavrsilo() {
+        return ucenikaZavrsilo;
+    }
+
+    public String getVukovaca() {
+        return vukovaca;
+    }
+
+    public String getNagradjenih() {
+        return nagradjenih;
+    }
+
     protected static final File OSNOVNE_FOLDER = new File(DownloadController.DATA_FOLDER, "osnovne-json");
     static {
         if(!OSNOVNE_FOLDER.isDirectory()) OSNOVNE_FOLDER.mkdirs();
@@ -44,7 +104,7 @@ public class Osnovna2017 {
         matematika = ocene[3];
         srpski = ocene[4];
         kombinovani = ocene[5];
-        String[] ucenici = lines[3].split("\\\\");
+        String[] ucenici = lines[2].split("\\\\");
         brojUcenika = ucenici[0];
         ucenikaZavrsilo = ucenici[1];
         vukovaca = ucenici[2];

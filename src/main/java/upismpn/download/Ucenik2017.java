@@ -35,6 +35,55 @@ public class Ucenik2017 extends Ucenik {
     protected Map<String, String> prijemni = new HashMap<>();
     protected List<Zelja> listaZelja1 = new ArrayList<>();
     protected List<Zelja> listaZelja2 = new ArrayList<>();
+
+    public String getOsId() {
+        return osId;
+    }
+
+    public String getJsonData() {
+        return jsonData;
+    }
+
+    public String getBodovaAM() {
+        return bodovaAM;
+    }
+
+    public String getBlizanac() {
+        return blizanac;
+    }
+
+    public String getNajboljiBlizanacBodovi() {
+        return najboljiBlizanacBodovi;
+    }
+
+    public String getMaternji() {
+        return maternji;
+    }
+
+    public String getPrviStrani() {
+        return prviStrani;
+    }
+
+    public String getDrugiStrani() {
+        return drugiStrani;
+    }
+
+    public Map<String, String> getPrijemni() {
+        return prijemni;
+    }
+
+    public List<Zelja> getListaZelja1() {
+        return listaZelja1;
+    }
+
+    public List<Zelja> getListaZelja2() {
+        return listaZelja2;
+    }
+
+    public String getUpisana() {
+        return upisana;
+    }
+
     protected String upisana;
 
     public Ucenik setDetails(String ukBodova, String krug) {
@@ -170,11 +219,11 @@ public class Ucenik2017 extends Ucenik {
 
     @Override
     public void loadFromString(String compactString) {
-        String[] chunks = compactString.split("\n");
+        String[] chunks = compactString.split("\n", -1);
 
-        String[] basics = chunks[0].split("\\\\");
+        String[] basics = chunks[0].split("\\\\", -1);
         String[] bodovi = chunks[1].split("\\\\");
-        String[] jezici = chunks[2].split("\\\\");
+        String[] jezici = chunks[2].split("\\\\", -1);
         String[] sesti = chunks[3].split("\\\\", 0);
         String[] sedmi = chunks[4].split("\\\\", 0);
         String[] osmi = chunks[5].split("\\\\", 0);
@@ -209,6 +258,7 @@ public class Ucenik2017 extends Ucenik {
     @Override
     public void saveToFile(File folder) {
         super.saveToFile(folder);
+        if(exists && !OVERWRITE_OLD) return;
         File f = new File(folder, id + ".json");
         try (Writer fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"))) {
             fw.write(jsonData);

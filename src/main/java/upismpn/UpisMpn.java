@@ -23,7 +23,8 @@ public class UpisMpn {
             if(args[0].equalsIgnoreCase("dl") &&
                     (args.length == 1 || args[1].equalsIgnoreCase("uc")))
                 DownloadController.startDownload(new DownloadConfig.New());
-            if(args[0].equalsIgnoreCase("dl") && args[1].equalsIgnoreCase("os"))
+            if(args.length == 2 &&
+                    args[0].equalsIgnoreCase("dl") && args[1].equalsIgnoreCase("os"))
                 OsnovneDownloader.downloadOsnovneData();
             if(args[0].equalsIgnoreCase("exec")) {
                 String[] semPrvog = new String[args.length-1];
