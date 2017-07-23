@@ -71,10 +71,10 @@ public class Smer2017 extends Smer {
         ime = LetterUtils.toLatin(tokens[3]);
         trajanje = tokens[4];
         kvotaUmanjenje = tokens[5];
-        jezik = LetterUtils.toLatin(tokens[5]);
-        opstina = LetterUtils.toLatin(tokens[6]);
-        okrug = LetterUtils.toLatin(tokens[7]);
-        podrucje = LetterUtils.toLatin(tokens[8]);
+        jezik = LetterUtils.toLatin(tokens[6]);
+        opstina = LetterUtils.toLatin(tokens[7]);
+        okrug = LetterUtils.toLatin(tokens[8]);
+        podrucje = LetterUtils.toLatin(tokens[9]);
     }
 
     public String toCompactString() {
@@ -123,6 +123,7 @@ public class Smer2017 extends Smer {
             opstina = SmerMappingTools.getOpstina(Integer.parseInt(json.get("IDOpstina").getAsString()));
             okrug = SmerMappingTools.getOkrug(Integer.parseInt(json.get("IDOkrug").getAsString()));
             kvotaUmanjenje = json.get("KvotaUmanjenje").getAsString();
+            podrucje = json.get("Naziv1").getAsString();
             trajanje = json.get("Trajanje").getAsString();
         } catch (IOException e) {
             e.printStackTrace();
