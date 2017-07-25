@@ -8,6 +8,7 @@ import org.jsoup.select.Elements;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -127,6 +128,19 @@ public class Ucenik2017 extends Ucenik {
         Document doc = Jsoup.connect("http://upis.mpn.gov.rs/Lat/Ucenici/" + id).get();
         Elements scripts = doc.getElementsByTag("script");
         String script = scripts.get(scripts.size()-3).data();
+        parseJson(script);
+
+        return this;
+    }
+
+    public Ucenik2017 loadFromJson() throws IOException {
+        if(!OVERWRITE_OLD) System.err.println("warning: OVERWRITE_OLD is set to false; changes won't persist");
+        File f = new File(DownloadController.DATA_FOLDER, id + ".json");
+        parseJson("\r\n" + new String(Files.readAllBytes(f.toPath())).replace('\r', '\n'));
+        return this;
+    }
+
+    private void parseJson(String script) throws IOException {
         String[] data = script.split("\\n", 12);
         //data[0] is only \r
         String basic = data[1].split(" = ")[1].trim().replace("];", "]");
@@ -148,9 +162,8 @@ public class Ucenik2017 extends Ucenik {
         parseZelje(zelje2, listaZelja2);
 
         StringBuilder sb = new StringBuilder();
-        for(int i=1; i<10; i++) sb.append(data[i]);
+        for(int i=1; i<10; i++) sb.append(data[i]); //fml zaboravio sam da appendujem newline
         jsonData = sb.toString();
-        return this;
     }
 
     private void parseBasic(String json) {
@@ -181,7 +194,9 @@ public class Ucenik2017 extends Ucenik {
         JsonArray data = new JsonParser().parse(json).getAsJsonArray();
         for(JsonElement el : data) {
             JsonObject obj = el.getAsJsonObject();
-            takmicenja.put(obj.get("nagradaPredmet").getAsString(), obj.get("nagradaBodova").getAsString());
+            takmicenja.put(obj.get("nagradaPredmet").getAsString() + "~" + obj.get("nagradaNivo").getAsString()
+                    + "~" + obj.get("nagradaMesto").getAsString().split(",")[0],
+                    obj.get("nagradaBodova").getAsString());
         }
     }
 
@@ -265,5 +280,10 @@ public class Ucenik2017 extends Ucenik {
         } catch (IOException ex) {
             Logger.getLogger(Ucenik.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public void saveToFile(File folder, boolean skipJson) {
+        if(skipJson) super.saveToFile(folder);
+        else this.saveToFile(folder);
     }
 }

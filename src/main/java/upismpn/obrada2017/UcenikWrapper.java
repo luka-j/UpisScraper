@@ -3,7 +3,6 @@ package upismpn.obrada2017;
 import upismpn.download.Ucenik2017;
 import upismpn.download.UcenikUtils;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,9 +21,9 @@ public class UcenikWrapper {
     public final String maternji, prviStrani, drugiStrani;
 
     public final Ocene sestiRaz, sedmiRaz, osmiRaz;
-    public final Map<String, Double> takmicenja, prijemni;
+    public final Map<String, Double> prijemni;
+    public final Takmicenje takmicenje;
     public final double bodovaTakmicenja;
-    public final double bodovaPrijemni;
     public final List<Zelja> listaZelja1, listaZelja2;
     public final int upisanaZelja;
 
@@ -61,17 +60,19 @@ public class UcenikWrapper {
         osmiRaz = cleanOcene(osmi);
         vukovaDiploma = Integer.parseInt(osmi.get(UcenikUtils.PredmetiDefault.VUKOVA2017)) != 0;
 
-        takmicenja = mapValuesToDouble(uc.getTakmicenja());
+        if(uc.getTakmicenja().isEmpty()) takmicenje = null;
+        else {
+            Map.Entry<String, String> tak = uc.getTakmicenja().entrySet().iterator().next();
+            takmicenje = new Takmicenje(tak.getKey(), Integer.parseInt(tak.getValue()));
+        }
         prijemni = mapValuesToDouble(uc.getPrijemni());
-        bodovaTakmicenja = takmicenja.values().stream().max(Comparator.naturalOrder()).orElse(0.);
+        bodovaTakmicenja = takmicenje == null ? 0 : takmicenje.bodova;
 
         listaZelja1 = uc.getListaZelja1().stream().map(Zelja::new).collect(Collectors.toList());
         listaZelja2 = uc.getListaZelja2().stream().map(Zelja::new).collect(Collectors.toList());
 
         prosekUkupno = (sestiRaz.prosekOcena + sedmiRaz.prosekOcena + osmiRaz.prosekOcena)/3;
         bodoviOcene = sestiRaz.bodovi + sedmiRaz.bodovi + osmiRaz.bodovi;
-
-        bodovaPrijemni = ukupnoBodova - bodovaZavrsni - bodovaAM - bodovaTakmicenja - bodoviOcene;
 
         if(krug == -1) upisanaZelja = -1;
         else if(krug == 1) upisanaZelja = findZelja(listaZelja1, smer);
@@ -118,6 +119,28 @@ public class UcenikWrapper {
         public Zelja(Ucenik2017.Zelja zelja) {
             this.smer = SmeroviBase.get(zelja.getSifraSmera());
             this.uslov = Integer.parseInt(zelja.getUslov()) != 0;
+        }
+    }
+    public static class Takmicenje {
+        public static final int REPUBLICKO = 1;
+        public static final int MEĐUNARODNO = 2;
+
+        public final String predmet;
+        public final int nivo, mesto;
+        public final int bodova;
+
+        public Takmicenje(String predmet, int bodova) {
+            String[] info = predmet.split("~");
+            this.predmet = info[0];
+            this.bodova = bodova;
+            if(info[1].toLowerCase().startsWith("republičko")) nivo = REPUBLICKO;
+            else nivo = MEĐUNARODNO; //cini mi se da ovakvih nema u '17
+            switch (info[2].toLowerCase()) {
+                case "prvo mesto": mesto = 1; break;
+                case "drugo mesto": mesto = 2; break;
+                case "treće mesto": mesto = 3; break;
+                default: throw new IllegalArgumentException("nepostojeće mesto na takmičenju: " + info[2]);
+            }
         }
     }
     public static class Ocene {
