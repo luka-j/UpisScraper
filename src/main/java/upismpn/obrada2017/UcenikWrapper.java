@@ -1,5 +1,6 @@
 package upismpn.obrada2017;
 
+import upismpn.download.DownloadController;
 import upismpn.download.Ucenik2017;
 import upismpn.download.UcenikUtils;
 
@@ -35,8 +36,11 @@ public class UcenikWrapper {
         sifra = Integer.parseInt(uc.id);
         osnovna = OsnovneBase.get(Integer.parseInt(uc.getOsId()));
         smer = SmeroviBase.get(uc.getUpisana());
-        if(uc.getKrug().equals("*")) krug=-1; //upisan po odluci OUKa
+
+        if(uc.getKrug() == null || uc.getKrug().equals("null")) krug = getKrug(uc);
+        else if(uc.getKrug().equals("*")) krug=-1; //upisan po odluci OUKa
         else krug = Integer.parseInt(uc.getKrug());
+
         if(uc.getBlizanac().isEmpty()) blizanac=0;
         else blizanac = Integer.parseInt(uc.getBlizanac().split("\">")[1].split("<")[0]);
 
@@ -78,6 +82,17 @@ public class UcenikWrapper {
         else if(krug == 1) upisanaZelja = findZelja(listaZelja1, smer);
         else if(krug == 2) upisanaZelja = findZelja(listaZelja2, smer);
         else throw new IllegalArgumentException("Krug nije 1 ili 2: " + krug);
+    }
+
+    private static int getKrug(Ucenik2017 uc) {
+        int krug;
+        if(uc.getListaZelja1().isEmpty() && uc.getListaZelja2().isEmpty()) krug = -1;
+        else if(!uc.getListaZelja1().isEmpty() && uc.getListaZelja2().isEmpty()) krug = 1;
+        else if(!uc.getListaZelja2().isEmpty()) krug = 2;
+        else throw new RuntimeException("wtf: " + uc.id);
+        uc.setDetails(uc.getUkupnoBodova(), krug>0 ? String.valueOf(krug) : "*");
+        uc.saveToFile(DownloadController.DATA_FOLDER, true);
+        return krug;
     }
 
     private static Ocene cleanOcene(Map<String, String> raw) {
@@ -133,7 +148,7 @@ public class UcenikWrapper {
             String[] info = predmet.split("~");
             this.predmet = info[0];
             this.bodova = bodova;
-            if(info[1].toLowerCase().startsWith("republičko")) nivo = REPUBLICKO;
+            if(info[1].split(",")[0].toLowerCase().startsWith("republičko")) nivo = REPUBLICKO;
             else nivo = MEĐUNARODNO; //cini mi se da ovakvih nema u '17
             switch (info[2].toLowerCase()) {
                 case "prvo mesto": mesto = 1; break;

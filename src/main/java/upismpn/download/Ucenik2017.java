@@ -195,7 +195,7 @@ public class Ucenik2017 extends Ucenik {
         for(JsonElement el : data) {
             JsonObject obj = el.getAsJsonObject();
             takmicenja.put(obj.get("nagradaPredmet").getAsString() + "~" + obj.get("nagradaNivo").getAsString()
-                    + "~" + obj.get("nagradaMesto").getAsString().split(",")[0],
+                    + "~" + obj.get("nagradaMesto").getAsString(),
                     obj.get("nagradaBodova").getAsString());
         }
     }

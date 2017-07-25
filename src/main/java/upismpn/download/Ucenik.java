@@ -23,7 +23,7 @@ import static upismpn.UpisMpn.DEBUG;
  */
 public class Ucenik {
 
-    protected static final boolean OVERWRITE_OLD = true;
+    protected static final boolean OVERWRITE_OLD = false;
     private static final boolean PRINT_MISSING = false;
     protected boolean exists = false;
 
