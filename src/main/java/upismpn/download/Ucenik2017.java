@@ -180,6 +180,15 @@ public class Ucenik2017 extends Ucenik {
         drugiStrani = data.get("DrugiStraniJezik").getAsString();
         blizanac = data.get("blizanac").getAsString();
         najboljiBlizanacBodovi = data.get("NajboljiBlizanacBodovi").getAsString(); //I have no idea what this is
+
+        String krugText = data.get("UpisanNaOpis").getAsString();
+        if(krugText.startsWith("Raspoređen u prvom") ||
+                krugText.startsWith("Распоређен у првом")) krug = "1";
+        else if(krugText.startsWith("Raspoređen u drugom") ||
+                krugText.startsWith("Распоређен у другом")) krug = "2";
+        else if(krugText.startsWith("Upisan po odluci OUK") ||
+                krugText.startsWith("Уписан по одлуци ОУК")) krug = "*";
+        else throw new IllegalArgumentException("Invalid krug text: " + krugText + " @ " + id);
     }
 
     private Map<String, String> parseOcene(String json) {
