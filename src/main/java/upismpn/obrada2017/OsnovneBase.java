@@ -4,6 +4,7 @@ import upismpn.download.Osnovna2017;
 import upismpn.download.OsnovneDownloader2017;
 import upismpn.obrada.FileMerger;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,5 +28,9 @@ public class OsnovneBase {
     public static OsnovnaW get(int id) {
         if(!base.containsKey(id)) throw new IllegalArgumentException(String.valueOf(id));
         return base.get(id);
+    }
+
+    public static Collection<OsnovnaW> getAll() {
+        return base.values();
     }
 }

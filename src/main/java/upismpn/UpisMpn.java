@@ -35,4 +35,7 @@ public class UpisMpn {
         }
     }
 
+    public static void setYear(String year) {
+        DownloadController.YEAR = year;
+    }
 }
