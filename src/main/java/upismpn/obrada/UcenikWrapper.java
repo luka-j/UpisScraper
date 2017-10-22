@@ -21,8 +21,8 @@ public class UcenikWrapper {
 
         static final int REPUBLIČKO  = 1;
         static final int MEĐUNARODNO = 2;
-        String predmet;
-        int    mesto, rang;
+        public final String predmet;
+        public final int    mesto, rang;
 
         Takmicenje(String predmet, int bodova) {
             this.predmet = predmet.toLowerCase().trim();
@@ -51,6 +51,7 @@ public class UcenikWrapper {
                     mesto = 3;
                     rang = Takmicenje.REPUBLIČKO;
                     break;
+                default: mesto = rang = 0;
             }
         }
 
