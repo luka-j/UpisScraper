@@ -9,12 +9,12 @@ import java.util.logging.Logger;
  * @author Luka
  */
 public class DownloadController {
-    public static final int YEAR = 17;
+    public static final String YEAR = "17-full";
 
     public static final File DATA_FOLDER = System.getProperty("os.name").toLowerCase().contains("nix")
             || System.getProperty("os.name").toLowerCase().contains("nux") ?
             new File("/data/Shared/mined/UpisData/" + YEAR)
-            : new File("E:\\Shared\\mined\\UpisData\\" + YEAR);
+            : new File("D:\\Shared\\mined\\UpisData\\" + YEAR);
     public static Thread mainThread;
     private static final String SAVE_FILENAME = "save";
     private static StudentDownloader studentDownloader;
@@ -22,7 +22,7 @@ public class DownloadController {
     /**
      * Ucitava sve smerova, a zatim ucitava ucenike
      * @see Smerovi#load()
-     * @see StudentDownloader#downloadStudentData()
+     * @see StudentDownloader#downloadStudentData(DownloadConfig)
      */
     public static void startDownload(DownloadConfig config) {
         Runtime.getRuntime().addShutdownHook(new Thread(new Save(config)));
@@ -37,6 +37,7 @@ public class DownloadController {
         studentDownloader.downloadStudentData(config);
         System.out.println("Ucitao ucenike; ucitavam osnovne");
         config.downloadOsnovne();
+        System.out.println("Završio download!");
     }
 
     /**
@@ -55,7 +56,7 @@ public class DownloadController {
     
     private static class IntLongPair {int a; long b;}
     private static IntLongPair loadProgress() {
-        IntLongPair ret = new IntLongPair(); ret.a = 0; ret.b = 0;
+        IntLongPair ret = new IntLongPair();
         File saveData = new File(DATA_FOLDER, SAVE_FILENAME);
         char[] buff = new char[16];
         try (final FileReader fr = new FileReader(saveData)) {

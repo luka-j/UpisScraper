@@ -32,11 +32,11 @@ public class UceniciManager {
         this.config = config;
     }
 
-    static class UcData {
+    public static class UcData {
 
-        private final String sifra;
-        private final String ukBodova;
-        private final String mestoOS;
+        public final String sifra;
+        public final String ukBodova;
+        public final String mestoOS;
 
         UcData(String sifra, String ukBodova, String mestoOS) {
             if(sifra.isEmpty()) throw new NullPointerException();

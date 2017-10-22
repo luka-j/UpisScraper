@@ -83,11 +83,6 @@ public class Smerovi {
     public void loadFromFile() {
         File f = new File(DownloadController.DATA_FOLDER, SAVEFILE_NAME);
         try {
-            System.out.println(f.getCanonicalPath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             String text = new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8);
             String[] smerovi = text.split("\\n");
             for(String smer : smerovi) {

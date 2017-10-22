@@ -57,6 +57,7 @@ public class OsnovneDownloader2017 {
         }).collect(Collectors.toList());
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(DATAFILE))) {
+            DATAFILE.createNewFile();
             osnovne.forEach(o -> {
                 try {
                     bw.write(o.toCompactString() + "\n$\n");

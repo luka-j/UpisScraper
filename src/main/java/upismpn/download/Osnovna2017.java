@@ -155,7 +155,9 @@ public class Osnovna2017 {
     }
 
     public void saveJson() {
-        try (FileWriter fw = new FileWriter(new File(OSNOVNE_FOLDER, String.valueOf(id) + ".json"))) {
+        File save = new File(OSNOVNE_FOLDER, String.valueOf(id) + ".json");
+        try (FileWriter fw = new FileWriter(save)) {
+            save.createNewFile();
             fw.write(json);
         } catch (IOException e) {
             e.printStackTrace();

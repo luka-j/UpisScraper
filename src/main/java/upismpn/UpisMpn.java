@@ -12,6 +12,7 @@ import upismpn.obrada.Exec;
 public class UpisMpn {
 
     public static final boolean    DEBUG             = false;
+    public static final boolean REDOING_DOWNLOAD = false;
 
     /**
      * @param args the command line arguments

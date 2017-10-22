@@ -17,13 +17,14 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import static upismpn.UpisMpn.DEBUG;
+import static upismpn.UpisMpn.REDOING_DOWNLOAD;
 
 /**
  * Predstavlja Ucenika u obliku pogodnom za preuzimanje s neta i cuvanje u fajl (Stringovi)
  */
 public class Ucenik {
 
-    protected static final boolean OVERWRITE_OLD = true;
+    protected static final boolean OVERWRITE_OLD = false;
     private static final boolean PRINT_MISSING = false;
     protected boolean exists = false;
 
@@ -113,6 +114,10 @@ public class Ucenik {
 
     public String getKrug() {
         return krug;
+    }
+
+    public boolean exists() {
+        return exists;
     }
 
     public Ucenik(String id) {
@@ -246,6 +251,8 @@ public class Ucenik {
         if (exists && !OVERWRITE_OLD) {
             return;
         }
+        if(REDOING_DOWNLOAD)
+            System.out.println("Found missing! " + id);
         File f = new File(folder, id);
         try (Writer fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"))) {
             fw.write(this.toCompactString());

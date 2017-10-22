@@ -1,6 +1,7 @@
 package upismpn.obrada;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class FileMerger {
         List<String> ret = new LinkedList<>();
         StringBuilder curr = new StringBuilder();
         try {
-            List<String> lines = Files.readAllLines(db.toPath());
+            List<String> lines = Files.readAllLines(db.toPath(), Charset.forName("UTF-8"));
             lines.forEach((line) -> {
                 if (!line.equals(DELIMETER)) {
                     curr.append(line).append("\n");

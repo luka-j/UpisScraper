@@ -27,6 +27,15 @@ public class UcenikUtils {
         }
         return l;
     }
+    static List<Ucenik2017.Profil> stringToListProfil(String[] profili) {
+        List<Ucenik2017.Profil> l = new ArrayList<>();
+        for(String profil : profili) {
+            if(!profil.isEmpty()) {
+                l.add(new Ucenik2017.Profil(profil));
+            }
+        }
+        return l;
+    }
 
     public static StringBuilder mapToStringBuilder(Map<String, String> m) {
         StringBuilder sb = new StringBuilder();

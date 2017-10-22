@@ -18,7 +18,7 @@ import static upismpn.UpisMpn.DEBUG;
  * Created by luka on 3.7.17..
  */
 public class StudentDownloader2017 extends StudentDownloader {
-    protected StudentDownloader2017(int startingIndex, long time) {
+    private StudentDownloader2017(int startingIndex, long time) {
         super(startingIndex, time);
     }
 
@@ -30,7 +30,7 @@ public class StudentDownloader2017 extends StudentDownloader {
     }
 
     @Override
-    protected Deque<UceniciManager.UcData> getSifreUcenika(String sifraProfila) {
+    public Deque<UceniciManager.UcData> getSifreUcenika(String sifraProfila) {
         Deque<UceniciManager.UcData> sifre = new ArrayDeque<>();
         boolean end = false;
         try {

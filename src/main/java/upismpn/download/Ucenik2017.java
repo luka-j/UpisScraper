@@ -22,18 +22,27 @@ import static upismpn.UpisMpn.DEBUG;
  * Created by luka on 3.7.17..
  */
 public class Ucenik2017 extends Ucenik {
+
+    private static final String UCENICI_URL = "http://upis.mpn.gov.rs/Lat/Ucenici/";
+
     public Ucenik2017(String id) {
         super(id);
+        exists = exists && new File(DownloadController.DATA_FOLDER, id + ".json").exists();
     }
 
     protected String osId;
+    protected String upisana;
     protected String jsonData;
     protected String bodovaAM;
     protected String blizanac, najboljiBlizanacBodovi;
     protected String maternji, prviStrani, drugiStrani;
+    protected String origUkupnoBodova, origKrug;
+    protected boolean prioritet;
 
     //naziv testa -> broj bodova
     protected Map<String, String> prijemni = new HashMap<>();
+
+    protected List<Profil> profili = new ArrayList<>();
     protected List<Zelja> listaZelja1 = new ArrayList<>();
     protected List<Zelja> listaZelja2 = new ArrayList<>();
 
@@ -85,25 +94,31 @@ public class Ucenik2017 extends Ucenik {
         return upisana;
     }
 
-    protected String upisana;
+    public boolean isPrioritet() {
+        return prioritet;
+    }
+
 
     public Ucenik setDetails(String ukBodova, String krug) {
-        ukupnoBodova = ukBodova;
-        this.krug = krug;
+        origUkupnoBodova = ukBodova;
+        prioritet = ukBodova.startsWith("+");
+        this.origKrug = krug;
         return this;
     }
 
     public static class Zelja {
-        private String sifraSmera, uslov;
+        private String sifraSmera, uslov, bodovaZaUpis;
 
-        public Zelja(String sifraSmera, String uslov) {
+        public Zelja(String sifraSmera, String uslov, String bodovaZaUpis) {
             this.sifraSmera = sifraSmera;
             this.uslov = uslov;
+            this.bodovaZaUpis = bodovaZaUpis;
         }
         public Zelja(String compactString) {
-            String[] tokens = compactString.split(",");
+            String[] tokens = compactString.split(",", -1);
             sifraSmera = tokens[0];
             uslov = tokens[1];
+            bodovaZaUpis = tokens[2];
         }
         public String getSifraSmera() {
             return sifraSmera;
@@ -111,10 +126,36 @@ public class Ucenik2017 extends Ucenik {
         public String getUslov() {
             return uslov;
         }
+        public String getBodovaZaUpis() {
+            return bodovaZaUpis;
+        }
 
         @Override
         public String toString() {
-            return sifraSmera + "," + uslov;
+            return sifraSmera + "," + uslov + "," + bodovaZaUpis;
+        }
+    }
+
+    public static class Profil {
+        private String naziv, prijemni, takmicenje, ukupno;
+
+        public Profil(String naziv, String prijemni, String takmicenje, String ukupno) {
+            this.naziv = naziv;
+            this.takmicenje = takmicenje;
+            this.prijemni = prijemni;
+            this.ukupno = ukupno;
+        }
+        public Profil(String compactString) {
+            String[] tokens = compactString.split(",", -1);
+            naziv = tokens[0];
+            prijemni = tokens[1];
+            takmicenje = tokens[2];
+            ukupno = tokens[3];
+        }
+
+        @Override
+        public String toString() {
+            return naziv + "," + prijemni + "," + takmicenje + "," + ukupno;
         }
     }
 
@@ -125,7 +166,7 @@ public class Ucenik2017 extends Ucenik {
         }
         if(exists && !OVERWRITE_OLD) return this;
 
-        Document doc = Jsoup.connect("http://upis.mpn.gov.rs/Lat/Ucenici/" + id).get();
+        Document doc = Jsoup.connect(UCENICI_URL + id).get();
         Elements scripts = doc.getElementsByTag("script");
         String script = scripts.get(scripts.size()-3).data();
         parseJson(script);
@@ -149,6 +190,7 @@ public class Ucenik2017 extends Ucenik {
         String osmi  = data[4].split(" = ")[1].trim().replace("];", "]");
         String nagrade = data[5].split(" = ")[1].trim().replace("];", "]");
         String prijemni = data[6].split(" = ")[1].trim().replace("];", "]");
+        String profili = data[7].split(" = ")[1].trim().replace("];", "]");
         String zelje = data[8].split(" = ")[1].trim().replace("];", "]");
         String zelje2 = data[9].split(" = ")[1].trim().replace("];", "]");
         parseBasic(basic);
@@ -158,11 +200,12 @@ public class Ucenik2017 extends Ucenik {
         osmiRaz = parseOcene(osmi);
         parseNagrade(nagrade);
         parsePrijemni(prijemni);
+        parseProfili(profili);
         parseZelje(zelje, listaZelja1);
         parseZelje(zelje2, listaZelja2);
 
         StringBuilder sb = new StringBuilder();
-        for(int i=1; i<10; i++) sb.append(data[i]); //fml zaboravio sam da appendujem newline
+        for(int i=1; i<10; i++) sb.append(data[i]).append("\n");
         jsonData = sb.toString();
     }
 
@@ -217,25 +260,36 @@ public class Ucenik2017 extends Ucenik {
         }
     }
 
+    private void parseProfili(String json) {
+        JsonArray data = new JsonParser().parse(json).getAsJsonArray();
+        for(JsonElement el : data) {
+            JsonObject obj = el.getAsJsonObject();
+            profili.add(new Profil(obj.get("Profil").getAsString(), obj.get("Bodova").getAsString(),
+                    obj.get("BodovaNagrade").getAsString(), obj.get("Ukupno").getAsString()));
+        }
+    }
+
     private void parseZelje(String json, List<Zelja> zelje) {
         JsonArray data = new JsonParser().parse(json).getAsJsonArray();
         for(JsonElement el : data) {
             JsonObject obj = el.getAsJsonObject();
-            zelje.add(new Zelja(obj.get("sifra").getAsString(), obj.get("IspunioUslov").getAsString()));
+            zelje.add(new Zelja(obj.get("sifra").getAsString(), obj.get("IspunioUslov").getAsString(),
+                    obj.get("sBodova").getAsString()));
         }
     }
 
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(osId).append("\\").append(upisana).append("\\").append(krug).append("\\").append(blizanac).append("\\").append(najboljiBlizanacBodovi).append("\n");
-        sb.append(srpski).append("\\").append(matematika).append("\\").append(kombinovani).append("\\").append(bodovaAM).append("\\").append(ukupnoBodova).append("\n");
+        sb.append(osId).append("\\").append(upisana).append("\\").append(origKrug).append("\\").append(krug).append("\\").append(blizanac).append("\\").append(najboljiBlizanacBodovi).append("\\").append(prioritet).append("\n");
+        sb.append(srpski).append("\\").append(matematika).append("\\").append(kombinovani).append("\\").append(bodovaAM).append("\\").append(origUkupnoBodova).append("\\").append(ukupnoBodova).append("\n");
         sb.append(maternji).append("\\").append(prviStrani).append("\\").append(drugiStrani).append("\n");
         sb.append(UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(sestiRaz)));
         sb.append(UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(sedmiRaz)));
         sb.append(UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(osmiRaz)));
         sb.append(UcenikUtils.mapToStringBuilder(takmicenja));
         sb.append(UcenikUtils.mapToStringBuilder(prijemni));
+        sb.append(UcenikUtils.listToStringBuilder(profili));
         sb.append(UcenikUtils.listToStringBuilder(listaZelja1));
         sb.append(UcenikUtils.listToStringBuilder(listaZelja2));
         return sb.toString();
@@ -253,19 +307,23 @@ public class Ucenik2017 extends Ucenik {
         String[] osmi = chunks[5].split("\\\\", 0);
         String[] takmicenja = chunks[6].split("\\\\", 0);
         String[] prijemni = chunks[7].split("\\\\", 0);
-        String[] zelje1 = chunks[8].split("\\\\", 0);
-        String[] zelje2 = chunks[9].split("\\\\", 0);
+        String[] profili = chunks[8].split("\\\\", 0);
+        String[] zelje1 = chunks[9].split("\\\\", 0);
+        String[] zelje2 = chunks[10].split("\\\\", 0);
 
         osId = basics[0];
         upisana = basics[1];
-        krug = basics[2];
-        blizanac = basics[3];
-        najboljiBlizanacBodovi = basics[4];
+        origKrug = basics[2];
+        krug = basics[3];
+        blizanac = basics[4];
+        najboljiBlizanacBodovi = basics[5];
+        prioritet = Boolean.parseBoolean(basics[6]);
         srpski = bodovi[0];
         matematika = bodovi[1];
         kombinovani = bodovi[2];
         bodovaAM = bodovi[3];
-        ukupnoBodova = bodovi[4];
+        origUkupnoBodova = bodovi[4];
+        ukupnoBodova = bodovi[5];
         maternji = jezici[0];
         prviStrani = jezici[1];
         drugiStrani = jezici[2];
@@ -275,6 +333,7 @@ public class Ucenik2017 extends Ucenik {
         osmiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(osmi));
         this.takmicenja = UcenikUtils.stringArrayToMap(takmicenja);
         this.prijemni = UcenikUtils.stringArrayToMap(prijemni);
+        this.profili = UcenikUtils.stringToListProfil(profili);
         listaZelja1 = UcenikUtils.stringToListZelja(zelje1);
         listaZelja2 = UcenikUtils.stringToListZelja(zelje2);
     }

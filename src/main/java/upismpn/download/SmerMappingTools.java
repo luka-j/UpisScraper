@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by luka on 3.7.17..
+ * Created by luka on 3.7.17.
  */
 public class SmerMappingTools {
     private static String jsonOkruzi = "[{\"id\":\"19\",\"naziv\":\"BORSKI\"},{\"id\":\"11\",\"naziv\":\"BRANIČEVSKI\"},{\"id\":\"8\",\"naziv\":\"GRAD BEOGRAD\"},{\"id\":\"21\",\"naziv\":\"JABLANIČKI\"},{\"id\":\"6\",\"naziv\":\"JUŽNOBAČKI\"},{\"id\":\"3\",\"naziv\":\"JUŽNOBANATSKI\"},{\"id\":\"14\",\"naziv\":\"KOLUBARSKI\"},{\"id\":\"26\",\"naziv\":\"KOSOVSKI\"},{\"id\":\"27\",\"naziv\":\"KOSOVSKO MITROVAČKI\"},{\"id\":\"28\",\"naziv\":\"KOSOVSKO POMORAVSKI\"},{\"id\":\"15\",\"naziv\":\"MAČVANSKI\"},{\"id\":\"17\",\"naziv\":\"MORAVIČKI\"},{\"id\":\"25\",\"naziv\":\"NIŠAVSKI\"},{\"id\":\"22\",\"naziv\":\"PČINJSKI\"},{\"id\":\"30\",\"naziv\":\"PEĆKI\"},{\"id\":\"23\",\"naziv\":\"PIROTSKI\"},{\"id\":\"12\",\"naziv\":\"PODUNAVSKI\"},{\"id\":\"10\",\"naziv\":\"POMORAVSKI\"},{\"id\":\"29\",\"naziv\":\"PRIZRENSKI\"},{\"id\":\"16\",\"naziv\":\"RASINSKI\"},{\"id\":\"18\",\"naziv\":\"RAŠKI\"},{\"id\":\"4\",\"naziv\":\"SEVERNOBAČKI\"},{\"id\":\"1\",\"naziv\":\"SEVERNOBANATSKI\"},{\"id\":\"2\",\"naziv\":\"SREDNJEBANATSKI\"},{\"id\":\"7\",\"naziv\":\"SREMSKI\"},{\"id\":\"9\",\"naziv\":\"ŠUMADIJSKI\"},{\"id\":\"24\",\"naziv\":\"TOPLIČKI\"},{\"id\":\"20\",\"naziv\":\"ZAJEČARSKI\"},{\"id\":\"5\",\"naziv\":\"ZAPADNOBAČKI\"},{\"id\":\"13\",\"naziv\":\"ZLATIBORSKI\"}]";

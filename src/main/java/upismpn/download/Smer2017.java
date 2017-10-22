@@ -23,6 +23,8 @@ public class Smer2017 extends Smer {
     protected String podrucje;
     protected String trajanje;
     protected String kvotaUmanjenje;
+    protected String upisano1K, upisano2K;
+    protected String minBodova1K, minBodova2K, kvota2K;
 
     protected String json;
 
@@ -75,6 +77,11 @@ public class Smer2017 extends Smer {
         opstina = LetterUtils.toLatin(tokens[7]);
         okrug = LetterUtils.toLatin(tokens[8]);
         podrucje = LetterUtils.toLatin(tokens[9]);
+        upisano1K = tokens[10];
+        minBodova1K = tokens[11];
+        kvota2K = tokens[12];
+        upisano2K = tokens[13];
+        minBodova2K = tokens[14];
     }
 
     public String toCompactString() {
@@ -83,7 +90,8 @@ public class Smer2017 extends Smer {
         if(ime.endsWith(",")) ime = ime.substring(0, ime.length()-1);
         str.append("\\").append(ime).append("\\").append(trajanje).append("\\")
                 .append(kvotaUmanjenje).append("\\").append(jezik.trim()).append("\\")
-                .append(opstina).append("\\").append(okrug).append("\\").append(podrucje).append("\n");
+                .append(opstina).append("\\").append(okrug).append("\\").append(podrucje).append("\\")
+        .append(upisano1K).append("\\").append(minBodova1K).append("\\").append(kvota2K).append("\\").append(upisano2K).append("\\").append(minBodova2K).append("\n");
         return str.toString();
     }
 
@@ -125,6 +133,12 @@ public class Smer2017 extends Smer {
             kvotaUmanjenje = json.get("KvotaUmanjenje").getAsString();
             podrucje = json.get("Naziv1").getAsString();
             trajanje = json.get("Trajanje").getAsString();
+
+            upisano1K = json.get("Upisano1K").getAsString();
+            upisano2K = json.get("Upisano2K").getAsString();
+            minBodova1K = json.get("MinBodova1K").getAsString();
+            minBodova2K = json.get("MinBodova2K").getAsString();
+            kvota2K  = json.get("Kvota2K").getAsString().trim();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -132,5 +146,25 @@ public class Smer2017 extends Smer {
 
     public String getKvotaUmanjenje() {
         return kvotaUmanjenje;
+    }
+
+    public String getUpisano1K() {
+        return upisano1K;
+    }
+
+    public String getUpisano2K() {
+        return upisano2K;
+    }
+
+    public String getMinBodova1K() {
+        return minBodova1K;
+    }
+
+    public String getMinBodova2K() {
+        return minBodova2K;
+    }
+
+    public String getKvota2K() {
+        return kvota2K;
     }
 }

@@ -83,5 +83,11 @@ public interface DownloadConfig {
         public OsnovneDownloader2017 getOsnovneDownloader() {
             return OsnovneDownloader2017.getInstance();
         }
+
+        @Override
+        public void saveSmerovi() {
+            getSmerovi().save();
+            //Cleanup2017.reloadSmerovi17(); //fix missed json params
+        }
     }
 }
