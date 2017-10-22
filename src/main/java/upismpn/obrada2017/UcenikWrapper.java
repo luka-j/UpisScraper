@@ -14,7 +14,7 @@ public class UcenikWrapper {
     public final OsnovnaWrapper osnovna;
     public final SmerWrapper smer;
     public final int krug;
-    public final int blizanac;
+    public final int blizanacSifra;
     public final double najboljiBlizanacBodovi;
 
     public final double srpski, matematika, kombinovani, bodovaZavrsni;
@@ -31,18 +31,27 @@ public class UcenikWrapper {
     public final double prosekUkupno;
     public final double bodoviOcene;
     public final boolean vukovaDiploma;
+    public final boolean prioritet;
+    private UcenikWrapper blizanac;
+
+    private final Map<Object, Object> props = new HashMap<>();
+    public void addProperty(Object key, Object value) {
+        props.put(key, value);
+    }
+    public Object getProperty(Object key) {
+        return props.get(key);
+    }
 
     public UcenikWrapper(Ucenik2017 uc) {
         sifra = Integer.parseInt(uc.id);
         osnovna = OsnovneBase.get(Integer.parseInt(uc.getOsId()));
         smer = SmeroviBase.get(uc.getUpisana());
 
-        if(uc.getKrug() == null || uc.getKrug().equals("null")) krug = getKrug(uc);
-        else if(uc.getKrug().equals("*")) krug=-1; //upisan po odluci OUKa
+        if(uc.getKrug().equals("*")) krug=-1; //upisan po odluci OUKa
         else krug = Integer.parseInt(uc.getKrug());
 
-        if(uc.getBlizanac().isEmpty()) blizanac=0;
-        else blizanac = Integer.parseInt(uc.getBlizanac().split("\">")[1].split("<")[0]);
+        if(uc.getBlizanac().isEmpty()) blizanacSifra =0;
+        else blizanacSifra = Integer.parseInt(uc.getBlizanac().split("\">")[1].split("<")[0]);
 
         if(uc.getNajboljiBlizanacBodovi().isEmpty()) najboljiBlizanacBodovi = 0;
         else najboljiBlizanacBodovi = Double.parseDouble(uc.getNajboljiBlizanacBodovi());
@@ -63,6 +72,7 @@ public class UcenikWrapper {
         Map<String, String> osmi = uc.getOsmiRaz();
         osmiRaz = cleanOcene(osmi);
         vukovaDiploma = Integer.parseInt(osmi.get(UcenikUtils.PredmetiDefault.VUKOVA2017)) != 0;
+        prioritet = uc.isPrioritet();
 
         if(uc.getTakmicenja().isEmpty()) takmicenje = null;
         else {
@@ -84,6 +94,7 @@ public class UcenikWrapper {
         else throw new IllegalArgumentException("Krug nije 1 ili 2: " + krug);
     }
 
+    //unreliable
     private static int getKrug(Ucenik2017 uc) {
         int krug;
         if(uc.getListaZelja1().isEmpty() && uc.getListaZelja2().isEmpty()) krug = -1;
@@ -125,15 +136,35 @@ public class UcenikWrapper {
         throw new IndexOutOfBoundsException("Ne postoji želja");
     }
 
+    protected void setBlizanac() {
+        if(blizanacSifra == 0) return;
+        blizanac = UceniciBase.get(blizanacSifra);
+        if(blizanac != null)
+            blizanac.blizanac = this;
+    }
 
+    public UcenikWrapper getBlizanac() {
+        setBlizanac();
+        return blizanac;
+    }
 
     public static class Zelja {
         public final SmerWrapper smer;
         public final boolean uslov;
+        public final double bodovaZaUpis;
 
         public Zelja(Ucenik2017.Zelja zelja) {
             this.smer = SmeroviBase.get(zelja.getSifraSmera());
             this.uslov = Integer.parseInt(zelja.getUslov()) != 0;
+            if(uslov)
+                this.bodovaZaUpis = Double.parseDouble(zelja.getBodovaZaUpis());
+            else
+                bodovaZaUpis = 0;
+        }
+
+        @Override
+        public String toString() {
+            return smer.toString() + "(" + uslov + ")";
         }
     }
     public static class Takmicenje {
@@ -175,5 +206,15 @@ public class UcenikWrapper {
     @Override
     public String toString() {
         return String.valueOf(sifra); //todo
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof UcenikWrapper && ((UcenikWrapper)obj).sifra == sifra;
+    }
+
+    @Override
+    public int hashCode() {
+        return sifra;
     }
 }

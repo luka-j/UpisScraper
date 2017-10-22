@@ -7,9 +7,17 @@ apply plugin: 'application'
 mainClassName = 'upismpn.UpisMpn'
 sourceCompatibility = 1.8
 
+compileJava.options.encoding = 'UTF-8'
+
 run {
     if (project.hasProperty("appArgs")) {
         args Eval.me(appArgs)
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'upsmpn.UpisMpn'
     }
 }
 

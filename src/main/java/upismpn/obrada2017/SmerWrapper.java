@@ -8,7 +8,9 @@ public class SmerWrapper {
     public final String sifra, smer, skola, podrucje;
     public final String jezik, opstina, okrug;
     public final int kvota, kvotaUmanjenje;
-    public final int trajanje;
+    public final int trajanje; //trajanje smera, u godinama (3 ili 4)
+    public final int upisano1k, upisano2k, kvota2k;
+    public final double minBodova1k, minBodova2k;
 
     public SmerWrapper(Smer2017 smer) {
         sifra = smer.getSifra();
@@ -20,8 +22,18 @@ public class SmerWrapper {
         okrug = smer.getOkrug();
         kvota = Integer.parseInt(smer.getKvota());
         kvotaUmanjenje = Integer.parseInt(smer.getKvotaUmanjenje());
+        upisano1k = Integer.parseInt(smer.getUpisano1K());
+        upisano2k = Integer.parseInt(smer.getUpisano2K());
+        kvota2k = Integer.parseInt(smer.getKvota2K());
+        minBodova1k = Double.parseDouble(smer.getMinBodova1K());
+        minBodova2k = Double.parseDouble(smer.getMinBodova2K());
+
         if(smer.getTrajanje().equals("2")) trajanje=4;
         else trajanje=3;
+    }
+
+    public boolean trebaPrijemni() {
+        return minBodova1k > 100;
     }
 
     @Override
@@ -32,5 +44,10 @@ public class SmerWrapper {
     @Override
     public int hashCode() {
         return sifra.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return skola + ": " + smer + ", " + opstina;
     }
 }

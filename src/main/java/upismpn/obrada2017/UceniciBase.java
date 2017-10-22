@@ -5,13 +5,12 @@ import upismpn.download.Ucenik2017;
 import upismpn.obrada.FileMerger;
 
 import java.io.File;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 public class UceniciBase {
-    private static Set<UcenikWrapper> base = new HashSet<>();
+    private static HashMap<Integer, UcenikWrapper> base = new HashMap<>();
 
     public static void load() {
         if(!SmeroviBase.isLoaded()) SmeroviBase.load();
@@ -22,11 +21,17 @@ public class UceniciBase {
             String[] ucData = ucStr.split("\\n", 2);
             Ucenik2017 uc = new Ucenik2017(ucData[0]);
             uc.loadFromString(ucData[1]);
-            base.add(new UcenikWrapper(uc));
+            UcenikWrapper uw = new UcenikWrapper(uc);
+            base.put(uw.sifra, uw);
         }
+        for(UcenikWrapper uc : base.values()) uc.setBlizanac();
     }
 
     public static Stream<UcenikWrapper> svi() {
-        return base.stream();
+        return base.values().stream();
+    }
+
+    public static UcenikWrapper get(int sifra) {
+        return base.get(sifra);
     }
 }

@@ -2,6 +2,7 @@ package upismpn.obrada;
 
 import upismpn.download.DownloadController;
 import upismpn.exec.*;
+import upismpn.obrada2017.Simulation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -28,7 +29,7 @@ public class Exec {
 
     public static void doExec(String... methods) {
         if(executableClasses.isEmpty()) registerExecutables();
-        SmeroviBase.load();
+        SmeroviBase.load(); // TODO: 25.9.17. figure out why I put this here
         for(String method : methods) {
             try {
                 boolean found = false;
@@ -65,6 +66,7 @@ public class Exec {
         executableClasses.add(MetaTools.class);
         executableClasses.add(PrintNames.class);
         executableClasses.add(Cleanup2017.class);
+        executableClasses.add(Simulation.class);
         //...
     }
 }

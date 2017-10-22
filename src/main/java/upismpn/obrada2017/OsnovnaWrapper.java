@@ -24,8 +24,8 @@ public class OsnovnaWrapper {
         okrug = osnovna.getOkrug();
         sediste = osnovna.getSediste();
         bodova6 = Double.parseDouble(osnovna.getBodova6());
-        bodova7 = Double.parseDouble(osnovna.getBodova6());
-        bodova8 = Double.parseDouble(osnovna.getBodova6());
+        bodova7 = Double.parseDouble(osnovna.getBodova7());
+        bodova8 = Double.parseDouble(osnovna.getBodova8());
         matematika = Double.parseDouble(osnovna.getMatematika());
         srpski = Double.parseDouble(osnovna.getSrpski());
         kombinovani = Double.parseDouble(osnovna.getKombinovani());
