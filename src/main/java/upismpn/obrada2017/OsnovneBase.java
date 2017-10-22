@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class OsnovneBase {
 
-    private static Map<Integer, OsnovnaWrapper> base = new HashMap<>();
+    private static Map<Integer, OsnovnaW> base = new HashMap<>();
 
     public static boolean isLoaded() {
         return !base.isEmpty();
@@ -20,11 +20,11 @@ public class OsnovneBase {
     public static void load() {
         List<String> osnovne = FileMerger.readFromOne(OsnovneDownloader2017.DATAFILE);
         base = osnovne.stream().map(Osnovna2017::new)
-                .map(OsnovnaWrapper::new)
+                .map(OsnovnaW::new)
                 .collect(Collectors.toMap(os -> os.id, os -> os));
     }
 
-    public static OsnovnaWrapper get(int id) {
+    public static OsnovnaW get(int id) {
         if(!base.containsKey(id)) throw new IllegalArgumentException(String.valueOf(id));
         return base.get(id);
     }

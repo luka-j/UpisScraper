@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class UcenikWrapper {
+public class UcenikW {
     public final int sifra;
-    public final OsnovnaWrapper osnovna;
-    public final SmerWrapper smer;
+    public final OsnovnaW osnovna;
+    public final SmerW smer;
     public final int krug;
     public final int blizanacSifra;
     public final double najboljiBlizanacBodovi;
@@ -32,17 +32,18 @@ public class UcenikWrapper {
     public final double bodoviOcene;
     public final boolean vukovaDiploma;
     public final boolean prioritet;
-    private UcenikWrapper blizanac;
+    private UcenikW blizanac;
 
     private final Map<Object, Object> props = new HashMap<>();
     public void addProperty(Object key, Object value) {
+        if(props.containsKey(key)) System.out.println("Warning: overwriting prop " + key);
         props.put(key, value);
     }
     public Object getProperty(Object key) {
         return props.get(key);
     }
 
-    public UcenikWrapper(Ucenik2017 uc) {
+    public UcenikW(Ucenik2017 uc) {
         sifra = Integer.parseInt(uc.id);
         osnovna = OsnovneBase.get(Integer.parseInt(uc.getOsId()));
         smer = SmeroviBase.get(uc.getUpisana());
@@ -128,7 +129,7 @@ public class UcenikWrapper {
             doubles.put(e.getKey(), Double.parseDouble(e.getValue()));
         return doubles;
     }
-    private static int findZelja(List<Zelja> listaZelja, SmerWrapper upisana) {
+    private static int findZelja(List<Zelja> listaZelja, SmerW upisana) {
         for(int i=0; i<listaZelja.size(); i++) {
             if(listaZelja.get(i).smer.equals(upisana))
                 return i;
@@ -143,13 +144,13 @@ public class UcenikWrapper {
             blizanac.blizanac = this;
     }
 
-    public UcenikWrapper getBlizanac() {
+    public UcenikW getBlizanac() {
         setBlizanac();
         return blizanac;
     }
 
     public static class Zelja {
-        public final SmerWrapper smer;
+        public final SmerW smer;
         public final boolean uslov;
         public final double bodovaZaUpis;
 
@@ -210,7 +211,7 @@ public class UcenikWrapper {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof UcenikWrapper && ((UcenikWrapper)obj).sifra == sifra;
+        return obj instanceof UcenikW && ((UcenikW)obj).sifra == sifra;
     }
 
     @Override

@@ -2,7 +2,7 @@ package upismpn.obrada2017;
 
 import upismpn.download.Osnovna2017;
 
-public class OsnovnaWrapper {
+public class OsnovnaW {
     public final int id;
     public final String naziv;
     public final String opstina;
@@ -17,7 +17,7 @@ public class OsnovnaWrapper {
     public final double prosek6, prosek7, prosek8;
     public final int nijeZavrsilo;
 
-    public OsnovnaWrapper(Osnovna2017 osnovna) {
+    public OsnovnaW(Osnovna2017 osnovna) {
         id = osnovna.getId();
         naziv = osnovna.getNaziv();
         opstina = osnovna.getOpstina();

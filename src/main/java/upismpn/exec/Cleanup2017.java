@@ -2,10 +2,10 @@ package upismpn.exec;
 
 import upismpn.download.*;
 import upismpn.obrada.FileMerger;
-import upismpn.obrada2017.SmerWrapper;
+import upismpn.obrada2017.SmerW;
 import upismpn.obrada2017.SmeroviBase;
 import upismpn.obrada2017.UceniciBase;
-import upismpn.obrada2017.UcenikWrapper;
+import upismpn.obrada2017.UcenikW;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,20 +68,20 @@ public class Cleanup2017 {
         UceniciBase.load();
         System.out.println("Loaded");
 
-        Map<SmerWrapper, Map<Integer, TreeSet<UcenikWrapper>>> upisani = new HashMap<>(); //smer -> krug -> br ucenika
+        Map<SmerW, Map<Integer, TreeSet<UcenikW>>> upisani = new HashMap<>(); //smer -> krug -> br ucenika
         UceniciBase.svi().forEach(uc -> {
             if(!upisani.containsKey(uc.smer)) upisani.put(uc.smer, new HashMap<>());
-            Map<Integer, TreeSet<UcenikWrapper>> upisaniSmer = upisani.get(uc.smer);
+            Map<Integer, TreeSet<UcenikW>> upisaniSmer = upisani.get(uc.smer);
             if(!upisaniSmer.containsKey(uc.krug)) upisaniSmer.put(uc.krug, new TreeSet<>(Comparator.comparingInt(o -> o.sifra)));
             upisaniSmer.get(uc.krug).add(uc);
         });
 
         System.out.println("Done counting");
 
-        TreeSet<UcenikWrapper> empty = new TreeSet<>();
-        Collection<SmerWrapper> sviSmerovi = SmeroviBase.getAll();
+        TreeSet<UcenikW> empty = new TreeSet<>();
+        Collection<SmerW> sviSmerovi = SmeroviBase.getAll();
         int wrong = 0;
-        for(SmerWrapper smer : sviSmerovi) {
+        for(SmerW smer : sviSmerovi) {
             if(upisani.get(smer) == null && smer.upisano1k == 0 && smer.upisano2k == 0) continue; //prazni smerovi: postoje
 
             if(smer.upisano1k != upisani.get(smer).getOrDefault(1, empty).size()) {

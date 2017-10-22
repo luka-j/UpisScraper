@@ -3,7 +3,7 @@ package upismpn.obrada2017;
 import upismpn.download.Smer2017;
 
 //this exists basically only to attempt to correct design fuckups of Smer2017
-public class SmerWrapper {
+public class SmerW {
 
     public final String sifra, smer, skola, podrucje;
     public final String jezik, opstina, okrug;
@@ -12,7 +12,7 @@ public class SmerWrapper {
     public final int upisano1k, upisano2k, kvota2k;
     public final double minBodova1k, minBodova2k;
 
-    public SmerWrapper(Smer2017 smer) {
+    public SmerW(Smer2017 smer) {
         sifra = smer.getSifra();
         this.smer = smer.getPodrucje(); //it's not a mistake
         skola = smer.getIme();
@@ -38,7 +38,7 @@ public class SmerWrapper {
 
     @Override
     public boolean equals(Object obj) {
-        return sifra.equals(((SmerWrapper)obj).sifra);
+        return sifra.equals(((SmerW)obj).sifra);
     }
 
     @Override

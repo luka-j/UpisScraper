@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * Predstavlja grupu UcenikWrapper-a (HashSet) sa nekim korisnim metodama
+ * Predstavlja grupu UcenikW-a (HashSet) sa nekim korisnim metodama
  * @author Luka
  */
 public class UceniciGroup extends HashSet<UcenikWrapper> {

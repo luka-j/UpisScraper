@@ -2,7 +2,6 @@ package upismpn.obrada;
 
 import upismpn.download.DownloadController;
 import upismpn.exec.*;
-import upismpn.obrada2017.Simulation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -66,7 +65,7 @@ public class Exec {
         executableClasses.add(MetaTools.class);
         executableClasses.add(PrintNames.class);
         executableClasses.add(Cleanup2017.class);
-        executableClasses.add(Simulation.class);
+        executableClasses.add(DefaultSimulation.class);
         //...
     }
 }
