@@ -1,4 +1,4 @@
-group 'rs.luka'
+group 'rs.lukaj'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
