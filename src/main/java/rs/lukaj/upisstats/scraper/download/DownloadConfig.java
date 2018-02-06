@@ -29,7 +29,7 @@ public interface DownloadConfig {
     //original OsnovneDownloader really has nothing to do with anything
 
 
-    public static class Old implements DownloadConfig {
+    class Old implements DownloadConfig {
 
         @Override
         public StudentDownloader getStudentDownloader(int startingSmer, long startTime) {
@@ -58,7 +58,7 @@ public interface DownloadConfig {
     }
 
 
-    public static class New implements DownloadConfig {
+    class New implements DownloadConfig {
         @Override
         public StudentDownloader2017 getStudentDownloader(int startingSmer, long startTime) {
             return StudentDownloader2017.getInstance(startingSmer, startTime);

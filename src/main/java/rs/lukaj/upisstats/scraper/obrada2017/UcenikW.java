@@ -69,7 +69,7 @@ public class UcenikW {
         drugiStrani = uc.getDrugiStrani();
 
         sestiRaz = cleanOcene(uc.getSestiRaz());
-        sedmiRaz = cleanOcene(uc.getSestiRaz());
+        sedmiRaz = cleanOcene(uc.getSedmiRaz());
         Map<String, String> osmi = uc.getOsmiRaz();
         osmiRaz = cleanOcene(osmi);
         vukovaDiploma = Integer.parseInt(osmi.get(UcenikUtils.PredmetiDefault.VUKOVA2017)) != 0;

@@ -44,7 +44,7 @@ public class StudentDownloader {
         Deque<UcData> uc;
         Smerovi smerovi = config.getSmerovi();
         smerovi.iterate(currentSmer);
-        double time, est; char oznaka='s';
+        double time, est; char oznaka;
         if(UpisMpn.DEBUG)System.out.println("starting iteration");
         UceniciManager ucenici = config.getUceniciManager();
         while (smerovi.hasNext()) {
@@ -53,12 +53,13 @@ public class StudentDownloader {
             uc = getSifreUcenika(smerSifra);
             if(UpisMpn.DEBUG)System.out.println("Uzeo sifre za " + smerSifra);
             ucenici.add(uc);
-            currentSmer++;
+            currentSmer++; //possible source of bugs (racing condition: non-atomic increment)
             System.out.print(String.format("%.2f%s", smerovi.getPercentageIterated(), "% - "));
             time = (System.currentTimeMillis() - startTime + spentTime)/1000;
             est = ((100/smerovi.getPercentageIterated()-1)*time) / 3600;
             if(time > 10800) {time = time/60; oznaka='m';}
-            if(time > 43200) {time = time/3600; oznaka='h';}
+            else if(time > 43200) {time = time/3600; oznaka='h';}
+            else oznaka='s';
             System.out.print(String.format("%.2f%s", time, String.valueOf(oznaka)));
             System.out.println(String.format("%s%.2f%s", ". Preostalo još ", est, "h..."));
         }

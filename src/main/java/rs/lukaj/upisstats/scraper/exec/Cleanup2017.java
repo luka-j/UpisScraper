@@ -24,6 +24,7 @@ public class Cleanup2017 {
         System.out.print(UceniciBase.svi().filter(uc -> uc.krug == 1).count());
         System.out.print(" / ");
         System.out.print(UceniciBase.svi().filter(uc -> uc.krug == 2).count());
+        //UceniciBase.svi().filter(uc -> uc.sedmiRaz.brojOcena < 8).collect(Collectors.toList()).forEach(uc -> System.out.println(uc.sifra + " " + uc.sedmiRaz.brojOcena + " " + uc.sedmiRaz.prosekOcena));
     }
 
     public static void reloadSmerovi17() {
