@@ -167,13 +167,17 @@ public class Ucenik {
                 }
             }
         }
-        listaZelja = loadZelje();
+        listaZelja = loadZelje(1);
         String skola = doc.select(".status_ucenika").get(2).text();
         String skolaPodaci = skola.split("\\. ", 2)[1];
         String[] sifraOstalo = skolaPodaci.split("\\Q - \\E", 2);
         String[] ostalo = sifraOstalo[1].split(",");
         upisanaSkola = new Skola(sifraOstalo[0], ostalo[0], ostalo[1], ostalo[2]);
         upisanaZelja = skola.split("\\. ", 2)[0];
+        /*String krugText = doc.select(".status_ucenika").get(1).text();
+        if(krugText.contains("PRVOM")) krug="1";
+        else if(krugText.contains("DRUGOM")) krug="2";
+        else if(krugText.contains("OUK")) krug="0";*/ //ovo bi bilo idealno, ali ne živimo u idealnom svetu
         krug = doc.select(".status_ucenika").get(1).text().contains("PRVOM") ? "1" : "2";
         if (UpisMpn.DEBUG) {
             System.out.println("loaded ucenik: " + id);
@@ -205,9 +209,9 @@ public class Ucenik {
         return m;
     }
 
-    private List<Skola> loadZelje() throws IOException {
+    private List<Skola> loadZelje(int krug) throws IOException {
         List<Skola> l = new ArrayList<>();
-        Document doc = Jsoup.connect(UCENICI_URL + id + "&view_details=2").post();
+        Document doc = Jsoup.connect(UCENICI_URL + id + "&view_details=" + (krug+1)).post();
         Elements zelje = doc.select(".zelje_normal");
         zelje.forEach((zelja) -> {
             try {

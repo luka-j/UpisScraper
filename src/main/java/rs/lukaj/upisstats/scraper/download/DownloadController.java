@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 public class DownloadController {
     public static String YEAR = "17";
 
-    public static final File DATA_FOLDER = System.getProperty("os.name").toLowerCase().contains("nix")
+    public static File DATA_FOLDER = System.getProperty("os.name").toLowerCase().contains("nix")
             || System.getProperty("os.name").toLowerCase().contains("nux") ?
             new File("/data/Shared/mined/UpisData/" + YEAR)
             : new File("D:\\Shared\\mined\\UpisData\\" + YEAR);
