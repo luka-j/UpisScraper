@@ -3,12 +3,9 @@ package rs.lukaj.upisstats.scraper.obrada;
 import rs.lukaj.upisstats.scraper.download.DownloadController;
 import rs.lukaj.upisstats.scraper.download.Ucenik;
 import rs.lukaj.upisstats.scraper.download.UcenikUtils;
+import rs.lukaj.upisstats.scraper.utils.Profiler;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * Wrapper za ucenika koji je pogodan za izracunavanja (castovano ono sto moze, preracunate neke osobine i sl).
@@ -66,14 +63,27 @@ public class UcenikWrapper {
         public final String sifra, ime, mesto, okrug, smer, podrucje;
         public final int kvota;
 
-        SrednjaSkola(Ucenik.Skola s) {
-            sifra = s.sifra.toLowerCase().trim();
-            ime = s.ime.toLowerCase().trim();
-            mesto = s.mesto.toLowerCase().trim();
-            smer = s.smer.toLowerCase().trim();
-            podrucje = SmeroviBase.getPodrucje(s.sifra).toLowerCase().trim();
+        private SrednjaSkola(Ucenik.Skola s) {
+            long start = System.nanoTime();
+            sifra = s.sifra.toLowerCase();
+            ime = s.ime.toLowerCase();
+            mesto = s.mesto.toLowerCase();
+            smer = s.smer.toLowerCase();
+            podrucje = SmeroviBase.getPodrucje(s.sifra);
             okrug = SmeroviBase.getOkrug(s.sifra);
             kvota = SmeroviBase.getKvota(s.sifra);
+            long end = System.nanoTime();
+            Profiler.addTime("new UcenikWrapper.SrednjaSkola", end-start);
+        }
+
+        static SrednjaSkola makeSkola(Ucenik.Skola s) {
+            if(SmeroviBase.skolaExists(s.sifra)) {
+                return SmeroviBase.getSkola(s.sifra);
+            } else {
+                SrednjaSkola sk = new SrednjaSkola(s);
+                SmeroviBase.putSkola(sk);
+                return sk;
+            }
         }
 
         @Override
@@ -136,11 +146,11 @@ public class UcenikWrapper {
 
     public final OsnovnaSkola osInfo;
 
-    public final Map<String, Integer> sestiRaz;
+    public final Map<String, Integer> sestiRaz = new HashMap<>();
     public final double               prosekSesti;
-    public final Map<String, Integer> sedmiRaz;
+    public final Map<String, Integer> sedmiRaz = new HashMap<>();
     public final double               prosekSedmi;
-    public final Map<String, Integer> osmiRaz;
+    public final Map<String, Integer> osmiRaz = new HashMap<>();
     public final double               prosekOsmi;
     public final double               prosekUkupno;
     public final double               bodoviIzSkole;
@@ -151,11 +161,12 @@ public class UcenikWrapper {
     public final double srpski;
     public final double kombinovani;
     public final double bodoviSaZavrsnog;
+    public final int bodoviSaTakmicenja;
 
     public final double ukupnoBodova;
     public final double bodoviSaPrijemnog;
 
-    public final List<SrednjaSkola> listaZelja;
+    public final List<SrednjaSkola> listaZelja = new ArrayList<>();
     public final int                brojZelja;
     public final SrednjaSkola       upisanaSkola;
     public final int                upisanaZelja;
@@ -168,53 +179,75 @@ public class UcenikWrapper {
     public UcenikWrapper(Ucenik uc) {
         this.id = Integer.parseInt(uc.id);
 
+        long start = System.nanoTime();
         String osnovnaSkola = uc.getOsnovnaSkola().toLowerCase().trim();
         String mestoOS      = uc.getMestoOS().toLowerCase().trim();
         String okrugOS      = uc.getOkrugOS().toLowerCase().trim();
         osInfo = new OsnovnaSkola(osnovnaSkola, mestoOS, okrugOS);
+        long end = System.nanoTime();
+        Profiler.addTime("UcenikWrapperOsnovna", end-start);
 
-        sestiRaz = new HashMap<>();
+        start = System.nanoTime();
         for (Map.Entry<String, String> e : uc.getSestiRaz().entrySet()) {
-            sestiRaz.put(e.getKey(), Integer.parseInt(e.getValue()));
+            sestiRaz.put(e.getKey(), e.getValue().charAt(0)-'0');
         }
-        sedmiRaz = new HashMap<>();
         for (Map.Entry<String, String> e : uc.getSedmiRaz().entrySet()) {
-            sedmiRaz.put(e.getKey(), Integer.parseInt(e.getValue()));
+            sedmiRaz.put(e.getKey(), e.getValue().charAt(0)-'0');
         }
-        osmiRaz = new HashMap<>();
         for (Map.Entry<String, String> e : uc.getOsmiRaz().entrySet()) {
-            osmiRaz.put(e.getKey(), Integer.parseInt(e.getValue()));
+            osmiRaz.put(e.getKey(), e.getValue().charAt(0)-'0');
         }
+        end = System.nanoTime();
+        Profiler.addTime("UcenikWrapperOcene", end-start);
 
-        prosekSesti = sestiRaz.values().stream().mapToInt((Integer i) -> i).average().getAsDouble();
-        prosekSedmi = sedmiRaz.values().stream().mapToInt((Integer i) -> i).average().getAsDouble();
-        prosekOsmi = osmiRaz.values().stream().mapToInt((Integer i) -> i).average().getAsDouble();
+        start = System.nanoTime();
+        prosekSesti = mapAverage(sestiRaz);
+        prosekSedmi = mapAverage(sedmiRaz);
+        prosekOsmi = mapAverage(osmiRaz);
         prosekUkupno = (prosekSesti + prosekSedmi + prosekOsmi) / 3;
         bodoviIzSkole = prosekSesti * 4 + prosekSedmi * 5 + prosekOsmi * 5;
+        end = System.nanoTime();
+        Profiler.addTime("UcenikWrapperOceneAverage", end-start);
 
-        takmicenja = new HashMap<>();
+        takmicenja = new HashMap<>(); int bodoviTakm = 0;
         for (Map.Entry<String, String> e : uc.getTakmicenja().entrySet()) {
-            takmicenja.put(new Takmicenje(e.getKey(), Integer.parseInt(e.getValue())),
-                           Integer.parseInt(e.getValue()));
+            int bodovi = Integer.parseInt(e.getValue());
+            takmicenja.put(new Takmicenje(e.getKey(), bodovi), bodovi);
+            bodoviTakm += bodovi;
         }
+        bodoviSaTakmicenja = bodoviTakm; //todo implement this on server (2015)
 
+        start = System.nanoTime();
         matematika = uc.getMatematika().equals("null") ? 0 : Double.parseDouble(uc.getMatematika());
         srpski = uc.getSrpski().equals("null") ? 0 : Double.parseDouble(uc.getSrpski());
         kombinovani = uc.getKombinovani().equals("null") ? 0 : Double.parseDouble(uc.getKombinovani());
 
         bodoviSaZavrsnog = matematika + srpski + kombinovani;
+        end = System.nanoTime();
+        Profiler.addTime("UcenikWrapperZavrsni", end-start);
         if(uc.getUkupnoBodova().equals("*")) {
-            ukupnoBodova = bodoviIzSkole + bodoviSaZavrsnog;
+            ukupnoBodova = bodoviIzSkole + bodoviSaZavrsnog + bodoviSaTakmicenja;
         } else {
             ukupnoBodova = Double.parseDouble(uc.getUkupnoBodova());
         }
-        bodoviSaPrijemnog = (float) (ukupnoBodova - (bodoviIzSkole + bodoviSaZavrsnog));
+        bodoviSaPrijemnog = (float) (ukupnoBodova - (bodoviIzSkole + bodoviSaZavrsnog + bodoviSaTakmicenja));
 
-        listaZelja = uc.getListaZelja().stream().map(SrednjaSkola::new).collect(Collectors.toList());
+        start = System.nanoTime();
+        for(Ucenik.Skola sk : uc.getListaZelja())
+            listaZelja.add(SrednjaSkola.makeSkola(sk));
+        end = System.nanoTime();
+        Profiler.addTime("UcenikWrapperZelje", end-start);
         brojZelja = listaZelja.size();
-        upisanaSkola = new SrednjaSkola(uc.getUpisanaSkola());
+        upisanaSkola = SrednjaSkola.makeSkola(uc.getUpisanaSkola());
         upisanaZelja = Integer.parseInt(uc.getUpisanaZelja());
         krug = Integer.parseInt(uc.getKrug());
+    }
+
+    private static double mapAverage(Map<?, Integer> map) {
+        int sum=0;
+        for(Integer val : map.values())
+            sum+=val;
+        return (double)sum/map.size();
     }
 
     @Override

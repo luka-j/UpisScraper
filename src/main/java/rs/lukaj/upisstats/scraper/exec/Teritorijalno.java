@@ -59,10 +59,8 @@ public class Teritorijalno {
         UceniciGroupBuilder       builder = new UceniciGroupBuilder(null);
         Map<String, UceniciGroup> ucenici = builder.getByCity();
         List<StringGroup> list = ucenici.entrySet().stream().map((Map.Entry<String, UceniciGroup> en) ->
-                                                                         new StringGroup(en.getKey(), en.getValue(),
-                                                                                         en.getValue().getProsekNaZavrsnom()))
-                                        .collect(Collectors.toList());
-        list.sort(StringGroup.poZavrsnom);
+                new StringGroup(en.getKey(), en.getValue(),
+                        en.getValue().getProsekNaZavrsnom())).sorted(StringGroup.poZavrsnom).collect(Collectors.toList());
         Spreadsheets.writeStringGroup(new File(DownloadController.DATA_FOLDER, "zavrsni_mesta.xlsx"), list, "Broj bodova");
     }
 
@@ -70,10 +68,9 @@ public class Teritorijalno {
         UceniciGroupBuilder builder = new UceniciGroupBuilder(null);
         Map<String, UceniciGroup> ucenici = builder.getByCity();
         List<StringGroup> list = ucenici.entrySet().stream().map((Map.Entry<String, UceniciGroup> en) ->
-                                                                         new StringGroup(en.getKey(), en.getValue(),
-                                                                                         en.getValue().getProsekOcena()))
-                                        .collect(Collectors.toList());
-        list.sort(StringGroup.poOcenama);
+                new StringGroup(en.getKey(), en.getValue(), en.getValue().getProsekOcena()))
+                .sorted(StringGroup.poOcenama)
+                .collect(Collectors.toList());
         Spreadsheets.writeStringGroup(new File(DownloadController.DATA_FOLDER, "ocene_mesta.xlsx"), list, "Prosecna ocena");
     }
     public static void okruziNaZavrsnom() throws IOException {

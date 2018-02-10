@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import rs.lukaj.upisstats.scraper.utils.Profiler;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -90,6 +91,7 @@ public class Osnovna2017 {
         this.id = id;
     }
     public Osnovna2017(String str) {
+        long start = System.nanoTime();
         String[] lines = str.split("\n");
         String[] basic = lines[0].split("\\\\");
         id = Integer.parseInt(basic[0]);
@@ -109,6 +111,8 @@ public class Osnovna2017 {
         ucenikaZavrsilo = ucenici[1];
         vukovaca = ucenici[2];
         nagradjenih = ucenici[3];
+        long end = System.nanoTime();
+        Profiler.addTime("new Osnovna2017", end-start);
     }
 
     public String toCompactString() {

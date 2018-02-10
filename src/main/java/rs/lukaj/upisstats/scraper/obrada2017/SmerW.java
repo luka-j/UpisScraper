@@ -1,6 +1,7 @@
 package rs.lukaj.upisstats.scraper.obrada2017;
 
 import rs.lukaj.upisstats.scraper.download.Smer2017;
+import rs.lukaj.upisstats.scraper.utils.Profiler;
 
 //this exists basically only to attempt to correct design fuckups of Smer2017
 public class SmerW {
@@ -13,6 +14,7 @@ public class SmerW {
     public final double minBodova1k, minBodova2k;
 
     public SmerW(Smer2017 smer) {
+        long start = System.nanoTime();
         sifra = smer.getSifra();
         this.smer = smer.getPodrucje(); //it's not a mistake
         skola = smer.getIme();
@@ -30,6 +32,8 @@ public class SmerW {
 
         if(smer.getTrajanje().equals("2")) trajanje=4;
         else trajanje=3;
+        long end = System.nanoTime();
+        Profiler.addTime("new SmerW", end-start);
     }
 
     public boolean trebaPrijemni() {

@@ -1,6 +1,7 @@
 package rs.lukaj.upisstats.scraper.download;
 
 import rs.lukaj.upisstats.scraper.obrada2017.LetterUtils;
+import rs.lukaj.upisstats.scraper.utils.StringTokenizer;
 
 /**
  * Predstavlja podatke o jednom smeru; sifru, podrucje i kvotu
@@ -18,10 +19,10 @@ public class Smer {
     }
     
     public Smer(String compactString) {
-        String[] tokens = compactString.split("\\\\");
-        sifra = tokens[0];
-        podrucje = LetterUtils.toLatin(tokens[1].trim());
-        kvota = tokens[2];
+        StringTokenizer tk = new StringTokenizer(compactString, '\\', true);
+        sifra = tk.nextToken().toUpperCase();
+        podrucje = LetterUtils.toLatin(tk.nextToken().trim()).toLowerCase();
+        kvota = tk.nextToken().trim();
     }
     
     public String getSifra() {return sifra;}

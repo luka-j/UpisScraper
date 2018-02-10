@@ -19,6 +19,13 @@ public class DownloadController {
     private static final String SAVE_FILENAME = "save";
     private static StudentDownloader studentDownloader;
 
+    public static File generateDataFolder(String year) {
+        return System.getProperty("os.name").toLowerCase().contains("nix")
+                || System.getProperty("os.name").toLowerCase().contains("nux") ?
+                new File("/data/Shared/mined/UpisData/" + year)
+                : new File("D:\\Shared\\mined\\UpisData\\" + year);
+    }
+
     /**
      * Ucitava sve smerova, a zatim ucitava ucenike
      * @see Smerovi#load()

@@ -12,36 +12,37 @@ import java.util.Objects;
  * @author Luka
  */
 public class SmeroviBase {
-    static Map<String, SmerData> base;
+    private static Map<String, SmerData> extraBase;
     
     public static void load() {
-        base = new HashMap<>();
+        extraBase = new HashMap<>();
+        srednjeSkole.clear();
         Smerovi smerovi = Smerovi.getInstance();
         smerovi.loadFromFile();
         smerovi.iterate(0);
         Smer s;
         while(smerovi.hasNext()) {
             s = smerovi.getNext();
-            base.put(s.getSifra().toUpperCase(), new SmerData(s));
+            extraBase.put(s.getSifra(), new SmerData(s));
         }
     }
     
     public static String getPodrucje(String sifra) {
-        if(!base.containsKey(sifra.toUpperCase())) {
+        if(!extraBase.containsKey(sifra)) {
             System.out.println(sifra);
-            System.exit(2);
+            throw new IllegalArgumentException("Invalid sifra: " + sifra);
         }
-        return base.get(sifra.toUpperCase()).podrucje;
+        return extraBase.get(sifra).podrucje;
     }
     
     public static int getKvota(String sifra) {
-        return base.get(sifra.toUpperCase()).kvota;
+        return extraBase.get(sifra).kvota;
     }
  
     public static String getOkrug(String sifra) {
-        return base.get(sifra.toUpperCase()).okrug;
+        return extraBase.get(sifra).okrug;
     }
-    
+
     private static class SmerData {
         String sifra;
         String podrucje;
@@ -106,5 +107,18 @@ public class SmeroviBase {
             hash = 73 * hash + Objects.hashCode(this.sifra);
             return hash;
         }
+    }
+
+
+    private static Map<String, UcenikWrapper.SrednjaSkola> srednjeSkole = new HashMap<>();
+
+    static boolean skolaExists(String sifra) {
+        return srednjeSkole.containsKey(sifra);
+    }
+    static UcenikWrapper.SrednjaSkola getSkola(String sifra) {
+        return srednjeSkole.get(sifra);
+    }
+    static void putSkola(UcenikWrapper.SrednjaSkola skola) {
+        srednjeSkole.put(skola.sifra, skola);
     }
 }

@@ -3,6 +3,8 @@ package rs.lukaj.upisstats.scraper.obrada2017;
 import rs.lukaj.upisstats.scraper.download.DownloadController;
 import rs.lukaj.upisstats.scraper.download.Ucenik2017;
 import rs.lukaj.upisstats.scraper.download.UcenikUtils;
+import rs.lukaj.upisstats.scraper.utils.Profiler;
+import rs.lukaj.upisstats.scraper.utils.StringTokenizer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,25 +46,36 @@ public class UcenikW {
     }
 
     public UcenikW(Ucenik2017 uc) {
+        long start = System.nanoTime();
         sifra = Integer.parseInt(uc.id);
         osnovna = OsnovneBase.get(Integer.parseInt(uc.getOsId()));
         smer = SmeroviBase.get(uc.getUpisana());
 
         if(uc.getKrug().equals("*")) krug=-1; //upisan po odluci OUKa
         else krug = Integer.parseInt(uc.getKrug());
+        long end = System.nanoTime();
+        Profiler.addTime("UcenikWBasics", end-start);
 
         if(uc.getBlizanac().isEmpty()) blizanacSifra =0;
-        else blizanacSifra = Integer.parseInt(uc.getBlizanac().split("\">")[1].split("<")[0]);
+        else {
+            start = System.nanoTime();
+            blizanacSifra = Integer.parseInt(uc.getBlizanac().split("\">")[1].split("<")[0]);
+            end = System.nanoTime();
+            Profiler.addTime("split", end-start);
+        }
 
         if(uc.getNajboljiBlizanacBodovi().isEmpty()) najboljiBlizanacBodovi = 0;
         else najboljiBlizanacBodovi = Double.parseDouble(uc.getNajboljiBlizanacBodovi());
 
+        start = System.nanoTime();
         srpski = Double.parseDouble(uc.getSrpski());
         matematika = Double.parseDouble(uc.getMatematika());
         kombinovani = Double.parseDouble(uc.getKombinovani());
         bodovaZavrsni = srpski + matematika + kombinovani;
         bodovaAM = Double.parseDouble(uc.getBodovaAM());
         ukupnoBodova = Double.parseDouble(uc.getUkupnoBodova());
+        end = System.nanoTime();
+        Profiler.addTime("UcenikWBodovi", end-start);
 
         maternji = uc.getMaternji();
         prviStrani = uc.getPrviStrani();
@@ -108,33 +121,43 @@ public class UcenikW {
     }
 
     private static Ocene cleanOcene(Map<String, String> raw) {
+        long start = System.nanoTime();
         Map<String, Integer> ocene = new HashMap<>();
-        final int[] zbir = new int[1];
-        final int[] broj = new int[1];
-        final double[] prosek = new double[1];
-        final double[] bodovi = new double[1];
+        int zbir=0, broj=0;
+        double prosek=0, bodovi=0;
 
-        raw.forEach((predmet, ocena) -> {
-            if(predmet.startsWith("prosek")) prosek[0] = Double.parseDouble(ocena); //this was IDE suggestion I swear
-            else if(predmet.startsWith("bod")) bodovi[0] = Double.parseDouble(ocena);
-            else if(predmet.equals(UcenikUtils.PredmetiDefault.ZBIR2017)) zbir[0] = Integer.parseInt(ocena);
-            else if(predmet.equals(UcenikUtils.PredmetiDefault.BROJ2017)) broj[0] = Integer.parseInt(ocena);
+        for(Map.Entry<String, String> en : raw.entrySet()) {
+            String predmet = en.getKey(), ocena = en.getValue();
+            if(predmet.startsWith("prosek")) prosek = Double.parseDouble(ocena); //this was IDE suggestion I swear
+            else if(predmet.startsWith("bod")) bodovi = Double.parseDouble(ocena);
+            else if(predmet.equals(UcenikUtils.PredmetiDefault.ZBIR2017)) zbir = Integer.parseInt(ocena);
+            else if(predmet.equals(UcenikUtils.PredmetiDefault.BROJ2017)) broj = Integer.parseInt(ocena);
             else if(!predmet.equals(UcenikUtils.PredmetiDefault.VUKOVA2017)) ocene.put(predmet, Integer.parseInt(ocena));
-        });
-        return new Ocene(ocene, zbir[0], broj[0], prosek[0], bodovi[0]);
+        }
+        long end = System.nanoTime();
+        Profiler.addTime("UcenikWCleanOcene", end-start);
+        return new Ocene(ocene, zbir, broj, prosek, bodovi);
     }
     private static Map<String, Double> mapValuesToDouble(Map<String, String> strings) {
+        long start = System.nanoTime();
         Map<String, Double> doubles = new HashMap<>();
         for(Map.Entry<String, String> e : strings.entrySet())
             doubles.put(e.getKey(), Double.parseDouble(e.getValue()));
+        long end = System.nanoTime();
+        Profiler.addTime("UcenikWMapValuesToDouble", end-start);
         return doubles;
     }
     private static int findZelja(List<Zelja> listaZelja, SmerW upisana) {
+        long start = System.nanoTime();
         for(int i=0; i<listaZelja.size(); i++) {
-            if(listaZelja.get(i).smer.equals(upisana))
+            if(listaZelja.get(i).smer.equals(upisana)) {
+                long end = System.nanoTime();
+                Profiler.addTime("UcenikWFindZelja", end-start);
                 return i;
+            }
         }
         throw new IndexOutOfBoundsException("Ne postoji želja");
+
     }
 
     protected void setBlizanac() {
@@ -155,12 +178,15 @@ public class UcenikW {
         public final double bodovaZaUpis;
 
         public Zelja(Ucenik2017.Zelja zelja) {
+            long start = System.nanoTime();
             this.smer = SmeroviBase.get(zelja.getSifraSmera());
             this.uslov = Integer.parseInt(zelja.getUslov()) != 0;
             if(uslov)
                 this.bodovaZaUpis = Double.parseDouble(zelja.getBodovaZaUpis());
             else
                 bodovaZaUpis = 0;
+            long end = System.nanoTime();
+            Profiler.addTime("new UcenikW.Zelja", end-start);
         }
 
         @Override
@@ -177,16 +203,21 @@ public class UcenikW {
         public final int bodova;
 
         public Takmicenje(String predmet, int bodova) {
-            String[] info = predmet.split("~");
-            this.predmet = info[0];
+            StringTokenizer tk = new StringTokenizer(predmet, '~');
+            this.predmet = tk.nextToken();
             this.bodova = bodova;
-            if(info[1].split(",")[0].toLowerCase().startsWith("republičko")) nivo = REPUBLICKO;
-            else nivo = MEĐUNARODNO; //cini mi se da ovakvih nema u '17
-            switch (info[2].toLowerCase()) {
-                case "prvo mesto": mesto = 1; break;
-                case "drugo mesto": mesto = 2; break;
-                case "treće mesto": mesto = 3; break;
-                default: throw new IllegalArgumentException("nepostojeće mesto na takmičenju: " + info[2]);
+            String nivoStr = tk.nextToken();
+            if(nivoStr.startsWith("Republičko")) nivo = REPUBLICKO;
+            else {
+                System.out.println("Međunarodno: " + nivoStr);
+                nivo = MEĐUNARODNO; //cini mi se da ovakvih nema u '17
+            }
+            String mestoStr = tk.nextToken();
+            switch (mestoStr) {
+                case "Prvo mesto": mesto = 1; break;
+                case "Drugo mesto": mesto = 2; break;
+                case "Treće mesto": mesto = 3; break;
+                default: throw new IllegalArgumentException("nepostojeće mesto na takmičenju: " + mestoStr);
             }
         }
     }

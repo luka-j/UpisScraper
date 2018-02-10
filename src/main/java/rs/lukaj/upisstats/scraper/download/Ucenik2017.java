@@ -6,6 +6,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import rs.lukaj.upisstats.scraper.UpisMpn;
+import rs.lukaj.upisstats.scraper.utils.StringTokenizer;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -26,9 +27,9 @@ public class Ucenik2017 extends Ucenik {
 
     public Ucenik2017(String id) {
         super(id);
-        exists = exists && new File(DownloadController.DATA_FOLDER, id + ".json").exists();
     }
 
+    private Boolean exists = null;
     protected String osId;
     protected String upisana;
     protected String jsonData;
@@ -97,6 +98,15 @@ public class Ucenik2017 extends Ucenik {
         return prioritet;
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public boolean exists() {
+        if(exists == null)
+            exists = super.exists() && new File(DownloadController.DATA_FOLDER, id + ".json").exists();
+        return exists;
+    }
 
     public Ucenik setDetails(String ukBodova, String krug) {
         origUkupnoBodova = ukBodova;
@@ -114,10 +124,10 @@ public class Ucenik2017 extends Ucenik {
             this.bodovaZaUpis = bodovaZaUpis;
         }
         public Zelja(String compactString) {
-            String[] tokens = compactString.split(",", -1);
-            sifraSmera = tokens[0];
-            uslov = tokens[1];
-            bodovaZaUpis = tokens[2];
+            StringTokenizer tk = new StringTokenizer(compactString, ',', true);
+            sifraSmera = tk.nextToken();
+            uslov = tk.nextToken();
+            bodovaZaUpis = tk.hasMoreTokens() ? tk.nextToken() : "";
         }
         public String getSifraSmera() {
             return sifraSmera;
@@ -145,11 +155,11 @@ public class Ucenik2017 extends Ucenik {
             this.ukupno = ukupno;
         }
         public Profil(String compactString) {
-            String[] tokens = compactString.split(",", -1);
-            naziv = tokens[0];
-            prijemni = tokens[1];
-            takmicenje = tokens[2];
-            ukupno = tokens[3];
+            StringTokenizer tk = new StringTokenizer(compactString, ',', true);
+            naziv = tk.nextToken();
+            prijemni = tk.nextToken();
+            takmicenje = tk.nextToken();
+            ukupno = tk.nextToken();
         }
 
         @Override
@@ -296,45 +306,105 @@ public class Ucenik2017 extends Ucenik {
 
     @Override
     public void loadFromString(String compactString) {
-        String[] chunks = compactString.split("\n", -1);
+        //String[] chunks = compactString.split("\n", -1);
+        StringTokenizer master = new StringTokenizer(compactString, '\n', true);
 
-        String[] basics = chunks[0].split("\\\\", -1);
-        String[] bodovi = chunks[1].split("\\\\");
-        String[] jezici = chunks[2].split("\\\\", -1);
-        String[] sesti = chunks[3].split("\\\\", 0);
+        StringTokenizer inner = new StringTokenizer(master.nextToken(), '\\', true);
+        osId = inner.nextToken();
+        upisana = inner.nextToken();
+        origKrug = inner.nextToken();
+        krug = inner.nextToken();
+        blizanac = inner.nextToken();
+        najboljiBlizanacBodovi = inner.nextToken();
+        prioritet = Boolean.parseBoolean(inner.nextToken());
+        //String[] basics = chunks[0].split("\\\\", -1);
+
+        inner = new StringTokenizer(master.nextToken(), '\\', true);
+        srpski = inner.nextToken();
+        matematika = inner.nextToken();
+        kombinovani = inner.nextToken();
+        bodovaAM = inner.nextToken();
+        origUkupnoBodova = inner.nextToken();
+        ukupnoBodova = inner.nextToken();
+        //String[] bodovi = chunks[1].split("\\\\");
+
+        inner = new StringTokenizer(master.nextToken(), '\\', true);
+        maternji = inner.nextToken();
+        prviStrani = inner.nextToken();
+        drugiStrani = inner.nextToken();
+
+        //String[] jezici = chunks[2].split("\\\\", -1);
+
+        loadOcene(sestiRaz, master.nextToken());
+        loadOcene(sedmiRaz, master.nextToken());
+        loadOcene(osmiRaz, master.nextToken());
+        /*String[] sesti = chunks[3].split("\\\\", 0);
         String[] sedmi = chunks[4].split("\\\\", 0);
-        String[] osmi = chunks[5].split("\\\\", 0);
-        String[] takmicenja = chunks[6].split("\\\\", 0);
-        String[] prijemni = chunks[7].split("\\\\", 0);
-        String[] profili = chunks[8].split("\\\\", 0);
-        String[] zelje1 = chunks[9].split("\\\\", 0);
-        String[] zelje2 = chunks[10].split("\\\\", 0);
+        String[] osmi = chunks[5].split("\\\\", 0);*/
+        loadMap(takmicenja, master.nextToken());
+        loadMap(prijemni, master.nextToken());
+        //String[] takmicenja = chunks[6].split("\\\\", 0);
+        //String[] prijemni = chunks[7].split("\\\\", 0);
 
-        osId = basics[0];
+        inner = new StringTokenizer(master.nextToken(), '\\', false);
+        while(inner.hasMoreTokens())
+            this.profili.add(new Profil(inner.nextToken()));
+        //String[] profili = chunks[8].split("\\\\", 0);
+        inner = new StringTokenizer(master.nextToken(), '\\', false);
+        while(inner.hasMoreTokens())
+            this.listaZelja1.add(new Zelja(inner.nextToken()));
+        inner = new StringTokenizer(master.nextToken(), '\\', false);
+        while(inner.hasMoreTokens())
+            this.listaZelja2.add(new Zelja(inner.nextToken()));
+        long end = System.nanoTime();
+        //String[] zelje1 = chunks[9].split("\\\\", 0);
+        //String[] zelje2 = chunks[10].split("\\\\", 0);
+
+        /*osId = basics[0];
         upisana = basics[1];
         origKrug = basics[2];
         krug = basics[3];
         blizanac = basics[4];
         najboljiBlizanacBodovi = basics[5];
-        prioritet = Boolean.parseBoolean(basics[6]);
-        srpski = bodovi[0];
+        prioritet = Boolean.parseBoolean(basics[6]);*/
+        /*srpski = bodovi[0];
         matematika = bodovi[1];
         kombinovani = bodovi[2];
         bodovaAM = bodovi[3];
         origUkupnoBodova = bodovi[4];
-        ukupnoBodova = bodovi[5];
-        maternji = jezici[0];
+        ukupnoBodova = bodovi[5];*/
+        /*maternji = jezici[0];
         prviStrani = jezici[1];
-        drugiStrani = jezici[2];
+        drugiStrani = jezici[2];*/
 
-        sestiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(sesti));
-        sedmiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(sedmi));
-        osmiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(osmi));
-        this.takmicenja = UcenikUtils.stringArrayToMap(takmicenja);
-        this.prijemni = UcenikUtils.stringArrayToMap(prijemni);
-        this.profili = UcenikUtils.stringToListProfil(profili);
-        listaZelja1 = UcenikUtils.stringToListZelja(zelje1);
-        listaZelja2 = UcenikUtils.stringToListZelja(zelje2);
+        //sestiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(sesti));
+        //sedmiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(sedmi));
+        //osmiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(osmi));
+        //this.takmicenja = UcenikUtils.stringArrayToMap(takmicenja);
+        //this.prijemni = UcenikUtils.stringArrayToMap(prijemni);
+        //this.profili = UcenikUtils.stringToListProfil(profili);
+        //listaZelja1 = UcenikUtils.stringToListZelja(zelje1);
+        //listaZelja2 = UcenikUtils.stringToListZelja(zelje2);
+    }
+
+    private void loadOcene(Map<String, String> to, String from) {
+        if(UcenikUtils.PredmetiDefault.inverse == null) UcenikUtils.PredmetiDefault.initInverse();
+
+        StringTokenizer predmeti = new StringTokenizer(from, '\\', false);
+        while(predmeti.hasMoreTokens()) {
+            String pr = predmeti.nextToken();
+            String predmet = UcenikUtils.PredmetiDefault.inverse.get(String.valueOf(pr.charAt(0)));
+            to.put(predmet, pr.substring(2));
+        }
+    }
+
+    private void loadMap(Map<String, String> to, String from) {
+        StringTokenizer items = new StringTokenizer(from, '\\', false);
+        while(items.hasMoreTokens()) {
+            String item = items.nextToken();
+            int delim = item.indexOf(':');
+            to.put(item.substring(0, delim), item.substring(delim+1));
+        }
     }
 
     @Override

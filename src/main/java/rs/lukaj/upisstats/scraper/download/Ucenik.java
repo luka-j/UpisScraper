@@ -5,6 +5,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import rs.lukaj.upisstats.scraper.UpisMpn;
+import rs.lukaj.upisstats.scraper.utils.Profiler;
+import rs.lukaj.upisstats.scraper.utils.StringTokenizer;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +26,7 @@ public class Ucenik {
 
     protected static final boolean OVERWRITE_OLD = false;
     private static final boolean PRINT_MISSING = false;
-    protected boolean exists = false;
+    private Boolean exists = null;
 
     private static final String UCENICI_URL = "http://195.222.98.40/ucenik_info.php?id_ucenika=";
 
@@ -34,9 +36,9 @@ public class Ucenik {
     protected String mestoOS; //ime_mesta\\
     protected String okrugOS; //ime_okruga\n
 
-    protected Map<String, String> sestiRaz; //predmet:ocena\\predmet:ocena... \n
-    protected Map<String, String> sedmiRaz; //predmet:ocena\\predmet:ocena... \n
-    protected Map<String, String> osmiRaz; //predmet:ocena\\predmet:ocena... \n
+    protected Map<String, String> sestiRaz = new HashMap<>(); //predmet:ocena\\predmet:ocena... \n
+    protected Map<String, String> sedmiRaz = new HashMap<>(); //predmet:ocena\\predmet:ocena... \n
+    protected Map<String, String> osmiRaz = new HashMap<>(); //predmet:ocena\\predmet:ocena... \n
 
     protected Map<String, String> takmicenja = new HashMap<>(); //predmet:bodova\\predmet:bodova... \n
 
@@ -49,7 +51,7 @@ public class Ucenik {
      */
     protected String ukupnoBodova; //broj_bodova\n
 
-    protected List<Skola> listaZelja; //skola_1\\skola_2\\skola_3... \n
+    protected List<Skola> listaZelja = new ArrayList<>(); //skola_1\\skola_2\\skola_3... \n
     protected Skola upisanaSkola; //ime_skole\\
     protected String upisanaZelja; //redni_broj_u_listi_zelja
     protected String krug;
@@ -114,13 +116,18 @@ public class Ucenik {
         return krug;
     }
 
+    /**
+     * Returns whether this Ucenik exists locally (on disk).
+     * This is an expensive operation!
+     * @return
+     */
     public boolean exists() {
+        if(exists == null) exists = new File(DownloadController.DATA_FOLDER, id).exists();
         return exists;
     }
 
     public Ucenik(String id) {
         this.id = id;
-        exists = new File(DownloadController.DATA_FOLDER, id).exists();
     }
 
     public Ucenik setDetails(String ukBodova, String mestoOS) {
@@ -267,33 +274,77 @@ public class Ucenik {
     }
 
     public void loadFromString(String compactString) {
-        String[] chunks = compactString.split("\\n");
+        long start = System.nanoTime();
+        StringTokenizer master = new StringTokenizer(compactString, '\n', true);
+        //String[] chunks = compactString.split("\\n");
 
-        String[] basics = chunks[0].split("\\\\");
-        String[] sesti = chunks[1].split("\\\\", 0);
-        String[] sedmi = chunks[2].split("\\\\", 0);
-        String[] osmi = chunks[3].split("\\\\", 0);
-        String[] takm = chunks[4].split("\\\\", 0);
-        String[] test = chunks[5].split("\\\\");
-        String ukupno = chunks[6].split("\\\\")[0];
-        String[] zelje = chunks[7].split("\\\\", 0);
-        String[] upisano = chunks[8].split("\\\\");
+        StringTokenizer inner = new StringTokenizer(master.nextToken(), '\\', true);
+        osnovnaSkola = inner.nextToken();
+        mestoOS = inner.nextToken();
+        okrugOS = inner.nextToken();
+        //String[] basics = chunks[0].split("\\\\");
 
-        osnovnaSkola = basics[0];
-        mestoOS = basics[1];
-        okrugOS = basics[2];
-        sestiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(sesti));
-        sedmiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(sedmi));
-        osmiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(osmi));
-        takmicenja = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(takm));
-        matematika = test[0];
+        loadPredmetiMap(sestiRaz, master.nextToken());
+        loadPredmetiMap(sedmiRaz, master.nextToken());
+        loadPredmetiMap(osmiRaz, master.nextToken());
+        //String[] sesti = chunks[1].split("\\\\", 0);
+        //String[] sedmi = chunks[2].split("\\\\", 0);
+        //String[] osmi = chunks[3].split("\\\\", 0);
+
+        loadPredmetiMap(takmicenja, master.nextToken());
+        //String[] takm = chunks[4].split("\\\\", 0);
+
+        inner = new StringTokenizer(master.nextToken(), '\\', true);
+        matematika = inner.nextToken();
+        srpski = inner.nextToken();
+        kombinovani = inner.nextToken();
+        //String[] test = chunks[5].split("\\\\");
+
+        ukupnoBodova = master.nextToken();
+        //String ukupno = chunks[6].split("\\\\")[0];
+
+        inner = new StringTokenizer(master.nextToken(), '\\', false);
+        while(inner.hasMoreTokens())
+            listaZelja.add(Skola.makeSkola(inner.nextToken()));
+        //String[] zelje = chunks[7].split("\\\\", 0);
+
+        inner = new StringTokenizer(master.nextToken(), '\\', true);
+        upisanaSkola = Skola.makeSkola(inner.nextToken());
+        upisanaZelja = inner.nextToken();
+        krug = inner.nextToken();
+        //String[] upisano = chunks[8].split("\\\\");
+
+        long end = System.nanoTime();
+        Profiler.addTime("UcenikLoadFromStringOld", end-start);
+
+        //osnovnaSkola = basics[0];
+        //mestoOS = basics[1];
+        //okrugOS = basics[2];
+        //sestiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(sesti));
+        //sedmiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(sedmi));
+        //osmiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(osmi));
+        //takmicenja = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(takm));
+        /*matematika = test[0];
         srpski = test[1];
-        kombinovani = test[2];
-        ukupnoBodova = ukupno;
-        listaZelja = UcenikUtils.stringToList(zelje);
-        upisanaSkola = new Skola(upisano[0]);
+        kombinovani = test[2];*/
+        //ukupnoBodova = ukupno;
+        //listaZelja = UcenikUtils.stringToList(zelje);
+        /*upisanaSkola = new Skola(upisano[0]);
         upisanaZelja = upisano[1];
-        krug = upisano[2];
+        krug = upisano[2];*/
+    }
+
+    private void loadPredmetiMap(Map<String, String> to, String from) {
+        if(UcenikUtils.PredmetiDefault.inverse == null) UcenikUtils.PredmetiDefault.initInverse();
+
+        StringTokenizer predmeti = new StringTokenizer(from, '\\', false);
+        while(predmeti.hasMoreTokens()) {
+            String pr = predmeti.nextToken();
+            String ocena = String.valueOf(pr.charAt(pr.length()-1));
+            String predmet = pr.substring(0, pr.indexOf(':'));
+            predmet = UcenikUtils.PredmetiDefault.inverse.getOrDefault(predmet, predmet);
+            to.put(predmet, ocena);
+        }
     }
 
     public String toCompactString() {
@@ -312,10 +363,15 @@ public class Ucenik {
 
     public static class Skola {
 
+        private static Map<String, Skola> cache = new HashMap<>();
+
+        public static void clearCache() {
+            cache.clear();
+        }
         public final String sifra;
         public final String ime;
-        public final String mesto;
-        public final String smer;
+        public String mesto;
+        public String smer;
 
         Skola(String sifra, String ime, String mesto, String smer) {
             this.sifra = sifra;
@@ -324,12 +380,23 @@ public class Ucenik {
             this.smer = smer;
         }
 
-        Skola(String compactString) {
-            String[] tokens = compactString.split(",");
-            sifra = tokens[0];
-            ime = tokens[1];
-            mesto = tokens[2];
-            smer = tokens[3];
+        static Skola makeSkola(String compactString) {
+            StringTokenizer tk = new StringTokenizer(compactString, ',', true);
+            String sifra = tk.nextToken().toUpperCase();
+            if(cache.containsKey(sifra)) return cache.get(sifra);
+            else {
+                Skola sk = new Skola(sifra, tk);
+                cache.put(sifra, sk);
+                return sk;
+            }
+        }
+        Skola(String sifra, StringTokenizer tk) {
+            this.sifra = sifra;
+            ime = tk.nextToken();
+            mesto = tk.nextToken();
+            if(mesto.charAt(0) == ' ') mesto = mesto.substring(1);
+            smer = tk.nextToken();
+            if(smer.charAt(0) == ' ') smer = smer.substring(1);
         }
 
         @Override

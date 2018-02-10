@@ -1,6 +1,12 @@
 package rs.lukaj.upisstats.scraper.download;
 
-import java.util.*;
+import rs.lukaj.upisstats.scraper.utils.Profiler;
+import rs.lukaj.upisstats.scraper.utils.StringTokenizer;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -8,34 +14,6 @@ import java.util.stream.Collectors;
  * @author Luka
  */
 public class UcenikUtils {
-
-    static List<Ucenik.Skola> stringToList(String[] zelje) {
-        List<Ucenik.Skola> l = new ArrayList<>();
-        for (String zelja : zelje) {
-            if (!zelja.isEmpty()) {
-                l.add(new Ucenik.Skola(zelja));
-            }
-        }
-        return l;
-    }
-    static List<Ucenik2017.Zelja> stringToListZelja(String[] zelje) {
-        List<Ucenik2017.Zelja> l = new ArrayList<>();
-        for (String zelja : zelje) {
-            if (!zelja.isEmpty()) {
-                l.add(new Ucenik2017.Zelja(zelja));
-            }
-        }
-        return l;
-    }
-    static List<Ucenik2017.Profil> stringToListProfil(String[] profili) {
-        List<Ucenik2017.Profil> l = new ArrayList<>();
-        for(String profil : profili) {
-            if(!profil.isEmpty()) {
-                l.add(new Ucenik2017.Profil(profil));
-            }
-        }
-        return l;
-    }
 
     public static StringBuilder mapToStringBuilder(Map<String, String> m) {
         StringBuilder sb = new StringBuilder();
@@ -45,19 +23,19 @@ public class UcenikUtils {
     }
 
     public static Map<String, String> stringArrayToMap(String[] str) {
+        long start = System.nanoTime();
         Map<String, String> m = new HashMap<>();
         if (str == null || (str.length == 1 && str[0].isEmpty()) || str.length == 0) {
             return m;
         }
-        String[] pair;
+
         for (String p : str) {
-            pair = p.split(":");
-            try {
-                m.put(pair[0], pair[1]);
-            } catch (ArrayIndexOutOfBoundsException ex) {
-                System.err.println("invalid: " + p);
-            }
+            StringTokenizer tk = new StringTokenizer(p, ':', true);
+            String key = tk.nextToken();
+            m.put(key, tk.nextToken());
         }
+        long end = System.nanoTime();
+        Profiler.addTime("stringArrToMap", end-start);
         return m;
     }
 
@@ -122,7 +100,7 @@ public class UcenikUtils {
         public static final String BOD8_2017 = "bod8";
         public static final String VUKOVA2017 = "vukovaDiploma";
         
-        private static final Map<String, String> nameToSifra;
+        static final Map<String, String> nameToSifra;
         static {
             nameToSifra = new HashMap<>();
             nameToSifra.put(SRPSKI, "0");
@@ -173,7 +151,7 @@ public class UcenikUtils {
             nameToSifra.put(BOD8_2017, "*");
             nameToSifra.put(VUKOVA2017, "-");
         }
-        private static Map<String, String> inverse;
+        static Map<String, String> inverse;
         
         static Map<String, String> compress(Map<String, String> m) {
             Set<Map.Entry<String, String>> s = m.entrySet();
@@ -184,17 +162,25 @@ public class UcenikUtils {
         }
         
         static Map<String, String> decompress(Map<String, String> m) {
+            long start = System.nanoTime();
             if(inverse == null)
-                inverse = nameToSifra.entrySet()
-                        .stream()
-                        .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
-            
+                initInverse();
+
+            if(m == null) return null;
+
             Set<Map.Entry<String, String>> s = m.entrySet();
             Map<String, String> decompressed = new HashMap<>();
             s.forEach((Map.Entry<String, String> t) ->
                     decompressed.put(inverse.get(t.getKey()) == null ? t.getKey() : inverse.get(t.getKey()), t.getValue()));
+            long end = System.nanoTime();
+            Profiler.addTime("decompress", end-start);
             return decompressed;
         }
+
+        static void initInverse() {
+            inverse = nameToSifra.entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+        }
     }
-    
 }

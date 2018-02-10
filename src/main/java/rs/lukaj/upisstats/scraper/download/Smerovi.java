@@ -3,6 +3,7 @@ package rs.lukaj.upisstats.scraper.download;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import rs.lukaj.upisstats.scraper.utils.Profiler;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -37,7 +38,7 @@ public class Smerovi {
         return instance;
     }
 
-    private final LinkedHashMap<String, Smer> base = new LinkedHashMap<>(2_280);
+    private final LinkedHashMap<String, Smer> base = new LinkedHashMap<>(2_400);
 
     /**
      * Ucitava podatke o smerovima, ako postoje iz fajla, ako ne s neta
@@ -81,7 +82,9 @@ public class Smerovi {
     }
     
     public void loadFromFile() {
+        long start = System.nanoTime();
         File f = new File(DownloadController.DATA_FOLDER, SAVEFILE_NAME);
+        long end = System.nanoTime();
         try {
             String text = new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8);
             String[] smerovi = text.split("\\n");
@@ -91,6 +94,9 @@ public class Smerovi {
         } catch (IOException ex) {
             Logger.getLogger(Ucenik.class.getName()).log(Level.SEVERE, null, ex);
         }
+        long endTotal = System.nanoTime();
+        Profiler.addTime("SmeroviLoadFromFileDisk", end-start);
+        Profiler.addTime("SmeroviLoadFromFileTotal", endTotal-start);
     }
 
     public Smer get(String sifra) {

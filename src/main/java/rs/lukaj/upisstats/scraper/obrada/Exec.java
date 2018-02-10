@@ -28,7 +28,6 @@ public class Exec {
 
     public static void doExec(String... methods) {
         if(executableClasses.isEmpty()) registerExecutables();
-        SmeroviBase.load(); // TODO: 25.9.17. figure out why I put this here
         for(String method : methods) {
             try {
                 boolean found = false;
@@ -66,6 +65,7 @@ public class Exec {
         executableClasses.add(PrintNames.class);
         executableClasses.add(Cleanup2017.class);
         executableClasses.add(DefaultSimulation.class);
+        executableClasses.add(Osnove.class);
         //...
     }
 }
