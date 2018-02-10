@@ -99,7 +99,7 @@ public class Ucenik2017 extends Ucenik {
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public boolean exists() {
