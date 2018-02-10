@@ -64,7 +64,6 @@ public class Ocene {
         UcenikWrapper.OsnovnaSkola                    maxMos = null, minMos = null, maxSos = null, minSos = null, maxKos = null, minKos = null;
         System.out.println("dataset: " + skole.size());
         List<OSKriterijum> sk = new LinkedList<>();
-        time = System.currentTimeMillis();
         skole.entrySet().stream().forEach((e) -> {
             if (e.getValue().size() > 30) {
                 double srpski = e.getValue().filterOdlicneSrpski().size() == 0
@@ -76,9 +75,6 @@ public class Ocene {
                 sk.add(new OSKriterijum(e.getKey(), srpski, matematika, kombinovani));
             }
         });
-        end = System.currentTimeMillis();
-        if(Config.DEBUG) System.out.println("Built schools for: " + (end-time));
-        time = System.currentTimeMillis();
         for (OSKriterijum e : sk) {
             if (e.matematika > maxMat) {
                 maxMat = e.matematika;
@@ -105,7 +101,6 @@ public class Ocene {
                 minKos = e.os;
             }
         }
-        end=System.currentTimeMillis();
         if(Config.DEBUG)System.out.println("Found max in " + (end-time));
         System.out.println("Najvise za 5 iz srpskog treba u skoli " + maxSos.ime
                                    + " iz " + maxSos.mesto + " (" + maxSos.okrug + " okrug) i to "

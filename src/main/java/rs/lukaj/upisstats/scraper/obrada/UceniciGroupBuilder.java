@@ -14,7 +14,7 @@ import java.util.function.Predicate;
  * @author Luka
  */
 public class UceniciGroupBuilder {
-    private Predicate<UcenikWrapper> op = null;
+    private Predicate<UcenikWrapper> op;
     private static UceniciGroup everyone;
 
     public UceniciGroupBuilder(Predicate<UcenikWrapper> op) {

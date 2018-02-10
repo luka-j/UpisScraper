@@ -3,6 +3,8 @@ package rs.lukaj.upisstats.scraper.utils;
 /**
  * Because java.util.StringTokenizer apparently isn't supported anymore and has bugs such as
  * https://bugs.java.com/bugdatabase/view_bug.do?bug_id=4418160 which won't fix.
+ *
+ * A small, simple tokenizer which accepts only one character as a delimiter. The most efficient you can get.
  */
 public class StringTokenizer {
     private char delimiter;

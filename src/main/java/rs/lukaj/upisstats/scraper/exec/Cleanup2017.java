@@ -2,7 +2,6 @@ package rs.lukaj.upisstats.scraper.exec;
 
 import rs.lukaj.upisstats.scraper.download.*;
 import rs.lukaj.upisstats.scraper.obrada.FileMerger;
-import rs.lukaj.upisstats.scraper.obrada.UceniciGroupBuilder;
 import rs.lukaj.upisstats.scraper.obrada2017.SmerW;
 import rs.lukaj.upisstats.scraper.obrada2017.SmeroviBase;
 import rs.lukaj.upisstats.scraper.obrada2017.UceniciBase;
@@ -26,10 +25,6 @@ public class Cleanup2017 {
         System.out.print(" / ");
         System.out.print(UceniciBase.svi().filter(uc -> uc.krug == 2).count());
         //UceniciBase.svi().filter(uc -> uc.sedmiRaz.brojOcena < 8).collect(Collectors.toList()).forEach(uc -> System.out.println(uc.sifra + " " + uc.sedmiRaz.brojOcena + " " + uc.sedmiRaz.prosekOcena));
-    }
-
-    public static void test2() {
-        System.out.println(new UceniciGroupBuilder(null).getGroup().stream().filter(uc -> uc.krug == 2).count());
     }
 
     public static void reloadSmerovi17() {
