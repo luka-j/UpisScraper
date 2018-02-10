@@ -5,7 +5,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import rs.lukaj.upisstats.scraper.UpisMpn;
-import rs.lukaj.upisstats.scraper.utils.Profiler;
 import rs.lukaj.upisstats.scraper.utils.StringTokenizer;
 
 import java.io.*;
@@ -274,7 +273,6 @@ public class Ucenik {
     }
 
     public void loadFromString(String compactString) {
-        long start = System.nanoTime();
         StringTokenizer master = new StringTokenizer(compactString, '\n', true);
         //String[] chunks = compactString.split("\\n");
 
@@ -314,8 +312,7 @@ public class Ucenik {
         krug = inner.nextToken();
         //String[] upisano = chunks[8].split("\\\\");
 
-        long end = System.nanoTime();
-        Profiler.addTime("UcenikLoadFromStringOld", end-start);
+        //Profiler.addTime("UcenikLoadFromStringOld", end-start);
 
         //osnovnaSkola = basics[0];
         //mestoOS = basics[1];

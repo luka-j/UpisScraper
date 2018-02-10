@@ -3,7 +3,6 @@ package rs.lukaj.upisstats.scraper.obrada2017;
 import rs.lukaj.upisstats.scraper.download.DownloadController;
 import rs.lukaj.upisstats.scraper.download.Ucenik2017;
 import rs.lukaj.upisstats.scraper.download.UcenikUtils;
-import rs.lukaj.upisstats.scraper.utils.Profiler;
 import rs.lukaj.upisstats.scraper.utils.StringTokenizer;
 
 import java.util.HashMap;
@@ -46,36 +45,30 @@ public class UcenikW {
     }
 
     public UcenikW(Ucenik2017 uc) {
-        long start = System.nanoTime();
         sifra = Integer.parseInt(uc.id);
         osnovna = OsnovneBase.get(Integer.parseInt(uc.getOsId()));
         smer = SmeroviBase.get(uc.getUpisana());
 
         if(uc.getKrug().equals("*")) krug=-1; //upisan po odluci OUKa
         else krug = Integer.parseInt(uc.getKrug());
-        long end = System.nanoTime();
-        Profiler.addTime("UcenikWBasics", end-start);
+        //Profiler.addTime("UcenikWBasics", end-start);
 
         if(uc.getBlizanac().isEmpty()) blizanacSifra =0;
         else {
-            start = System.nanoTime();
             blizanacSifra = Integer.parseInt(uc.getBlizanac().split("\">")[1].split("<")[0]);
-            end = System.nanoTime();
-            Profiler.addTime("split", end-start);
+            //Profiler.addTime("split", end-start);
         }
 
         if(uc.getNajboljiBlizanacBodovi().isEmpty()) najboljiBlizanacBodovi = 0;
         else najboljiBlizanacBodovi = Double.parseDouble(uc.getNajboljiBlizanacBodovi());
 
-        start = System.nanoTime();
         srpski = Double.parseDouble(uc.getSrpski());
         matematika = Double.parseDouble(uc.getMatematika());
         kombinovani = Double.parseDouble(uc.getKombinovani());
         bodovaZavrsni = srpski + matematika + kombinovani;
         bodovaAM = Double.parseDouble(uc.getBodovaAM());
         ukupnoBodova = Double.parseDouble(uc.getUkupnoBodova());
-        end = System.nanoTime();
-        Profiler.addTime("UcenikWBodovi", end-start);
+        //Profiler.addTime("UcenikWBodovi", end-start);
 
         maternji = uc.getMaternji();
         prviStrani = uc.getPrviStrani();
@@ -121,7 +114,6 @@ public class UcenikW {
     }
 
     private static Ocene cleanOcene(Map<String, String> raw) {
-        long start = System.nanoTime();
         Map<String, Integer> ocene = new HashMap<>();
         int zbir=0, broj=0;
         double prosek=0, bodovi=0;
@@ -134,25 +126,20 @@ public class UcenikW {
             else if(predmet.equals(UcenikUtils.PredmetiDefault.BROJ2017)) broj = Integer.parseInt(ocena);
             else if(!predmet.equals(UcenikUtils.PredmetiDefault.VUKOVA2017)) ocene.put(predmet, Integer.parseInt(ocena));
         }
-        long end = System.nanoTime();
-        Profiler.addTime("UcenikWCleanOcene", end-start);
+        //Profiler.addTime("UcenikWCleanOcene", end-start);
         return new Ocene(ocene, zbir, broj, prosek, bodovi);
     }
     private static Map<String, Double> mapValuesToDouble(Map<String, String> strings) {
-        long start = System.nanoTime();
         Map<String, Double> doubles = new HashMap<>();
         for(Map.Entry<String, String> e : strings.entrySet())
             doubles.put(e.getKey(), Double.parseDouble(e.getValue()));
-        long end = System.nanoTime();
-        Profiler.addTime("UcenikWMapValuesToDouble", end-start);
+        //Profiler.addTime("UcenikWMapValuesToDouble", end-start);
         return doubles;
     }
     private static int findZelja(List<Zelja> listaZelja, SmerW upisana) {
-        long start = System.nanoTime();
         for(int i=0; i<listaZelja.size(); i++) {
             if(listaZelja.get(i).smer.equals(upisana)) {
-                long end = System.nanoTime();
-                Profiler.addTime("UcenikWFindZelja", end-start);
+                //Profiler.addTime("UcenikWFindZelja", end-start);
                 return i;
             }
         }
@@ -178,15 +165,13 @@ public class UcenikW {
         public final double bodovaZaUpis;
 
         public Zelja(Ucenik2017.Zelja zelja) {
-            long start = System.nanoTime();
             this.smer = SmeroviBase.get(zelja.getSifraSmera());
             this.uslov = Integer.parseInt(zelja.getUslov()) != 0;
             if(uslov)
                 this.bodovaZaUpis = Double.parseDouble(zelja.getBodovaZaUpis());
             else
                 bodovaZaUpis = 0;
-            long end = System.nanoTime();
-            Profiler.addTime("new UcenikW.Zelja", end-start);
+            //Profiler.addTime("new UcenikW.Zelja", end-start);
         }
 
         @Override

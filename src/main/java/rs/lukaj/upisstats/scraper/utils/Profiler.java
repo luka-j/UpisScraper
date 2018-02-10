@@ -4,6 +4,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+ * Because I couldn't find a half-decent profiler which works under Linux, IntelliJ & Gradle for an hour.
+ */
 public class Profiler {
 
     private static Map<String, Long> timers = new HashMap<>();

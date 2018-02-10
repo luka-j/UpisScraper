@@ -2,7 +2,6 @@ package rs.lukaj.upisstats.scraper.obrada;
 
 import rs.lukaj.upisstats.scraper.download.DownloadController;
 import rs.lukaj.upisstats.scraper.download.Ucenik;
-import rs.lukaj.upisstats.scraper.utils.Profiler;
 
 import java.io.File;
 import java.util.HashMap;
@@ -27,27 +26,19 @@ public class UceniciGroupBuilder {
     }
     
     private static void loadEveryone() {
-        long startTotal = System.nanoTime();
         Ucenik uc;
         everyone = new UceniciGroup();
-        long start = System.nanoTime();
         List<String> ucenici = FileMerger.readFromOne(new File(DownloadController.DATA_FOLDER, FileMerger.FILENAME));
-        long end = System.nanoTime();
-        Profiler.addTime("loadUceniciDiskOld", end-start);
+        //Profiler.addTime("loadUceniciDiskOld", end-start);
         for(String ucStr : ucenici) {
-            long t1 = System.nanoTime();
             uc = new Ucenik(ucStr.substring(0, 6));
-            long t2 = System.nanoTime();
             uc.loadFromString(ucStr.substring(7));
-            long t3 = System.nanoTime();
             everyone.add(new UcenikWrapper(uc));
-            long t4 = System.nanoTime();
-            Profiler.addTime("loopMakeUcenikOld", t2-t1);
-            Profiler.addTime("loopLoadUcenikOld", t3-t2);
-            Profiler.addTime("loopWrapUcenikOld", t4-t3);
+            //Profiler.addTime("loopMakeUcenikOld", t2-t1);
+            //Profiler.addTime("loopLoadUcenikOld", t3-t2);
+            //Profiler.addTime("loopWrapUcenikOld", t4-t3);
         }
-        long endTotal = System.nanoTime();
-        Profiler.addTime("loadEveryoneTotalOld", endTotal-startTotal);
+        //Profiler.addTime("loadEveryoneTotalOld", endTotal-startTotal);
     }
 
     public static void clearCache() {

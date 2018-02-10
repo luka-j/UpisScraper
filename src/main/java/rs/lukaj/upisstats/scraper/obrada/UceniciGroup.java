@@ -2,7 +2,6 @@ package rs.lukaj.upisstats.scraper.obrada;
 
 import rs.lukaj.upisstats.scraper.download.Ucenik;
 import rs.lukaj.upisstats.scraper.download.UcenikUtils;
-import rs.lukaj.upisstats.scraper.utils.Profiler;
 
 import java.util.*;
 import java.util.function.BinaryOperator;
@@ -16,12 +15,10 @@ import java.util.stream.Collectors;
 public class UceniciGroup extends HashSet<UcenikWrapper> {
 
     public static UceniciGroup svi() {
-        long start = System.nanoTime();
         UceniciGroupBuilder.clearCache();
         Ucenik.Skola.clearCache();
         SmeroviBase.load();
-        long end = System.nanoTime();
-        Profiler.addTime("clear&load smerovi", end-start);
+        //Profiler.addTime("clear&load smerovi", end-start);
         return new UceniciGroupBuilder(null).getGroup();
     }
 

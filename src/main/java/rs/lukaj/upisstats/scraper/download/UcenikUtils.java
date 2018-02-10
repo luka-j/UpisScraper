@@ -1,8 +1,5 @@
 package rs.lukaj.upisstats.scraper.download;
 
-import rs.lukaj.upisstats.scraper.utils.Profiler;
-import rs.lukaj.upisstats.scraper.utils.StringTokenizer;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,23 +17,6 @@ public class UcenikUtils {
         m.forEach((key, value) -> sb.append(key).append(":").append(value).append("\\"));
         sb.append("\n");
         return sb;
-    }
-
-    public static Map<String, String> stringArrayToMap(String[] str) {
-        long start = System.nanoTime();
-        Map<String, String> m = new HashMap<>();
-        if (str == null || (str.length == 1 && str[0].isEmpty()) || str.length == 0) {
-            return m;
-        }
-
-        for (String p : str) {
-            StringTokenizer tk = new StringTokenizer(p, ':', true);
-            String key = tk.nextToken();
-            m.put(key, tk.nextToken());
-        }
-        long end = System.nanoTime();
-        Profiler.addTime("stringArrToMap", end-start);
-        return m;
     }
 
     static <T> StringBuilder listToStringBuilder(List<T> l) {
@@ -162,7 +142,6 @@ public class UcenikUtils {
         }
         
         static Map<String, String> decompress(Map<String, String> m) {
-            long start = System.nanoTime();
             if(inverse == null)
                 initInverse();
 
@@ -172,8 +151,7 @@ public class UcenikUtils {
             Map<String, String> decompressed = new HashMap<>();
             s.forEach((Map.Entry<String, String> t) ->
                     decompressed.put(inverse.get(t.getKey()) == null ? t.getKey() : inverse.get(t.getKey()), t.getValue()));
-            long end = System.nanoTime();
-            Profiler.addTime("decompress", end-start);
+            //Profiler.addTime("decompress", end-start);
             return decompressed;
         }
 
