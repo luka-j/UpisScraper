@@ -6,6 +6,11 @@ import java.util.stream.Collectors;
 
 public class Simulator {
 
+    /**
+     * Određuje način rangiranja učenika. Definiše kako se računaju bodovi i koji učenik ima prioritet
+     * u slučaju da su obojica "na crti". Definiše krugove upisa i služi da se pristupi listama želja
+     * za svakog učenika. Svaka od ovih metoda može biti override-ovana zasebno.
+     */
     public interface RankingMethod {
         /**
          * Prvi uslov za poredjenje, veci broj bodova se rangira iznad
@@ -23,15 +28,35 @@ public class Simulator {
          */
         int getPriority(UcenikZelja zelja1, UcenikZelja zelja2);
 
+        /**
+         * Određuje da li učenik ima uslov za upisivanje date želje. Ako ova metoda vrati false,
+         * želja se neće razmatrati pri upisu.
+         */
         default boolean uslov(UcenikZelja zelja) {
             return zelja.zelja.uslov;
         }
 
+        /**
+         * Broj želja koje je učenik izrazio u datom krugu. Po difoltu, dužina liste
+         * {@link UcenikW#listaZelja1} ili {@link UcenikW#listaZelja2}.
+         */
+        default int getBrojZelja(UcenikW ucenik, int krug) {
+            if(krug == 1) return ucenik.listaZelja1.size();
+            else return ucenik.listaZelja2.size();
+        }
+
+        /**
+         * Želja na datom mestu u datom krugu upisa. Po difoltu koristi liste želja iz wrappera.
+         */
         default UcenikW.Zelja getZelja(UcenikW ucenik, int krug, int redniBroj) {
             if(krug == 1) return ucenik.listaZelja1.get(redniBroj);
             else return ucenik.listaZelja2.get(redniBroj);
         }
 
+        /**
+         * Upoređuje dva učenika, i vraća -1 ako prvi treba biti upisan, 1 ako drugi treba biti upisan,
+         * 0 ako su jednaki (npr. blizanci).
+         */
         default int compare(UcenikZelja zelja1, UcenikZelja zelja2) {
             int cmp = Double.compare(getBrojBodova(zelja2), getBrojBodova(zelja1));
             if(cmp != 0) return cmp;
@@ -45,7 +70,6 @@ public class Simulator {
     public class UcenikZelja implements Comparable<UcenikZelja> {
         public final UcenikW ucenik;
         public final int redniBroj;
-        public final int krug;
         public final UcenikW.Zelja zelja;
         /**
          * Blizanac, ako ga ovaj ucenik ima, u suprotnom blizanac = ucenik
@@ -55,8 +79,6 @@ public class Simulator {
         public UcenikZelja(UcenikW ucenik, int redniBroj, int krug) {
             this.ucenik = ucenik;
             this.redniBroj = redniBroj;
-            if(krug != 1 && krug != 2) throw new IllegalArgumentException("Invalid krug: " + krug);
-            this.krug = krug;
             zelja = rankingMethod.getZelja(ucenik, krug, redniBroj);
             blizanac = ucenik.getBlizanac() == null ? ucenik : ucenik.getBlizanac(); //this definition comes handy in this particular case
         }
@@ -92,13 +114,20 @@ public class Simulator {
         this.filter = filter;
     }
 
-    public void simulate() {
+    /**
+     * Simulira upis koristeći {@link RankingMethod} koji je prosleđen ovom simulatoru.
+     *
+     * @param krug krug za koji se vrši simulacija. Simulator ne pretpostavlja ništa o krugu niti o broju krugova:
+     *             ovaj parametar se prosleđuje metodama {@link RankingMethod#getBrojZelja(UcenikW, int)} i
+     *             {@link RankingMethod#getZelja(UcenikW, int, int)} (obe imaju default implementaciju).
+     */
+    public void simulate(int krug) {
         UceniciBase.load();
         List<UcenikW> sviUcenici = UceniciBase.svi().filter(filter).collect(Collectors.toList());
         List<UcenikZelja> zelje = new ArrayList<>(sviUcenici.size() * 12);
         for(UcenikW ucenik : sviUcenici) {
-            for(int i=0; i<ucenik.listaZelja1.size(); i++) {
-                UcenikZelja zelja = new UcenikZelja(ucenik, i, 1);
+            for(int i=0; i<rankingMethod.getBrojZelja(ucenik, krug); i++) {
+                UcenikZelja zelja = new UcenikZelja(ucenik, i, krug);
                 if(zelja.uslov()) {
                     zelje.add(zelja);
                     ucenik.addProperty(zelja.zelja.smer, zelja);
@@ -174,8 +203,9 @@ public class Simulator {
 
         int greska = 0;
         for(Map.Entry<UcenikW, UcenikZelja> entry : upisani.entrySet()) {
-            if(!entry.getKey().smer.sifra.equals(entry.getValue().zelja.smer.sifra))
+            if(!entry.getKey().smer.sifra.equals(entry.getValue().zelja.smer.sifra)) {
                 greska++;
+            }
         }
         System.out.println("Greska: " + greska);
     }
