@@ -19,7 +19,7 @@ public class UceniciGroupBuilder {
 
     public UceniciGroupBuilder(Predicate<UcenikWrapper> op) {
         if(op == null) {
-            this.op = ucenikWrapper -> true;
+            this.op = u -> true;
         } else {
             this.op = op;
         }

@@ -43,7 +43,11 @@ public class LetterUtils {
         word = word.toLowerCase();
         StringBuilder latin = new StringBuilder();
         for(int i=0; i<word.length(); i++) {
-            latin.append(toLatin.getOrDefault(word.charAt(i), String.valueOf(word.charAt(i))));
+            char c = word.charAt(i);
+            if(toLatin.containsKey(c))
+                latin.append(toLatin.get(c));
+            else
+                latin.append(c);
         }
         return latin.toString();
     }

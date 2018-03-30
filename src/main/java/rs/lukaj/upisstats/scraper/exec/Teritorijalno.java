@@ -35,10 +35,10 @@ public class Teritorijalno {
         public UceniciGroup getGroup() {
             return group;
         }
-
         public double getVal() {
             return val;
         }
+
         private static Comparator<StringGroup> poZavrsnom = (o1, o2) -> {
             if(o1.group.getProsekNaZavrsnom() > o2.group.getProsekNaZavrsnom()) return -1;
             if(o1.group.getProsekNaZavrsnom() < o2.group.getProsekNaZavrsnom()) return 1;
@@ -74,11 +74,11 @@ public class Teritorijalno {
         SmeroviBase.load();
         UceniciGroupBuilder builder = new UceniciGroupBuilder(null);
         Map<String, UceniciGroup> ucenici = builder.getByRegion();
-        List<StringGroup> list = ucenici.entrySet().stream().map((Map.Entry<String, UceniciGroup> en) ->
-                                                                         new StringGroup(en.getKey(), en.getValue(),
-                                                                                         en.getValue().getProsekNaZavrsnom()))
-                                        .collect(Collectors.toList());
-        list.sort(StringGroup.poZavrsnom);
+        List<StringGroup> list = ucenici.entrySet().stream()
+                .map((Map.Entry<String, UceniciGroup> en) ->
+                        new StringGroup(en.getKey(), en.getValue(), en.getValue().getProsekNaZavrsnom()))
+                .sorted(StringGroup.poZavrsnom)
+                .collect(Collectors.toList());
         Spreadsheets.writeStringGroup(new File(DownloadController.DATA_FOLDER, "zavrsni_okruzi_new.xlsx"), list, "Broj bodova");
     }
 
@@ -86,11 +86,11 @@ public class Teritorijalno {
         SmeroviBase.load();
         UceniciGroupBuilder builder = new UceniciGroupBuilder(null);
         Map<String, UceniciGroup> ucenici = builder.getByRegion();
-        List<StringGroup> list = ucenici.entrySet().stream().map((Map.Entry<String, UceniciGroup> en) ->
-                                                                         new StringGroup(en.getKey(), en.getValue(),
-                                                                                         en.getValue().getProsekOcena()))
-                                        .collect(Collectors.toList());
-        list.sort(StringGroup.poOcenama);
+        List<StringGroup> list = ucenici.entrySet().stream()
+                .map((Map.Entry<String, UceniciGroup> en) ->
+                        new StringGroup(en.getKey(), en.getValue(), en.getValue().getProsekOcena()))
+                .sorted(StringGroup.poOcenama)
+                .collect(Collectors.toList());
         Spreadsheets.writeStringGroup(new File(DownloadController.DATA_FOLDER, "ocene_okruzi_new.xlsx"), list, "Prosecna ocena");
     }
 }

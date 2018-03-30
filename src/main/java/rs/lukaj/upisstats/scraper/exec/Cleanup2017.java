@@ -10,6 +10,7 @@ import rs.lukaj.upisstats.scraper.obrada2017.UcenikW;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Cleanup2017 {
     public static void test() {
@@ -116,5 +117,21 @@ public class Cleanup2017 {
             }
         }
         System.out.println("Done");
+    }
+
+    public static void manjeod2() {
+        DownloadController.DATA_FOLDER = DownloadController.generateDataFolder("17");
+        List<UcenikW> svi = UceniciBase.svi().collect(Collectors.toList());
+        for(UcenikW uc : svi) {
+            for(Map.Entry<String, Integer> oc : uc.sestiRaz.ocene.entrySet())
+                if(oc.getValue() == 1)
+                    System.out.println("Ucenik " + uc.sifra + ", predmet " + oc.getKey() + ":" + oc.getValue());
+            for(Map.Entry<String, Integer> oc : uc.sedmiRaz.ocene.entrySet())
+                if(oc.getValue() == 1)
+                    System.out.println("Ucenik " + uc.sifra + ", predmet " + oc.getKey() + ":" + oc.getValue());
+            for(Map.Entry<String, Integer> oc : uc.osmiRaz.ocene.entrySet())
+                if(oc.getValue() == 1)
+                    System.out.println("Ucenik " + uc.sifra + ", predmet " + oc.getKey() + ":" + oc.getValue());
+        }
     }
 }
