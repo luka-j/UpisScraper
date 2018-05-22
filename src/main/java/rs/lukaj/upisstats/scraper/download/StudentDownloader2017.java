@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import rs.lukaj.upisstats.scraper.UpisMpn;
+import rs.lukaj.upisstats.scraper.Main;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
@@ -41,10 +41,10 @@ public class StudentDownloader2017 extends StudentDownloader {
             int i = 1;
             while (!end) {
                 do{
-                    if(UpisMpn.DEBUG)System.out.println("downloading doc " + i + " za " + sifraProfila);
+                    if(Main.DEBUG)System.out.println("downloading doc " + i + " za " + sifraProfila);
                     doc = downloadDoc(generateSmerUrl(sifraProfila), generatePageParams(i), true);
                 } while(doc == null);
-                if(UpisMpn.DEBUG)System.out.println("starting download of ucenici");
+                if(Main.DEBUG)System.out.println("starting download of ucenici");
                 Elements elSifre = doc.select(".tbody .kolona1");
                 Elements bodovi = doc.select(".tbody .kolona3");
                 Elements krugovi = doc.select(".tbody .kolona4");
@@ -53,13 +53,13 @@ public class StudentDownloader2017 extends StudentDownloader {
                     for(int j=0; j<elSifre.size(); j++) {
                         data = new UceniciManager.UcData(elSifre.get(j).text(), bodovi.get(j).text(), krugovi.get(j).text());
                         sifre.add(data);
-                        if(UpisMpn.DEBUG)System.out.print("added new ucenik: " + data);
+                        if(Main.DEBUG)System.out.print("added new ucenik: " + data);
                     }
                 }
                 i++;
             }
         } catch (IOException ex) {
-            Logger.getLogger(UpisMpn.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return sifre;

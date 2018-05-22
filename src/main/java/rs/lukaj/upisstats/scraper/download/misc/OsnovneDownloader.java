@@ -2,7 +2,7 @@ package rs.lukaj.upisstats.scraper.download.misc;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import rs.lukaj.upisstats.scraper.UpisMpn;
+import rs.lukaj.upisstats.scraper.Main;
 import rs.lukaj.upisstats.scraper.download.DownloadController;
 import rs.lukaj.upisstats.scraper.download.StudentDownloader;
 
@@ -34,7 +34,7 @@ public class OsnovneDownloader {
         int i=500;
         while(consecEmpty<100) {
             do {
-                if(UpisMpn.DEBUG && i%50==0)
+                if(Main.DEBUG && i%50==0)
                     System.out.println("downloading doc for osnovna id " + i + "(started: " + start + ")");
                 doc = downloadDoc(i);
             } while(doc == null);

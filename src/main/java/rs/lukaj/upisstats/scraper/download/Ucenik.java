@@ -4,7 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import rs.lukaj.upisstats.scraper.UpisMpn;
+import rs.lukaj.upisstats.scraper.Main;
 import rs.lukaj.upisstats.scraper.utils.StringTokenizer;
 
 import java.io.*;
@@ -141,7 +141,7 @@ public class Ucenik {
      * @throws IOException
      */
     public Ucenik loadFromNet() throws IOException {
-        if (UpisMpn.DEBUG) {
+        if (Main.DEBUG) {
             System.out.println("loading ucenik: " + id);
         }
         if (exists && !OVERWRITE_OLD) {
@@ -185,7 +185,7 @@ public class Ucenik {
         else if(krugText.contains("DRUGOM")) krug="2";
         else if(krugText.contains("OUK")) krug="0";*/ //ovo bi bilo idealno, ali ne živimo u idealnom svetu
         krug = doc.select(".status_ucenika").get(1).text().contains("PRVOM") ? "1" : "2";
-        if (UpisMpn.DEBUG) {
+        if (Main.DEBUG) {
             System.out.println("loaded ucenik: " + id);
         }
         return this;
@@ -253,13 +253,13 @@ public class Ucenik {
      * @param folder folder u kom treba sacuvati ucenika
      */
     public void saveToFile(File folder) {
-        if (UpisMpn.DEBUG) {
+        if (Main.DEBUG) {
             System.out.println("saving ucenik: " + id);
         }
         if (exists && !OVERWRITE_OLD) {
             return;
         }
-        if(UpisMpn.REDOING_DOWNLOAD)
+        if(Main.REDOING_DOWNLOAD)
             System.out.println("Found missing! " + id);
         File f = new File(folder, id);
         try (Writer fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"))) {
@@ -267,7 +267,7 @@ public class Ucenik {
         } catch (IOException ex) {
             Logger.getLogger(Ucenik.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (UpisMpn.DEBUG) {
+        if (Main.DEBUG) {
             System.out.println("saved ucenik: " + id);
         }
     }

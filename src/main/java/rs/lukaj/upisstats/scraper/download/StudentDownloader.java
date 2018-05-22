@@ -4,7 +4,7 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import rs.lukaj.upisstats.scraper.UpisMpn;
+import rs.lukaj.upisstats.scraper.Main;
 import rs.lukaj.upisstats.scraper.download.UceniciManager.UcData;
 
 import java.io.IOException;
@@ -40,18 +40,18 @@ public class StudentDownloader {
      * Preuzima podatke o ucenicima sa sajta
      */
     public void downloadStudentData(DownloadConfig config) {
-        if(UpisMpn.DEBUG)System.out.println("starting program");
+        if(Main.DEBUG)System.out.println("starting program");
         Deque<UcData> uc;
         Smerovi smerovi = config.getSmerovi();
         smerovi.iterate(currentSmer);
         double time, est; char oznaka;
-        if(UpisMpn.DEBUG)System.out.println("starting iteration");
+        if(Main.DEBUG)System.out.println("starting iteration");
         UceniciManager ucenici = config.getUceniciManager();
         while (smerovi.hasNext()) {
             String smerSifra = smerovi.getNextSifra();
-            if(UpisMpn.DEBUG)System.out.println("Uzimam sifre ucenika za " + smerSifra);
+            if(Main.DEBUG)System.out.println("Uzimam sifre ucenika za " + smerSifra);
             uc = getSifreUcenika(smerSifra);
-            if(UpisMpn.DEBUG)System.out.println("Uzeo sifre za " + smerSifra);
+            if(Main.DEBUG)System.out.println("Uzeo sifre za " + smerSifra);
             ucenici.add(uc);
             currentSmer++; //possible source of bugs (racing condition: non-atomic increment)
             System.out.print(String.format("%.2f%s", smerovi.getPercentageIterated(), "% - "));
@@ -87,10 +87,10 @@ public class StudentDownloader {
             while (!end) {
                 try {
                     do {
-                        if(UpisMpn.DEBUG)System.out.println("downloading doc " + i + " za " + sifraProfila);
+                        if(Main.DEBUG)System.out.println("downloading doc " + i + " za " + sifraProfila);
                     doc = downloadDoc(generateUrl(sifraProfila, i), "", true);
                     } while(doc == null);
-                    if(UpisMpn.DEBUG)System.out.println("starting download of ucenici");
+                    if(Main.DEBUG)System.out.println("starting download of ucenici");
                     for (int j = 2; j <= UCENIKA_PO_STRANI * UCENIK_IDOVA_PO_TR; j += UCENIK_IDOVA_PO_TR) {
                         trSifra = doc.select("#" + String.valueOf(j));
                         trUkBodova = doc.select("#" + String.valueOf(j + 3));
@@ -100,7 +100,7 @@ public class StudentDownloader {
                         if(trSifra.text().isEmpty()) {end=true; break;}
                         data = new UcData(trSifra.text(), trUkBodova.text(), osTokens[osTokens.length - 1]);
                         sifre.add(data);
-                        if(UpisMpn.DEBUG)System.out.print("added new ucenik: " + data);
+                        if(Main.DEBUG)System.out.print("added new ucenik: " + data);
                     }
                 } catch (NullPointerException ex) {
                     Logger.getLogger(StudentDownloader.class.getName()).log(Level.WARNING, "NPE@ucenici: poslednji put");

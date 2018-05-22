@@ -108,7 +108,7 @@ public class Smerovi {
         File f = new File(DownloadController.DATA_FOLDER, SAVEFILE_NAME);
         try (Writer bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"))) {
             bw.write(out.toString());
-            //if(UpisMpn.DEBUG) System.out.println("wrote to file");
+            //if(Main.DEBUG) System.out.println("wrote to file");
         } catch (IOException ex) {
             Logger.getLogger(Smerovi.class.getName()).log(Level.SEVERE, null, ex);
         }

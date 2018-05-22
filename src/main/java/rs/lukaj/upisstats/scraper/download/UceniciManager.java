@@ -1,6 +1,6 @@
 package rs.lukaj.upisstats.scraper.download;
 
-import rs.lukaj.upisstats.scraper.UpisMpn;
+import rs.lukaj.upisstats.scraper.Main;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -55,16 +55,16 @@ public class UceniciManager {
     private static final Executor executor = Executors.newSingleThreadExecutor();
     
     protected void add(Deque<UcData> data) {
-        if(UpisMpn.DEBUG) System.out.println("adding new chunk");
+        if(Main.DEBUG) System.out.println("adding new chunk");
         sifre.addAll(data);
         if (sifre.size() >= SAVE_AT) {
             download();
-            if(UpisMpn.DEBUG) System.out.println("initializing saver");
+            if(Main.DEBUG) System.out.println("initializing saver");
             Saver s = new Saver();
             executor.execute(s);
             sifre.clear();
             ucenici.clear();
-            if(UpisMpn.DEBUG) {
+            if(Main.DEBUG) {
                 System.out.println("lists cleared");
             }
         }
@@ -76,17 +76,17 @@ public class UceniciManager {
 
 
     protected void download() {
-        if(UpisMpn.DEBUG)System.out.println("downloading ucenik info");
+        if(Main.DEBUG)System.out.println("downloading ucenik info");
         sifre.forEach((UcData datum) -> {
             Ucenik uc = loadUcenik(datum.sifra, datum.ukBodova, datum.mestoOS);
             if (uc != null) {
                 ucenici.add(uc);
             } else {
-                if(UpisMpn.DEBUG) System.out.println("failed downloading ucenik");
+                if(Main.DEBUG) System.out.println("failed downloading ucenik");
                 failed.add(new UcData(datum.sifra, datum.ukBodova, datum.mestoOS));
             }
         });
-        if(UpisMpn.DEBUG)System.out.println("downloaded ucenik info");
+        if(Main.DEBUG)System.out.println("downloaded ucenik info");
     }
 
     private Ucenik loadUcenik(String sifra, String ukBodova, String mestoOS) {
@@ -155,7 +155,7 @@ public class UceniciManager {
         public void run() {
             attemptToDownloadFailed();
             data.forEach((Ucenik uc) -> uc.saveToFile(DownloadController.DATA_FOLDER));
-            if(UpisMpn.DEBUG)System.out.println("Saved ucenici");
+            if(Main.DEBUG)System.out.println("Saved ucenici");
             DownloadController.saveProgress();
         }
     }

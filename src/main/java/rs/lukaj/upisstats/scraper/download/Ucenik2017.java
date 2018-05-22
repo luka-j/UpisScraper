@@ -5,7 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import rs.lukaj.upisstats.scraper.UpisMpn;
+import rs.lukaj.upisstats.scraper.Main;
 import rs.lukaj.upisstats.scraper.utils.StringTokenizer;
 
 import java.io.*;
@@ -170,7 +170,7 @@ public class Ucenik2017 extends Ucenik {
 
     @Override
     public Ucenik loadFromNet() throws IOException {
-        if (UpisMpn.DEBUG) {
+        if (Main.DEBUG) {
             System.out.println("loading ucenik: " + id);
         }
         if(exists && !OVERWRITE_OLD) return this;

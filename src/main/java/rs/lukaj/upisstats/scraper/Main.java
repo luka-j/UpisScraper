@@ -9,7 +9,7 @@ import rs.lukaj.upisstats.scraper.obrada.Exec;
  *
  * @author Luka
  */
-public class UpisMpn {
+public class Main {
 
     public static final boolean    DEBUG             = false;
     public static final boolean REDOING_DOWNLOAD = false;
