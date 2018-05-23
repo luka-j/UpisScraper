@@ -1,6 +1,6 @@
 package rs.lukaj.upisstats.scraper.exec;
 
-import jdk.nashorn.internal.runtime.regexp.joni.Config;
+import rs.lukaj.upisstats.scraper.Main;
 import rs.lukaj.upisstats.scraper.obrada.UceniciGroup;
 import rs.lukaj.upisstats.scraper.obrada.UceniciGroupBuilder;
 import rs.lukaj.upisstats.scraper.obrada.UcenikWrapper;
@@ -54,11 +54,11 @@ public class Ocene {
 
 
     public static void za5() {
-        if(Config.DEBUG) System.out.println("Building groups");
+        if(Main.DEBUG) System.out.println("Building groups");
         long time = System.currentTimeMillis();
         Map<UcenikWrapper.OsnovnaSkola, UceniciGroup> skole  = new UceniciGroupBuilder(null).getByOS();
         long end = System.currentTimeMillis();
-        if(Config.DEBUG) System.out.println("Done Building. Time: " + (end-time));
+        if(Main.DEBUG) System.out.println("Done Building. Time: " + (end-time));
         double                                        maxMat = Double.MIN_VALUE, maxSrp = Double.MIN_VALUE, maxKom = Double.MIN_VALUE;
         double                                        minMat = Double.MAX_VALUE, minSrp = Double.MAX_VALUE, minKom = Double.MIN_VALUE;
         UcenikWrapper.OsnovnaSkola                    maxMos = null, minMos = null, maxSos = null, minSos = null, maxKos = null, minKos = null;
@@ -101,7 +101,7 @@ public class Ocene {
                 minKos = e.os;
             }
         }
-        if(Config.DEBUG)System.out.println("Found max in " + (end-time));
+        if(Main.DEBUG)System.out.println("Found max in " + (end-time));
         System.out.println("Najvise za 5 iz srpskog treba u skoli " + maxSos.ime
                                    + " iz " + maxSos.mesto + " (" + maxSos.okrug + " okrug) i to "
                                    + maxSrp + "%");
