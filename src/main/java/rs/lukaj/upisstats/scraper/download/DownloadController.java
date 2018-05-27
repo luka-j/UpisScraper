@@ -17,7 +17,7 @@ public class DownloadController {
             : new File("D:\\Shared\\mined\\UpisData\\" + YEAR);
     public static Thread mainThread;
     private static final String SAVE_FILENAME = "save";
-    private static StudentDownloader studentDownloader;
+    private static UceniciDownloader uceniciDownloader;
 
     public static File generateDataFolder(String year) {
         return System.getProperty("os.name").toLowerCase().contains("nix")
@@ -29,7 +29,7 @@ public class DownloadController {
     /**
      * Ucitava sve smerova, a zatim ucitava ucenike
      * @see Smerovi#load()
-     * @see StudentDownloader#downloadStudentData(DownloadConfig)
+     * @see UceniciDownloader#downloadStudentData(DownloadConfig)
      */
     public static void startDownload(DownloadConfig config) {
         Runtime.getRuntime().addShutdownHook(new Thread(new Save(config)));
@@ -40,8 +40,8 @@ public class DownloadController {
         config.loadOsnovneIds();
         System.out.println("Ucitao id-jeve osnovnih skola");
         IntLongPair progress = loadProgress();
-        studentDownloader = config.getStudentDownloader(progress.a, progress.b);
-        studentDownloader.downloadStudentData(config);
+        uceniciDownloader = config.getStudentDownloader(progress.a, progress.b);
+        uceniciDownloader.downloadStudentData(config);
         System.out.println("Ucitao ucenike; ucitavam osnovne");
         config.downloadOsnovne();
         System.out.println("Završio download!");
@@ -52,10 +52,10 @@ public class DownloadController {
      * {@link DownloadController#SAVE_FILENAME}
      */
     public static void saveProgress() {
-        if(studentDownloader == null) return;
+        if(uceniciDownloader == null) return;
         File saveData = new File(DATA_FOLDER, SAVE_FILENAME);
         try (final FileWriter fw = new FileWriter(saveData)) {
-            fw.write(String.valueOf(studentDownloader.getCurrentSmer()) + "\\" + String.valueOf(studentDownloader.getVreme()));
+            fw.write(String.valueOf(uceniciDownloader.getCurrentSmer()) + "\\" + String.valueOf(uceniciDownloader.getVreme()));
         } catch (IOException ex) {
             Logger.getLogger(Ucenik.class.getName()).log(Level.SEVERE, null, ex);
         }

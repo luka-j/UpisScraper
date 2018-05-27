@@ -4,7 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import rs.lukaj.upisstats.scraper.Main;
 import rs.lukaj.upisstats.scraper.download.DownloadController;
-import rs.lukaj.upisstats.scraper.download.StudentDownloader;
+import rs.lukaj.upisstats.scraper.download.UceniciDownloader;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -67,7 +67,7 @@ public class OsnovneDownloader {
         try {
             Thread.sleep(3000);
         } catch (InterruptedException ex1) {
-            Logger.getLogger(StudentDownloader.class.getName()).log(Level.SEVERE, null, ex1);
+            Logger.getLogger(UceniciDownloader.class.getName()).log(Level.SEVERE, null, ex1);
         }
         return null;
     }

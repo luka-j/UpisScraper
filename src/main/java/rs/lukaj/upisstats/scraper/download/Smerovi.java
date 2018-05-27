@@ -64,12 +64,12 @@ public class Smerovi {
                         addToBase(new Smer(trSifra.text(), trPodrucje.text(), trKvota.text()));
                     }
                 } catch (NullPointerException ex) {
-                    Logger.getLogger(StudentDownloader.class.getName()).log(Level.FINE, "NPE@smerovi: poslednji put");
+                    Logger.getLogger(UceniciDownloader.class.getName()).log(Level.FINE, "NPE@smerovi: poslednji put");
                 }
                 System.out.println(String.valueOf(((double)i/END_AT) * 100) + "%...");
             }
         } catch (IOException ex) {
-            Logger.getLogger(StudentDownloader.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UceniciDownloader.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

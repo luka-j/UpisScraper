@@ -14,11 +14,11 @@ import java.util.Deque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class StudentDownloader {
-    private static StudentDownloader instance;
+public class UceniciDownloader {
+    private static UceniciDownloader instance;
 
-    public static StudentDownloader getInstance(int startingIndex, long time) {
-        if(instance == null) instance = new StudentDownloader(startingIndex, time);
+    public static UceniciDownloader getInstance(int startingIndex, long time) {
+        if(instance == null) instance = new UceniciDownloader(startingIndex, time);
         return instance;
     }
 
@@ -53,7 +53,7 @@ public class StudentDownloader {
             uc = getSifreUcenika(smerSifra);
             if(Main.DEBUG)System.out.println("Uzeo sifre za " + smerSifra);
             ucenici.add(uc);
-            currentSmer++; //possible source of bugs (racing condition: non-atomic increment)
+            currentSmer++; //possible source of bugs (race condition: non-atomic increment)
             System.out.print(String.format("%.2f%s", smerovi.getPercentageIterated(), "% - "));
             time = (System.currentTimeMillis() - startTime + spentTime)/1000;
             est = ((100/smerovi.getPercentageIterated()-1)*time) / 3600;
@@ -103,13 +103,13 @@ public class StudentDownloader {
                         if(Main.DEBUG)System.out.print("added new ucenik: " + data);
                     }
                 } catch (NullPointerException ex) {
-                    Logger.getLogger(StudentDownloader.class.getName()).log(Level.WARNING, "NPE@ucenici: poslednji put");
+                    Logger.getLogger(UceniciDownloader.class.getName()).log(Level.WARNING, "NPE@ucenici: poslednji put");
                     break;
                 }
                 i++;
             }
         } catch (IOException ex) {
-            Logger.getLogger(StudentDownloader.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UceniciDownloader.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return sifre;
@@ -120,11 +120,11 @@ public class StudentDownloader {
             Connection c =  Jsoup.connect(url);
             return post ? c.requestBody(requestBody).post() : c.get();
         } catch (SocketTimeoutException ex) {
-            System.err.println("Socket timeout @ downloadDoc (StudentDownloader)");
+            System.err.println("Socket timeout @ downloadDoc (UceniciDownloader)");
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException ex1) {
-                Logger.getLogger(StudentDownloader.class.getName()).log(Level.SEVERE, null, ex1);
+                Logger.getLogger(UceniciDownloader.class.getName()).log(Level.SEVERE, null, ex1);
             }
             return null;
         }
@@ -134,7 +134,7 @@ public class StudentDownloader {
         return UCENICI_URL + sifra + "&broj_strane=" + brojStrane;
     }
 
-    protected StudentDownloader(int startingIndex, long time) {
+    protected UceniciDownloader(int startingIndex, long time) {
         spentTime = time;
         currentSmer = startingIndex;
     }

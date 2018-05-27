@@ -15,15 +15,15 @@ import java.util.logging.Logger;
 /**
  * Created by luka on 3.7.17..
  */
-public class StudentDownloader2017 extends StudentDownloader {
-    private StudentDownloader2017(int startingIndex, long time) {
+public class UceniciDownloader2017 extends UceniciDownloader {
+    private UceniciDownloader2017(int startingIndex, long time) {
         super(startingIndex, time);
     }
 
-    private static StudentDownloader2017 instance;
+    private static UceniciDownloader2017 instance;
 
-    public static StudentDownloader2017 getInstance(int startingIndex, long time) {
-        if(instance == null) instance = new StudentDownloader2017(startingIndex, time);
+    public static UceniciDownloader2017 getInstance(int startingIndex, long time) {
+        if(instance == null) instance = new UceniciDownloader2017(startingIndex, time);
         return instance;
     }
 

@@ -100,7 +100,7 @@ public class Cleanup2017 {
         Smerovi2017.getInstance().load();
         SmeroviBase.load();
         String[] faileds = new String[] {"BGNB GB 4R03S", "PMCU SB 4O13S", "JBNS SF 4O01S", "JALE GA 4R04S", "NINI SI 4O13S", "NINI SE 4L01S", "BGVR GA 4R04S", "JNVR GA 4R01S", "JNVR GA 4R04S", "BGNB GA 4R04S", "BGCU GA 4R04S", "JBNS SF 4O13S", "JBNS GC 4R04S"};
-        StudentDownloader2017 downloader = StudentDownloader2017.getInstance(0, 0);
+        UceniciDownloader2017 downloader = UceniciDownloader2017.getInstance(0, 0);
         for(String failed : faileds) {
             System.out.println(failed);
             Deque<UceniciManager.UcData> data = downloader.getSifreUcenika(failed);
