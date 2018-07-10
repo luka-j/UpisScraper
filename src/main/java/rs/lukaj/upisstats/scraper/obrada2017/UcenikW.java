@@ -5,10 +5,10 @@ import rs.lukaj.upisstats.scraper.download.Ucenik2017;
 import rs.lukaj.upisstats.scraper.download.UcenikUtils;
 import rs.lukaj.upisstats.scraper.utils.StringTokenizer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class UcenikW {
     public final int sifra;
@@ -89,8 +89,12 @@ public class UcenikW {
         prijemni = mapValuesToDouble(uc.getPrijemni());
         bodovaTakmicenja = takmicenje == null ? 0 : takmicenje.bodova;
 
-        listaZelja1 = uc.getListaZelja1().stream().map(Zelja::new).collect(Collectors.toList());
-        listaZelja2 = uc.getListaZelja2().stream().map(Zelja::new).collect(Collectors.toList());
+        listaZelja1 = new ArrayList<>();
+        for(int i=0; i<uc.getListaZelja1().size(); i++)
+            listaZelja1.add(new Zelja(uc.getListaZelja1().get(i), i, 1));
+        listaZelja2 = new ArrayList<>();
+        for(int i=0; i<uc.getListaZelja2().size(); i++)
+            listaZelja2.add(new Zelja(uc.getListaZelja2().get(i), i, 2));
 
         prosekUkupno = (sestiRaz.prosekOcena + sedmiRaz.prosekOcena + osmiRaz.prosekOcena)/3;
         bodoviOcene = sestiRaz.bodovi + sedmiRaz.bodovi + osmiRaz.bodovi;
@@ -163,10 +167,14 @@ public class UcenikW {
         public final SmerW smer;
         public final boolean uslov;
         public final double bodovaZaUpis;
+        public final int redniBroj;
+        public final int krug;
 
-        public Zelja(Ucenik2017.Zelja zelja) {
+        public Zelja(Ucenik2017.Zelja zelja, int redniBroj, int krug) {
             this.smer = SmeroviBase.get(zelja.getSifraSmera());
             this.uslov = Integer.parseInt(zelja.getUslov()) != 0;
+            this.redniBroj = redniBroj;
+            this.krug = krug;
             if(uslov)
                 this.bodovaZaUpis = Double.parseDouble(zelja.getBodovaZaUpis());
             else
