@@ -306,7 +306,6 @@ public class Ucenik2017 extends Ucenik {
 
     @Override
     public void loadFromString(String compactString) {
-        //String[] chunks = compactString.split("\n", -1);
         StringTokenizer master = new StringTokenizer(compactString, '\n', true);
 
         StringTokenizer inner = new StringTokenizer(master.nextToken(), '\\', true);
@@ -317,7 +316,6 @@ public class Ucenik2017 extends Ucenik {
         blizanac = inner.nextToken();
         najboljiBlizanacBodovi = inner.nextToken();
         prioritet = Boolean.parseBoolean(inner.nextToken());
-        //String[] basics = chunks[0].split("\\\\", -1);
 
         inner = new StringTokenizer(master.nextToken(), '\\', true);
         srpski = inner.nextToken();
@@ -326,30 +324,22 @@ public class Ucenik2017 extends Ucenik {
         bodovaAM = inner.nextToken();
         origUkupnoBodova = inner.nextToken();
         ukupnoBodova = inner.nextToken();
-        //String[] bodovi = chunks[1].split("\\\\");
 
         inner = new StringTokenizer(master.nextToken(), '\\', true);
         maternji = inner.nextToken();
         prviStrani = inner.nextToken();
         drugiStrani = inner.nextToken();
 
-        //String[] jezici = chunks[2].split("\\\\", -1);
 
         loadOcene(sestiRaz, master.nextToken());
         loadOcene(sedmiRaz, master.nextToken());
         loadOcene(osmiRaz, master.nextToken());
-        /*String[] sesti = chunks[3].split("\\\\", 0);
-        String[] sedmi = chunks[4].split("\\\\", 0);
-        String[] osmi = chunks[5].split("\\\\", 0);*/
         loadMap(takmicenja, master.nextToken());
         loadMap(prijemni, master.nextToken());
-        //String[] takmicenja = chunks[6].split("\\\\", 0);
-        //String[] prijemni = chunks[7].split("\\\\", 0);
 
         inner = new StringTokenizer(master.nextToken(), '\\', false);
         while(inner.hasMoreTokens())
             this.profili.add(new Profil(inner.nextToken()));
-        //String[] profili = chunks[8].split("\\\\", 0);
         inner = new StringTokenizer(master.nextToken(), '\\', false);
         while(inner.hasMoreTokens())
             this.listaZelja1.add(new Zelja(inner.nextToken()));
@@ -357,34 +347,6 @@ public class Ucenik2017 extends Ucenik {
         while(inner.hasMoreTokens())
             this.listaZelja2.add(new Zelja(inner.nextToken()));
         long end = System.nanoTime();
-        //String[] zelje1 = chunks[9].split("\\\\", 0);
-        //String[] zelje2 = chunks[10].split("\\\\", 0);
-
-        /*osId = basics[0];
-        upisana = basics[1];
-        origKrug = basics[2];
-        krug = basics[3];
-        blizanac = basics[4];
-        najboljiBlizanacBodovi = basics[5];
-        prioritet = Boolean.parseBoolean(basics[6]);*/
-        /*srpski = bodovi[0];
-        matematika = bodovi[1];
-        kombinovani = bodovi[2];
-        bodovaAM = bodovi[3];
-        origUkupnoBodova = bodovi[4];
-        ukupnoBodova = bodovi[5];*/
-        /*maternji = jezici[0];
-        prviStrani = jezici[1];
-        drugiStrani = jezici[2];*/
-
-        //sestiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(sesti));
-        //sedmiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(sedmi));
-        //osmiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(osmi));
-        //this.takmicenja = UcenikUtils.stringArrayToMap(takmicenja);
-        //this.prijemni = UcenikUtils.stringArrayToMap(prijemni);
-        //this.profili = UcenikUtils.stringToListProfil(profili);
-        //listaZelja1 = UcenikUtils.stringToListZelja(zelje1);
-        //listaZelja2 = UcenikUtils.stringToListZelja(zelje2);
     }
 
     private void loadOcene(Map<String, String> to, String from) {

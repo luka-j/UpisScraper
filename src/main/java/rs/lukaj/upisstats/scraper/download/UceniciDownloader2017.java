@@ -78,7 +78,7 @@ public class UceniciDownloader2017 extends UceniciDownloader {
     }
 
     private static String generateSmerUrl(String sifra) {
-        return "http://upis.mpn.gov.rs/Cir/Srednje-skole/" + sifra.replace(' ', '-');
+        return "http://upis.mpn.gov.rs/Lat/Srednje-skole/" + sifra.replace(' ', '-');
     }
     private static String generatePageParams(int page) {
         return "id_grid=wuc_Grid1&grid_refresh=1&filter=&sort=&page=" + page + "&page_size=-1&IDPocetniFilter=0&IDStalniFilter=0&multiselect=0&Pretraga=&executeUCMethod=wuc_Grid%3FDBID%3D9%26ID%3Dwuc_Grid1%26PageSize%3D-1%26ClientMode%3D1&methodName=InitGrid";

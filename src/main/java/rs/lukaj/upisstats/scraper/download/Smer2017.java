@@ -29,7 +29,6 @@ public class Smer2017 extends Smer {
     protected String json;
 
 
-
     public String getIme() {
         return ime;
     }
@@ -130,12 +129,12 @@ public class Smer2017 extends Smer {
     }
 
     public void loadFromJson(SmerMappingTools.Mapper mapper, JsonObject json) {
-        ime = json.get("NazivSkole1").getAsString();
+        ime = json.get("NazivSkole2").getAsString();
         jezik = mapper.getJezik(Integer.parseInt(json.get("IDJezik").getAsString()));
         opstina = mapper.getOpstina(Integer.parseInt(json.get("IDOpstina").getAsString()));
         okrug = mapper.getOkrug(Integer.parseInt(json.get("IDOkrug").getAsString()));
         kvotaUmanjenje = json.get("KvotaUmanjenje").getAsString();
-        podrucje = json.get("Naziv1").getAsString();
+        podrucje = json.get("Naziv2").getAsString();
         trajanje = json.get("Trajanje").getAsString();
 
         upisano1K = json.get("Upisano1K").getAsString();
