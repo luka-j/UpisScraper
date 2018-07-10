@@ -125,11 +125,12 @@ public class Smer2017 extends Smer {
     public void loadFromJson() {
         try {
             JsonParser parse = new JsonParser();
+            SmerMappingTools.Mapper mapper = SmerMappingTools.getMapper(2017);
             JsonObject json = parse.parse(Files.readAllLines(new File(Smerovi.SMEROVI_FOLDER, getSifra() + ".json").toPath()).get(0)).getAsJsonArray().get(0).getAsJsonObject();
             ime = json.get("NazivSkole1").getAsString();
-            jezik = SmerMappingTools.getJezik(Integer.parseInt(json.get("IDJezik").getAsString()));
-            opstina = SmerMappingTools.getOpstina(Integer.parseInt(json.get("IDOpstina").getAsString()));
-            okrug = SmerMappingTools.getOkrug(Integer.parseInt(json.get("IDOkrug").getAsString()));
+            jezik = mapper.getJezik(Integer.parseInt(json.get("IDJezik").getAsString()));
+            opstina = mapper.getOpstina(Integer.parseInt(json.get("IDOpstina").getAsString()));
+            okrug = mapper.getOkrug(Integer.parseInt(json.get("IDOkrug").getAsString()));
             kvotaUmanjenje = json.get("KvotaUmanjenje").getAsString();
             podrucje = json.get("Naziv1").getAsString();
             trajanje = json.get("Trajanje").getAsString();

@@ -66,14 +66,15 @@ public class UceniciDownloader2017 extends UceniciDownloader {
     }
 
     private void downloadSmerDetails(Document doc) {
+        SmerMappingTools.Mapper mapper = SmerMappingTools.getMapper(2017);
         Elements scripts = doc.getElementsByTag("script");
         String script = scripts.get(scripts.size()-3).data();
         String json = script.trim().split(";", 2)[0].split(" = ", 2)[1];
         JsonObject data = new JsonParser().parse(json).getAsJsonArray().get(0).getAsJsonObject();
         String sifra = data.get("sifra").getAsString();
-        String opstina = SmerMappingTools.getOpstina(Integer.parseInt(data.get("IDOpstina").getAsString()));
-        String okrug = SmerMappingTools.getOkrug(Integer.parseInt(data.get("IDOkrug").getAsString()));
-        String podrucje = SmerMappingTools.getPodrucje(Integer.parseInt(data.get("IDPodrucjeRada").getAsString()));
+        String opstina = mapper.getOpstina(Integer.parseInt(data.get("IDOpstina").getAsString()));
+        String okrug = mapper.getOkrug(Integer.parseInt(data.get("IDOkrug").getAsString()));
+        String podrucje = mapper.getPodrucje(Integer.parseInt(data.get("IDPodrucjeRada").getAsString()));
         Smerovi2017.getInstance().get(sifra).setDetails(json, opstina, okrug, podrucje);
     }
 
