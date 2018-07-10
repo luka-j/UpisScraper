@@ -9,7 +9,7 @@ import java.util.logging.Logger;
  * @author Luka
  */
 public class DownloadController {
-    public static String YEAR = "17";
+    public static String YEAR = "18";
 
     public static File DATA_FOLDER = System.getProperty("os.name").toLowerCase().contains("nix")
             || System.getProperty("os.name").toLowerCase().contains("nux") ?

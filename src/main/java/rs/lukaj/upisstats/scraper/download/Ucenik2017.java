@@ -173,7 +173,7 @@ public class Ucenik2017 extends Ucenik {
         if (Main.DEBUG) {
             System.out.println("loading ucenik: " + id);
         }
-        if(exists && !OVERWRITE_OLD) return this;
+        if(exists() && !OVERWRITE_OLD) return this;
 
         Document doc = Jsoup.connect(UCENICI_URL + id).get();
         Elements scripts = doc.getElementsByTag("script");
@@ -410,7 +410,7 @@ public class Ucenik2017 extends Ucenik {
     @Override
     public void saveToFile(File folder) {
         super.saveToFile(folder);
-        if(exists && !OVERWRITE_OLD) return;
+        if(exists() && !OVERWRITE_OLD) return;
         File f = new File(folder, id + ".json");
         try (Writer fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"))) {
             fw.write(jsonData);
