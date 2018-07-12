@@ -12,6 +12,10 @@ Scraps data from upis.mpn.gov.rs.
 - Krug u kojem je učenik upisan
 - 2017: ... i ostale stvari koje su dostupne na sajtu
 
+## Ne preuzima:
+- Podatke o učenicima koji nisu upisali srednju školu
+- Podatke o učenicima koji su upisali (samo) muzičku ili baletsku školu
+
 ## Zašto?
 
 Zašto da ne? Podaci su tu, mogu reći svašta uz dovoljno (dobrih) ideja, a možda još nekom sem meni ovo bude korisno. Godišnji izveštaji od završnom ispitu Zavoda za vrednovanje kvaliteta obrazovanja su fin početak.

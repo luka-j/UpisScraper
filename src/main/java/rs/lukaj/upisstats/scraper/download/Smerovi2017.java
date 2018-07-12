@@ -40,9 +40,9 @@ public class Smerovi2017 extends Smerovi {
                     if(skole.size() == 0) break;
                     for (int j = 0; j < skole.size(); j++) {
                         Element sk = skole.get(j);
-                        String[] data = parseSmer(sk.text());
+                        String sifra = parseSifra(sk.text());
                         String kvota = kvote.get(j).text();
-                        Smer2017 smer = new Smer2017(data[0], data[1], data[2], data[3], kvota);
+                        Smer2017 smer = new Smer2017(sifra, kvota);
                         addToBase(smer);
                     }
                 }
@@ -62,7 +62,15 @@ public class Smerovi2017 extends Smerovi {
         return "id_grid=wuc_Grid1&grid_refresh=1&filter=(IDOkrug+%3D+" + okrug + ")&sort=&page=" + page + "&page_size=-1&IDPocetniFilter=0&IDStalniFilter=0&multiselect=0&Pretraga=&executeUCMethod=wuc_Grid%3FDBID%3D1%26ID%3Dwuc_Grid1%26PageSize%3D-1%26ClientMode%3D1&methodName=InitGrid";
     }
 
-    //sifra, ime, mesto, jezik
+    private static String parseSifra(String smerText) {
+        int spaces = 0, i=0;
+        while(spaces < 3)
+            if(Character.isWhitespace(smerText.charAt(i++)))
+                spaces++;
+        return smerText.substring(0, i);
+    }
+
+    //sifra, skola, mesto, jezik
     private static String[] parseSmer(String smer) {
         StringBuilder ime= new StringBuilder();
         String sifra, podrucje, jezik;

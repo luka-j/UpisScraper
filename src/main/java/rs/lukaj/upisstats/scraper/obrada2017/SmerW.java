@@ -15,7 +15,7 @@ public class SmerW {
     public SmerW(Smer2017 smer) {
         sifra = smer.getSifra();
         this.smer = smer.getPodrucje(); //it's not a mistake
-        skola = smer.getIme();
+        skola = smer.getSkola();
         podrucje = smer.getPodrucje2017();
         jezik = smer.getJezik();
         opstina = smer.getOpstina();

@@ -16,7 +16,8 @@ import java.util.concurrent.Executors;
  * Created by luka on 2.7.17.
  */
 public class Smer2017 extends Smer {
-    protected String ime;
+    protected String skola;
+    protected String smer;
     protected String jezik;
     protected String opstina;
     protected String okrug;
@@ -29,8 +30,8 @@ public class Smer2017 extends Smer {
     protected String json;
 
 
-    public String getIme() {
-        return ime;
+    public String getSkola() {
+        return skola;
     }
 
     public String getJezik() {
@@ -60,16 +61,14 @@ public class Smer2017 extends Smer {
         return json;
     }
 
-    public Smer2017(String sifra, String ime, String smer, String jezik, String kvota) {
-        super(sifra, smer, kvota);
-        this.ime = ime;
-        this.jezik = jezik;
+    public Smer2017(String sifra, String kvota) {
+        super(sifra, null, kvota);
     }
 
     public Smer2017(String compactString) {
         super(compactString);
         String[] tokens = compactString.split("\\\\");
-        ime = LetterUtils.toLatin(tokens[3]);
+        skola = LetterUtils.toLatin(tokens[3]);
         trajanje = tokens[4];
         kvotaUmanjenje = tokens[5];
         jezik = LetterUtils.toLatin(tokens[6]);
@@ -84,11 +83,10 @@ public class Smer2017 extends Smer {
     }
 
     public String toCompactString() {
-        StringBuilder str = new StringBuilder(super.toCompactString());
-        str.deleteCharAt(str.length()-1); //removing newline
-        if(ime.endsWith(",")) ime = ime.substring(0, ime.length()-1);
-        str.append("\\").append(ime).append("\\").append(trajanje).append("\\")
-                .append(kvotaUmanjenje).append("\\").append(jezik.trim()).append("\\")
+        StringBuilder str = new StringBuilder(128);
+        if(skola != null && skola.endsWith(",")) skola = skola.substring(0, skola.length()-1);
+        str.append(getSifra()).append("\\").append(smer).append("\\").append(getKvota()).append("\\").append(skola).append("\\")
+                .append(trajanje).append("\\").append(kvotaUmanjenje).append("\\").append(jezik).append("\\")
                 .append(opstina).append("\\").append(okrug).append("\\").append(podrucje).append("\\")
         .append(upisano1K).append("\\").append(minBodova1K).append("\\").append(kvota2K).append("\\").append(upisano2K).append("\\").append(minBodova2K).append("\n");
         return str.toString();
@@ -129,7 +127,8 @@ public class Smer2017 extends Smer {
     }
 
     public void loadFromJson(SmerMappingTools.Mapper mapper, JsonObject json) {
-        ime = json.get("NazivSkole2").getAsString();
+        skola = json.get("NazivSkole2").getAsString();
+        smer = json.get("Profil2").getAsString();
         jezik = mapper.getJezik(Integer.parseInt(json.get("IDJezik").getAsString()));
         opstina = mapper.getOpstina(Integer.parseInt(json.get("IDOpstina").getAsString()));
         okrug = mapper.getOkrug(Integer.parseInt(json.get("IDOkrug").getAsString()));
