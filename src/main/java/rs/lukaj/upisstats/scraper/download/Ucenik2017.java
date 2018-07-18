@@ -174,6 +174,7 @@ public class Ucenik2017 extends Ucenik {
             System.out.println("loading ucenik: " + id);
         }
         if(exists() && !OVERWRITE_OLD) return this;
+        if(!OVERWRITE_OLD && PRINT_MISSING) System.out.println("Missing! " + id);
 
         Document doc = Jsoup.connect(UCENICI_URL + id).get();
         Elements scripts = doc.getElementsByTag("script");

@@ -14,7 +14,7 @@ public class SmerW {
 
     public SmerW(Smer2017 smer) {
         sifra = smer.getSifra();
-        this.smer = smer.getPodrucje(); //it's not a mistake
+        this.smer = smer.getSmer();
         skola = smer.getSkola();
         podrucje = smer.getPodrucje2017();
         jezik = smer.getJezik();
@@ -33,6 +33,7 @@ public class SmerW {
         //Profiler.addTime("new SmerW", end-start);
     }
 
+    @Deprecated(forRemoval = true)
     public boolean trebaPrijemni() {
         return minBodova1k > 100;
     }

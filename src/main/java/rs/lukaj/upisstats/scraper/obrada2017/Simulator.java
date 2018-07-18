@@ -205,9 +205,60 @@ public class Simulator {
         for(Map.Entry<UcenikW, UcenikZelja> entry : upisani.entrySet()) {
             if(!entry.getKey().smer.sifra.equals(entry.getValue().zelja.smer.sifra)) {
                 greska++;
+                recurseDebug(entry.getValue().zelja.smer, entry.getKey(), new HashSet<>());
+                if(entry.getValue().redniBroj > entry.getKey().upisanaZelja) {
+                    System.out.println("Upisan kasnije! " + entry.getKey().sifra);
+                }
             }
         }
         System.out.println("Greska: " + greska);
+    }
+
+    private void recurseDebug(SmerW faultySmer, UcenikW culprit, Set<SmerW> visited) {
+        System.out.println("Recurse debug @ " + culprit + " <- " + faultySmer);
+        if(visited.contains(faultySmer)) {
+            System.out.println("Visited " + faultySmer + "; end recursion");
+            System.out.println("~~~~~~~~~~~~~~~~~~~~~~~");
+            return;
+        }
+        visited.add(faultySmer);
+        Set<UcenikW> ranklist = new HashSet<>(ranking.get(faultySmer));
+        Set<UcenikW> reallist = UceniciBase.svi().filter(uc -> uc.smer.equals(faultySmer)).collect(Collectors.toSet());
+        List<UcenikW> diff = diffList(ranklist, reallist, true);
+        for(Iterator<UcenikW> it = diff.iterator(); it.hasNext();) {
+            UcenikW uc = it.next();
+            if(uc.krug != 1) {
+                System.out.println("Ignoring " + uc.sifra + "; krug: " + uc.krug);
+                it.remove();
+            } else if(uc.equals(culprit)) {
+                it.remove();
+            }
+        }
+        if(diff.isEmpty()) {
+            System.out.println("Possible root! Sifra: " + culprit + " -> " + faultySmer);
+            System.out.println("---------------");
+            if(culprit != null)
+                recurseDebug(culprit.smer, null, visited);
+        }
+        for(UcenikW uc : diff) {
+            recurseDebug(upisani.get(uc).zelja.smer, uc, visited);
+        }
+    }
+
+    private List<UcenikW> diffList(Set<UcenikW> rank, Set<UcenikW> real, boolean twoway) {
+        List<UcenikW> diff = new ArrayList<>(2);
+        for(UcenikW uc : real) {
+            if(!rank.contains(uc)) {
+                diff.add(uc);
+            }
+        }
+        if(twoway) {
+            for (UcenikW uc : rank) {
+                if (!real.contains(uc))
+                    diff.add(uc);
+            }
+        }
+        return diff;
     }
 
     public Set<UcenikW> getNeupisani() {

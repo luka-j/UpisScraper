@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class Ucenik {
 
     protected static final boolean OVERWRITE_OLD = false;
-    private static final boolean PRINT_MISSING = false;
+    protected static final boolean PRINT_MISSING = true;
     private Boolean exists = null;
 
     private static final String UCENICI_URL = "http://195.222.98.40/ucenik_info.php?id_ucenika=";

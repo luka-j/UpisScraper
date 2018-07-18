@@ -50,9 +50,11 @@ public class Smer2017 extends Smer {
         return trajanje;
     }
 
+    public String getSmer() {
+        return smer;
+    }
+
     //let's pretend this isn't godawful
-    //well this ain't supposed to look pretty, it's supposed to work fast
-    //will worry about that in Exec/obrada
     public String getPodrucje2017() {
         return podrucje;
     }
@@ -67,14 +69,15 @@ public class Smer2017 extends Smer {
 
     public Smer2017(String compactString) {
         super(compactString);
+        smer = super.getPodrucje();
         String[] tokens = compactString.split("\\\\");
         skola = LetterUtils.toLatin(tokens[3]);
         trajanje = tokens[4];
         kvotaUmanjenje = tokens[5];
-        jezik = LetterUtils.toLatin(tokens[6]);
-        opstina = LetterUtils.toLatin(tokens[7]);
-        okrug = LetterUtils.toLatin(tokens[8]);
-        podrucje = LetterUtils.toLatin(tokens[9]);
+        jezik = tokens[6];
+        opstina = tokens[7];
+        okrug = tokens[8];
+        podrucje = tokens[9];
         upisano1K = tokens[10];
         minBodova1K = tokens[11];
         kvota2K = tokens[12];

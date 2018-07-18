@@ -105,11 +105,16 @@ public class UceniciManager {
 
         } catch (IOException ex) {
             Logger.getLogger(UceniciManager.class.getName()).log(Level.SEVERE, null, ex);
+            try {
+                Thread.sleep(20000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         return uc;
     }
 
-    /**
+    /*
      * ConcurrentModificationException: what are the odds?
      * *2h later*: fk SBB. (1 year later: and buggy wifi drivers)
      */
