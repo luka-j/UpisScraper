@@ -13,7 +13,7 @@ public class DownloadController {
 
     public static File DATA_FOLDER = System.getProperty("os.name").toLowerCase().contains("nix")
             || System.getProperty("os.name").toLowerCase().contains("nux") ?
-            new File("/data/Shared/mined/UpisData/" + YEAR)
+            new File("/media/luka/Data/Shared/mined/UpisData/" + YEAR)
             : new File("D:\\Shared\\mined\\UpisData\\" + YEAR);
     public static Thread mainThread;
     private static final String SAVE_FILENAME = "save";
@@ -23,7 +23,7 @@ public class DownloadController {
         return System.getProperty("os.name").toLowerCase().contains("nix")
                 || System.getProperty("os.name").toLowerCase().contains("nux") ?
                 new File("/data/Shared/mined/UpisData/" + year)
-                : new File("D:\\Shared\\mined\\UpisData\\" + year);
+                : new File("E:\\Shared\\mined\\UpisData\\" + year);
     }
 
     /**
@@ -32,18 +32,27 @@ public class DownloadController {
      * @see UceniciDownloader#downloadStudentData(DownloadConfig)
      */
     public static void startDownload(DownloadConfig config) {
+        DownloadLogger.setLogLevel(DownloadLogger.Level.DEBUG);
+        DownloadLogger logger = DownloadLogger.getLogger(DownloadLogger.GENERAL);
         Runtime.getRuntime().addShutdownHook(new Thread(new Save(config)));
+        logger.log(DownloadLogger.Level.NORMAL, "Added shutdown hook for saving");
         mainThread = Thread.currentThread();
         config.loadSmerovi();
+        logger.log(DownloadLogger.Level.NORMAL, "Loaded smerovi");
         config.saveSmerovi();
+        logger.log(DownloadLogger.Level.NORMAL, "Saved smerovi");
         System.out.println("Ucitao sifre smerova");
         config.loadOsnovneIds();
         System.out.println("Ucitao id-jeve osnovnih skola");
+        logger.log(DownloadLogger.Level.NORMAL, "Loaded osnovne ids");
         IntLongPair progress = loadProgress();
         uceniciDownloader = config.getStudentDownloader(progress.a, progress.b);
         uceniciDownloader.downloadStudentData(config);
+        logger.log(DownloadLogger.Level.NORMAL, "Downloaded all ucenici");
         System.out.println("Ucitao ucenike; ucitavam osnovne");
         config.downloadOsnovne();
+        logger.log(DownloadLogger.Level.NORMAL, "Downloaded osnovne");
+        logger.log(DownloadLogger.Level.NORMAL, "Download complete");
         System.out.println("Završio download!");
     }
 

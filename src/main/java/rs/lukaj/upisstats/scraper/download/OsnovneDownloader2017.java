@@ -35,6 +35,7 @@ public class OsnovneDownloader2017 {
             List<String> ids = Files.readAllLines(SAVEFILE.toPath());
             for(String id :ids)
                 base.add(Integer.parseInt(id));
+            DownloadLogger.getLogger(DownloadLogger.OSNOVNE).log(DownloadLogger.Level.NORMAL, "Loaded " + ids.size() + "osnovnih (ids from file)");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,6 +56,7 @@ public class OsnovneDownloader2017 {
             osnovna.saveJson();
             return osnovna;
         }).collect(Collectors.toList());
+        DownloadLogger.getLogger(DownloadLogger.OSNOVNE).log(DownloadLogger.Level.NORMAL, "Downloaded " + osnovne.size() + "osnovnih");
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(DATAFILE))) {
             DATAFILE.createNewFile();
@@ -65,7 +67,7 @@ public class OsnovneDownloader2017 {
                     e.printStackTrace();
                 }
             });
-            bw.close();
+            DownloadLogger.getLogger(DownloadLogger.OSNOVNE).log(DownloadLogger.Level.NORMAL, "Saved " + osnovne.size() + "osnovnih");
         } catch (IOException e) {
             e.printStackTrace();
         }

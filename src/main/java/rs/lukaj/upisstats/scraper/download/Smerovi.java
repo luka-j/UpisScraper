@@ -44,10 +44,14 @@ public class Smerovi {
      */
     public void load() {
         File f = new File(DownloadController.DATA_FOLDER, SAVEFILE_NAME);
-        if(f.exists() && f.length() > 0)
+        DownloadLogger logger = DownloadLogger.getLogger(DownloadLogger.SMEROVI);
+        if(f.exists() && f.length() > 0) {
+            logger.log(DownloadLogger.Level.NORMAL, "Smer base exists; loading from file");
             loadFromFile();
-        else
+        } else {
+            logger.log(DownloadLogger.Level.NORMAL, "Smer base doesn't exist; starting download from net");
             loadFromNet();
+        }
     }
     
     public void loadFromNet() {
@@ -64,6 +68,7 @@ public class Smerovi {
                         addToBase(new Smer(trSifra.text(), trPodrucje.text(), trKvota.text()));
                     }
                 } catch (NullPointerException ex) {
+                    DownloadLogger.getLogger(DownloadLogger.SMEROVI).log(DownloadLogger.Level.DEBUG, "NPE@smerovi: poslednji put");
                     Logger.getLogger(UceniciDownloader.class.getName()).log(Level.FINE, "NPE@smerovi: poslednji put");
                 }
                 System.out.println(String.valueOf(((double)i/END_AT) * 100) + "%...");
@@ -74,6 +79,7 @@ public class Smerovi {
     }
 
     protected void addToBase(Smer s) {
+        DownloadLogger.getLogger(DownloadLogger.SMEROVI).log(DownloadLogger.Level.VERBOSE, "Add " + s.getSifra() + " to base");
         base.put(s.getSifra(), s);
     }
     protected Smer createSmer(String compactString) {

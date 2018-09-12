@@ -61,7 +61,6 @@ public class Simulator {
             int cmp = Double.compare(getBrojBodova(zelja2), getBrojBodova(zelja1));
             if(cmp != 0) return cmp;
 
-            if(zelja1.ucenik.equals(zelja2.ucenik)) return Integer.compare(zelja1.redniBroj, zelja2.redniBroj);
             if(zelja1.blizanac.equals(zelja2.ucenik)) return 0;
             return getPriority(zelja1, zelja2);
         }
@@ -237,8 +236,10 @@ public class Simulator {
         if(diff.isEmpty()) {
             System.out.println("Possible root! Sifra: " + culprit + " -> " + faultySmer);
             System.out.println("---------------");
-            if(culprit != null)
+            if(culprit != null) {
+                new ArrayList<>(reallist).sort(Comparator.comparingInt(uc->uc.sifra));
                 recurseDebug(culprit.smer, null, visited);
+            }
         }
         for(UcenikW uc : diff) {
             recurseDebug(upisani.get(uc).zelja.smer, uc, visited);

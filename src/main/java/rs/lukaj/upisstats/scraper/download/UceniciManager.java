@@ -54,7 +54,7 @@ public class UceniciManager {
     private static final int SAVE_AT = 400;
     private static final Executor executor = Executors.newSingleThreadExecutor();
     
-    protected void add(Deque<UcData> data) {
+    public void add(Deque<UcData> data) {
         if(Main.DEBUG) System.out.println("adding new chunk");
         sifre.addAll(data);
         if (sifre.size() >= SAVE_AT) {
@@ -75,7 +75,7 @@ public class UceniciManager {
     protected final Deque<UcData> failed = new ArrayDeque<>();
 
 
-    protected void download() {
+    public void download() {
         if(Main.DEBUG)System.out.println("downloading ucenik info");
         sifre.forEach((UcData datum) -> {
             Ucenik uc = loadUcenik(datum.sifra, datum.ukBodova, datum.mestoOS);
@@ -149,11 +149,11 @@ public class UceniciManager {
         new Saver().run();
     }
 
-    class Saver implements Runnable {
+    public class Saver implements Runnable {
 
         private final Deque<Ucenik> data;
         
-        Saver() {
+        public Saver() {
             data = new ArrayDeque<>(ucenici);
         }
         @Override

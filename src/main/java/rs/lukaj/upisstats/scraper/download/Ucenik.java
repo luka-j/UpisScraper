@@ -144,7 +144,7 @@ public class Ucenik {
         if (Main.DEBUG) {
             System.out.println("loading ucenik: " + id);
         }
-        if (exists && !OVERWRITE_OLD) {
+        if (!OVERWRITE_OLD && exists()) {
             return this;
         }
         if(PRINT_MISSING && Smerovi.getInstance().getCurrentIndex()<2355)

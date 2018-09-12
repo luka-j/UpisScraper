@@ -66,6 +66,8 @@ public class Exec {
         executableClasses.add(Cleanup2017.class);
         executableClasses.add(DefaultSimulation.class);
         executableClasses.add(Osnove.class);
+        executableClasses.add(NI18.class);
+        executableClasses.add(TestDL.class);
         //...
     }
 }
