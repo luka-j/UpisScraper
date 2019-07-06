@@ -151,7 +151,6 @@ public class UcenikUtils {
             Map<String, String> decompressed = new HashMap<>();
             s.forEach((Map.Entry<String, String> t) ->
                     decompressed.put(inverse.get(t.getKey()) == null ? t.getKey() : inverse.get(t.getKey()), t.getValue()));
-            //Profiler.addTime("decompress", end-start);
             return decompressed;
         }
 

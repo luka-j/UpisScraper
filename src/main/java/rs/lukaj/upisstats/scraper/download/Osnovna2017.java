@@ -109,7 +109,6 @@ public class Osnovna2017 {
         ucenikaZavrsilo = ucenici[1];
         vukovaca = ucenici[2];
         nagradjenih = ucenici[3];
-        //Profiler.addTime("new Osnovna2017", end-start);
     }
 
     public String toCompactString() {

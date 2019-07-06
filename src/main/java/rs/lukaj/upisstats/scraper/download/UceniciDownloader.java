@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,14 +28,14 @@ public class UceniciDownloader {
 
 
     public int getCurrentSmer() {
-        return currentSmer;
+        return currentSmer.get();
     }
     
     public long getVreme() {
         return System.currentTimeMillis() - startTime + spentTime;
     }
 
-    private volatile int currentSmer = 0; //nisam sasvim siguran zasto je ovo volatile
+    private final AtomicInteger currentSmer = new AtomicInteger(0); //nisam sasvim siguran zasto je ovo atomic
 
     /**
      * Preuzima podatke o ucenicima sa sajta
@@ -43,7 +44,7 @@ public class UceniciDownloader {
         if(Main.DEBUG)System.out.println("starting program");
         Deque<UcData> uc;
         Smerovi smerovi = config.getSmerovi();
-        smerovi.iterate(currentSmer);
+        smerovi.iterate(getCurrentSmer());
         double time, est; char oznaka;
         if(Main.DEBUG)System.out.println("starting iteration");
         UceniciManager ucenici = config.getUceniciManager();
@@ -53,7 +54,7 @@ public class UceniciDownloader {
             uc = getSifreUcenika(smerSifra);
             if(Main.DEBUG)System.out.println("Uzeo sifre za " + smerSifra);
             ucenici.add(uc);
-            currentSmer++; //possible source of bugs (race condition: non-atomic increment)
+            currentSmer.incrementAndGet(); //possible source of bugs (race condition: non-atomic increment)
             System.out.print(String.format("%.2f%s", smerovi.getPercentageIterated(), "% - "));
             time = (System.currentTimeMillis() - startTime + spentTime)/1000;
             est = ((100/smerovi.getPercentageIterated()-1)*time) / 3600;
@@ -136,6 +137,6 @@ public class UceniciDownloader {
 
     protected UceniciDownloader(int startingIndex, long time) {
         spentTime = time;
-        currentSmer = startingIndex;
+        currentSmer.set(startingIndex);
     }
 }

@@ -29,16 +29,11 @@ public class UceniciGroupBuilder {
         Ucenik uc;
         everyone = new UceniciGroup();
         List<String> ucenici = FileMerger.readFromOne(new File(DownloadController.DATA_FOLDER, FileMerger.FILENAME));
-        //Profiler.addTime("loadUceniciDiskOld", end-start);
         for(String ucStr : ucenici) {
             uc = new Ucenik(ucStr.substring(0, 6));
             uc.loadFromString(ucStr.substring(7));
             everyone.add(new UcenikWrapper(uc));
-            //Profiler.addTime("loopMakeUcenikOld", t2-t1);
-            //Profiler.addTime("loopLoadUcenikOld", t3-t2);
-            //Profiler.addTime("loopWrapUcenikOld", t4-t3);
         }
-        //Profiler.addTime("loadEveryoneTotalOld", endTotal-startTotal);
     }
 
     public static void clearCache() {

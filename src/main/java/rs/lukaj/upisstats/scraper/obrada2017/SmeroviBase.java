@@ -32,4 +32,8 @@ public class SmeroviBase {
     public static Collection<SmerW> getAll() {
         return base.values();
     }
+
+    public static void clear() {
+        base.clear();
+    }
 }

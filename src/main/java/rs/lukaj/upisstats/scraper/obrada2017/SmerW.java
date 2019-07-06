@@ -30,7 +30,6 @@ public class SmerW {
 
         if(smer.getTrajanje().equals("2")) trajanje=4;
         else trajanje=3;
-        //Profiler.addTime("new SmerW", end-start);
     }
 
     @Deprecated(forRemoval = true)

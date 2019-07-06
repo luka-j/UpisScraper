@@ -23,8 +23,6 @@ public class OsnovneBase {
         base = osnovne.stream().map(Osnovna2017::new)
                 .map(OsnovnaW::new)
                 .collect(Collectors.toMap(os -> os.id, os -> os));
-        //Profiler.addTime("OsnovneBaseLoadDisk", endDisk-start);
-        //Profiler.addTime("OsnovneBaseLoadTotal", endTotal-start);
     }
 
     public static OsnovnaW get(int id) {
@@ -34,5 +32,9 @@ public class OsnovneBase {
 
     public static Collection<OsnovnaW> getAll() {
         return base.values();
+    }
+
+    public static void clear() {
+        base.clear();
     }
 }

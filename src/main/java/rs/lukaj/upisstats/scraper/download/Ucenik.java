@@ -274,61 +274,33 @@ public class Ucenik {
 
     public void loadFromString(String compactString) {
         StringTokenizer master = new StringTokenizer(compactString, '\n', true);
-        //String[] chunks = compactString.split("\\n");
 
         StringTokenizer inner = new StringTokenizer(master.nextToken(), '\\', true);
         osnovnaSkola = inner.nextToken();
         mestoOS = inner.nextToken();
         okrugOS = inner.nextToken();
-        //String[] basics = chunks[0].split("\\\\");
 
         loadPredmetiMap(sestiRaz, master.nextToken());
         loadPredmetiMap(sedmiRaz, master.nextToken());
         loadPredmetiMap(osmiRaz, master.nextToken());
-        //String[] sesti = chunks[1].split("\\\\", 0);
-        //String[] sedmi = chunks[2].split("\\\\", 0);
-        //String[] osmi = chunks[3].split("\\\\", 0);
 
         loadPredmetiMap(takmicenja, master.nextToken());
-        //String[] takm = chunks[4].split("\\\\", 0);
 
         inner = new StringTokenizer(master.nextToken(), '\\', true);
         matematika = inner.nextToken();
         srpski = inner.nextToken();
         kombinovani = inner.nextToken();
-        //String[] test = chunks[5].split("\\\\");
 
         ukupnoBodova = master.nextToken();
-        //String ukupno = chunks[6].split("\\\\")[0];
 
         inner = new StringTokenizer(master.nextToken(), '\\', false);
         while(inner.hasMoreTokens())
             listaZelja.add(Skola.makeSkola(inner.nextToken()));
-        //String[] zelje = chunks[7].split("\\\\", 0);
 
         inner = new StringTokenizer(master.nextToken(), '\\', true);
         upisanaSkola = Skola.makeSkola(inner.nextToken());
         upisanaZelja = inner.nextToken();
         krug = inner.nextToken();
-        //String[] upisano = chunks[8].split("\\\\");
-
-        //Profiler.addTime("UcenikLoadFromStringOld", end-start);
-
-        //osnovnaSkola = basics[0];
-        //mestoOS = basics[1];
-        //okrugOS = basics[2];
-        //sestiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(sesti));
-        //sedmiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(sedmi));
-        //osmiRaz = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(osmi));
-        //takmicenja = UcenikUtils.PredmetiDefault.decompress(UcenikUtils.stringArrayToMap(takm));
-        /*matematika = test[0];
-        srpski = test[1];
-        kombinovani = test[2];*/
-        //ukupnoBodova = ukupno;
-        //listaZelja = UcenikUtils.stringToList(zelje);
-        /*upisanaSkola = new Skola(upisano[0]);
-        upisanaZelja = upisano[1];
-        krug = upisano[2];*/
     }
 
     private void loadPredmetiMap(Map<String, String> to, String from) {

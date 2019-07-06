@@ -51,12 +51,10 @@ public class UcenikW {
 
         if(uc.getKrug().equals("*")) krug=-1; //upisan po odluci OUKa
         else krug = Integer.parseInt(uc.getKrug());
-        //Profiler.addTime("UcenikWBasics", end-start);
 
         if(uc.getBlizanac().isEmpty()) blizanacSifra =0;
         else {
             blizanacSifra = Integer.parseInt(uc.getBlizanac().split("\">")[1].split("<")[0]);
-            //Profiler.addTime("split", end-start);
         }
 
         if(uc.getNajboljiBlizanacBodovi().isEmpty()) najboljiBlizanacBodovi = 0;
@@ -68,7 +66,6 @@ public class UcenikW {
         bodovaZavrsni = srpski + matematika + kombinovani;
         bodovaAM = Double.parseDouble(uc.getBodovaAM());
         ukupnoBodova = Double.parseDouble(uc.getUkupnoBodova());
-        //Profiler.addTime("UcenikWBodovi", end-start);
 
         maternji = uc.getMaternji();
         prviStrani = uc.getPrviStrani();
@@ -124,26 +121,23 @@ public class UcenikW {
 
         for(Map.Entry<String, String> en : raw.entrySet()) {
             String predmet = en.getKey(), ocena = en.getValue();
-            if(predmet.startsWith("prosek")) prosek = Double.parseDouble(ocena); //this was IDE suggestion I swear
+            if(predmet.startsWith("prosek")) prosek = Double.parseDouble(ocena);
             else if(predmet.startsWith("bod")) bodovi = Double.parseDouble(ocena);
             else if(predmet.equals(UcenikUtils.PredmetiDefault.ZBIR2017)) zbir = Integer.parseInt(ocena);
             else if(predmet.equals(UcenikUtils.PredmetiDefault.BROJ2017)) broj = Integer.parseInt(ocena);
             else if(!predmet.equals(UcenikUtils.PredmetiDefault.VUKOVA2017)) ocene.put(predmet, Integer.parseInt(ocena));
         }
-        //Profiler.addTime("UcenikWCleanOcene", end-start);
         return new Ocene(ocene, zbir, broj, prosek, bodovi);
     }
     private static Map<String, Double> mapValuesToDouble(Map<String, String> strings) {
         Map<String, Double> doubles = new HashMap<>();
         for(Map.Entry<String, String> e : strings.entrySet())
             doubles.put(e.getKey(), Double.parseDouble(e.getValue()));
-        //Profiler.addTime("UcenikWMapValuesToDouble", end-start);
         return doubles;
     }
     private static int findZelja(List<Zelja> listaZelja, SmerW upisana) {
         for(int i=0; i<listaZelja.size(); i++) {
             if(listaZelja.get(i).smer.equals(upisana)) {
-                //Profiler.addTime("UcenikWFindZelja", end-start);
                 return i;
             }
         }
@@ -179,7 +173,6 @@ public class UcenikW {
                 this.bodovaZaUpis = Double.parseDouble(zelja.getBodovaZaUpis());
             else
                 bodovaZaUpis = 0;
-            //Profiler.addTime("new UcenikW.Zelja", end-start);
         }
 
         @Override

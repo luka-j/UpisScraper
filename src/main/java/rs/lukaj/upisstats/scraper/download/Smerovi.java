@@ -97,8 +97,6 @@ public class Smerovi {
         } catch (IOException ex) {
             Logger.getLogger(Ucenik.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //Profiler.addTime("SmeroviLoadFromFileDisk", end-start);
-        //Profiler.addTime("SmeroviLoadFromFileTotal", endTotal-start);
     }
 
     public Smer get(String sifra) {

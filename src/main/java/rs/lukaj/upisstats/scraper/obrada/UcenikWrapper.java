@@ -70,7 +70,6 @@ public class UcenikWrapper {
             podrucje = SmeroviBase.getPodrucje(s.sifra);
             okrug = SmeroviBase.getOkrug(s.sifra);
             kvota = SmeroviBase.getKvota(s.sifra);
-            //Profiler.addTime("new UcenikWrapper.SrednjaSkola", end-start);
         }
 
         static SrednjaSkola makeSkola(Ucenik.Skola s) {
@@ -180,7 +179,6 @@ public class UcenikWrapper {
         String mestoOS      = uc.getMestoOS().toLowerCase().trim();
         String okrugOS      = uc.getOkrugOS().toLowerCase().trim();
         osInfo = new OsnovnaSkola(osnovnaSkola, mestoOS, okrugOS);
-        //Profiler.addTime("UcenikWrapperOsnovna", end-start);
 
         for (Map.Entry<String, String> e : uc.getSestiRaz().entrySet()) {
             sestiRaz.put(e.getKey(), e.getValue().charAt(0)-'0');
@@ -191,14 +189,12 @@ public class UcenikWrapper {
         for (Map.Entry<String, String> e : uc.getOsmiRaz().entrySet()) {
             osmiRaz.put(e.getKey(), e.getValue().charAt(0)-'0');
         }
-        //Profiler.addTime("UcenikWrapperOcene", end-start);
 
         prosekSesti = mapAverage(sestiRaz);
         prosekSedmi = mapAverage(sedmiRaz);
         prosekOsmi = mapAverage(osmiRaz);
         prosekUkupno = (prosekSesti + prosekSedmi + prosekOsmi) / 3;
         bodoviIzSkole = prosekSesti * 4 + prosekSedmi * 5 + prosekOsmi * 5;
-        //Profiler.addTime("UcenikWrapperOceneAverage", end-start);
 
         takmicenja = new HashMap<>(); int bodoviTakm = 0;
         for (Map.Entry<String, String> e : uc.getTakmicenja().entrySet()) {
@@ -213,7 +209,6 @@ public class UcenikWrapper {
         kombinovani = uc.getKombinovani().equals("null") ? 0 : Double.parseDouble(uc.getKombinovani());
 
         bodoviSaZavrsnog = matematika + srpski + kombinovani;
-        //Profiler.addTime("UcenikWrapperZavrsni", end-start);
         if(uc.getUkupnoBodova().equals("*")) {
             ukupnoBodova = bodoviIzSkole + bodoviSaZavrsnog + bodoviSaTakmicenja;
         } else {
@@ -223,7 +218,6 @@ public class UcenikWrapper {
 
         for(Ucenik.Skola sk : uc.getListaZelja())
             listaZelja.add(SrednjaSkola.makeSkola(sk));
-        //Profiler.addTime("UcenikWrapperZelje", end-start);
         brojZelja = listaZelja.size();
         upisanaSkola = SrednjaSkola.makeSkola(uc.getUpisanaSkola());
         upisanaZelja = Integer.parseInt(uc.getUpisanaZelja());

@@ -24,7 +24,6 @@ public class UceniciGroup extends HashSet<UcenikWrapper> {
             SmeroviBase.load();
             prevLoadFile = DownloadController.DATA_FOLDER;
         }
-        //Profiler.addTime("clear&load smerovi", end-start);
         return new UceniciGroupBuilder(null).getGroup();
     }
 

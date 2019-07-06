@@ -27,7 +27,7 @@ public class DownloadController {
     }
 
     /**
-     * Ucitava sve smerova, a zatim ucitava ucenike
+     * Ucitava sve sifre smerova, a zatim ucitava ucenike
      * @see Smerovi#load()
      * @see UceniciDownloader#downloadStudentData(DownloadConfig)
      */
@@ -64,7 +64,7 @@ public class DownloadController {
         if(uceniciDownloader == null) return;
         File saveData = new File(DATA_FOLDER, SAVE_FILENAME);
         try (final FileWriter fw = new FileWriter(saveData)) {
-            fw.write(String.valueOf(uceniciDownloader.getCurrentSmer()) + "\\" + String.valueOf(uceniciDownloader.getVreme()));
+            fw.write(uceniciDownloader.getCurrentSmer() + "\\" + uceniciDownloader.getVreme());
         } catch (IOException ex) {
             Logger.getLogger(Ucenik.class.getName()).log(Level.SEVERE, null, ex);
         }

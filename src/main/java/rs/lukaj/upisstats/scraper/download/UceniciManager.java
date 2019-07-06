@@ -138,7 +138,6 @@ public class UceniciManager {
         failed.forEach((datum) -> sb.append(datum.toString()));
         try (FileWriter fw = new FileWriter(f)) {
             fw.write(sb.toString());
-            fw.close();
         } catch (IOException ex) {
             Logger.getLogger(UceniciManager.class.getName()).log(Level.SEVERE, null, ex);
         }
