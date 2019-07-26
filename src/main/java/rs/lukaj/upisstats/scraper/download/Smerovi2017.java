@@ -49,7 +49,7 @@ public class Smerovi2017 extends Smerovi {
                 System.out.println("Smerovi: gotov okrug " + i + "/" + BR_OKRUGA);
             }
         } catch (IOException ex) {
-            Logger.getLogger(UceniciDownloader.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 

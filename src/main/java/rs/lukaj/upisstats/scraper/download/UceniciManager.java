@@ -9,6 +9,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -95,21 +96,27 @@ public class UceniciManager {
             uc = config.generateUcenik(sifra, ukBodova, mestoOS).loadFromNet();
         } catch (SocketTimeoutException | SocketException ex) {
             try {
-                Thread.sleep(15000);
+                Thread.sleep(10000);
                 uc = config.generateUcenik(sifra, ukBodova, mestoOS).loadFromNet();
             } catch (SocketTimeoutException nestedex) {
                 System.err.println("Socket timeout @ loadFromNet: " + sifra);
             } catch (IOException | InterruptedException nestedex) {
-                Logger.getLogger(UceniciManager.class.getName()).log(Level.SEVERE, null, nestedex);
+                System.err.println("Error while loading ucenik " + sifra);
+                DownloadLogger.getLogger(DownloadLogger.UCENICI).log(DownloadLogger.Level.ERROR, "IO Exception while loading " + sifra);
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(UceniciManager.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Error while loading ucenik " + sifra);
+            DownloadLogger.getLogger(DownloadLogger.UCENICI).log(DownloadLogger.Level.ERROR, "IO Exception while loading " + sifra);
             try {
-                Thread.sleep(20000);
+                Thread.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        } catch (RuntimeException e) {
+            System.err.println("Unknown exception while loading ucenik " + sifra);
+            e.printStackTrace();
+            DownloadLogger.getLogger(DownloadLogger.UCENICI).log(DownloadLogger.Level.ERROR, "Unknown " + e.getClass().getName() + " while loading " + sifra);
         }
         return uc;
     }
@@ -119,13 +126,14 @@ public class UceniciManager {
      * *2h later*: fk SBB. (1 year later: and buggy wifi drivers)
      */
     private synchronized void attemptToDownloadFailed() {
-        failed.forEach((UcData datum) -> {
+        for (Iterator<UcData> iterator = failed.iterator(); iterator.hasNext(); ) {
+            UcData datum = iterator.next();
             Ucenik uc = loadUcenik(datum.sifra, datum.ukBodova, datum.mestoOS);
             if (uc != null) {
                 ucenici.add(uc);
-                failed.remove(datum);
+                iterator.remove();
             }
-        });
+        }
     }
 
     public int getFailedCount() {
@@ -139,7 +147,8 @@ public class UceniciManager {
         try (FileWriter fw = new FileWriter(f)) {
             fw.write(sb.toString());
         } catch (IOException ex) {
-            Logger.getLogger(UceniciManager.class.getName()).log(Level.SEVERE, null, ex);
+            DownloadLogger.getLogger(DownloadLogger.UCENICI).log(DownloadLogger.Level.ERROR, "IO Exception while saving faileds!");
+            ex.printStackTrace();
         }
     }
     

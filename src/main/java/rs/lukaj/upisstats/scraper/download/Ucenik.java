@@ -256,7 +256,7 @@ public class Ucenik {
         if (Main.DEBUG) {
             System.out.println("saving ucenik: " + id);
         }
-        if (exists && !OVERWRITE_OLD) {
+        if (exists() && !OVERWRITE_OLD) {
             return;
         }
         if(Main.REDOING_DOWNLOAD)

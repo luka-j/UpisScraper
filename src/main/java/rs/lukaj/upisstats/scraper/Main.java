@@ -2,8 +2,11 @@ package rs.lukaj.upisstats.scraper;
 
 import rs.lukaj.upisstats.scraper.download.DownloadConfig;
 import rs.lukaj.upisstats.scraper.download.DownloadController;
+import rs.lukaj.upisstats.scraper.download.Ucenik2017;
 import rs.lukaj.upisstats.scraper.download.misc.OsnovneDownloader;
 import rs.lukaj.upisstats.scraper.obrada.Exec;
+
+import java.io.IOException;
 
 /**
  *
@@ -38,4 +41,5 @@ public class Main {
     public static void setYear(String year) {
         DownloadController.YEAR = year;
     }
+
 }

@@ -9,7 +9,9 @@ import java.util.logging.Logger;
  * @author Luka
  */
 public class DownloadController {
-    public static String YEAR = "18";
+    public static String YEAR = "19";
+    public static int YEAR_INT = 2000 + Integer.parseInt(YEAR);
+    private static final boolean DOWNLOAD_OSNOVNE = true;
 
     public static File DATA_FOLDER = System.getProperty("os.name").toLowerCase().contains("nix")
             || System.getProperty("os.name").toLowerCase().contains("nux") ?
@@ -49,9 +51,11 @@ public class DownloadController {
         uceniciDownloader = config.getStudentDownloader(progress.a, progress.b);
         uceniciDownloader.downloadStudentData(config);
         logger.log(DownloadLogger.Level.NORMAL, "Downloaded all ucenici");
-        System.out.println("Ucitao ucenike; ucitavam osnovne");
-        config.downloadOsnovne();
-        logger.log(DownloadLogger.Level.NORMAL, "Downloaded osnovne");
+        if(DOWNLOAD_OSNOVNE) {
+            System.out.println("Ucitao ucenike; ucitavam osnovne");
+            config.downloadOsnovne();
+            logger.log(DownloadLogger.Level.NORMAL, "Downloaded osnovne");
+        }
         logger.log(DownloadLogger.Level.NORMAL, "Download complete");
         System.out.println("Završio download!");
     }

@@ -12,6 +12,8 @@ import java.util.Deque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static rs.lukaj.upisstats.scraper.download.DownloadController.YEAR_INT;
+
 /**
  * Created by luka on 3.7.17..
  */
@@ -31,42 +33,50 @@ public class UceniciDownloader2017 extends UceniciDownloader {
     public Deque<UceniciManager.UcData> getSifreUcenika(String sifraProfila) {
         Deque<UceniciManager.UcData> sifre = new ArrayDeque<>();
         boolean end = false;
-        try {
-            Document whole = null;
-            while(whole==null) whole = downloadDoc(generateSmerUrl(sifraProfila), "", false);
-            downloadSmerDetails(whole);
-
-            Document doc;
-            UceniciManager.UcData data;
-            int i = 1;
-            while (!end) {
-                do{
-                    if(Main.DEBUG)System.out.println("downloading doc " + i + " za " + sifraProfila);
-                    doc = downloadDoc(generateSmerUrl(sifraProfila), generatePageParams(i), true);
-                } while(doc == null);
-                if(Main.DEBUG)System.out.println("starting download of ucenici");
-                Elements elSifre = doc.select(".tbody .kolona1");
-                Elements bodovi = doc.select(".tbody .kolona3");
-                Elements krugovi = doc.select(".tbody .kolona4");
-                if(elSifre.isEmpty()) end=true;
-                else {
-                    for(int j=0; j<elSifre.size(); j++) {
-                        data = new UceniciManager.UcData(elSifre.get(j).text(), bodovi.get(j).text(), krugovi.get(j).text());
-                        sifre.add(data);
-                        if(Main.DEBUG)System.out.print("added new ucenik: " + data);
-                    }
-                }
-                i++;
+        Document whole = null;
+        while(whole==null) {
+            try {
+                whole = downloadDoc(generateSmerUrl(sifraProfila), "", false);
+            } catch (IOException ex) {
+                System.err.println("I/O Exception @ getSifreUcenika " + sifraProfila);
+                DownloadLogger.getLogger(DownloadLogger.UCENICI).log(DownloadLogger.Level.ERROR, "I/O Exception @ getSifreUcenika " + sifraProfila);
             }
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        downloadSmerDetails(whole);
+
+        Document doc = null;
+        UceniciManager.UcData data;
+        int i = 1;
+        while (!end) {
+            do{
+                try {
+                    if (Main.DEBUG) System.out.println("downloading doc " + i + " za " + sifraProfila);
+                    doc = downloadDoc(generateSmerUrl(sifraProfila), generatePageParams(i), true);
+                } catch (IOException ex) {
+                    System.err.println("I/O Exception @ getSifreUcenika " + sifraProfila);
+                    DownloadLogger.getLogger(DownloadLogger.UCENICI).log(DownloadLogger.Level.ERROR, "I/O Exception @ getSifreUcenika " + sifraProfila);
+                }
+            } while(doc == null);
+            if(Main.DEBUG)System.out.println("starting download of ucenici");
+            Elements elSifre = doc.select(".tbody .kolona1");
+            Elements bodovi = doc.select(".tbody .kolona3");
+            Elements krugovi = doc.select(".tbody .kolona4");
+            if(elSifre.isEmpty()) end=true;
+            else {
+                for(int j=0; j<elSifre.size(); j++) {
+                    data = new UceniciManager.UcData(elSifre.get(j).text(), bodovi.get(j).text(), krugovi.get(j).text());
+                    sifre.add(data);
+                    if(Main.DEBUG)System.out.print("added new ucenik: " + data);
+                }
+            }
+            i++;
         }
 
         return sifre;
     }
 
     private void downloadSmerDetails(Document doc) {
-        SmerMappingTools.Mapper mapper = SmerMappingTools.getMapper(2018);
+        SmerMappingTools.Mapper mapper = SmerMappingTools.getMapper(YEAR_INT);
         Elements scripts = doc.getElementsByTag("script");
         String script = scripts.get(scripts.size()-3).data();
         String json = script.trim().split(";", 2)[0].split(" = ", 2)[1];

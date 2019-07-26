@@ -56,7 +56,7 @@ public class OsnovneDownloader2017 {
             osnovna.saveJson();
             return osnovna;
         }).collect(Collectors.toList());
-        DownloadLogger.getLogger(DownloadLogger.OSNOVNE).log(DownloadLogger.Level.NORMAL, "Downloaded " + osnovne.size() + "osnovnih");
+        DownloadLogger.getLogger(DownloadLogger.OSNOVNE).log(DownloadLogger.Level.NORMAL, "Downloaded " + osnovne.size() + " osnovnih");
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(DATAFILE))) {
             DATAFILE.createNewFile();
@@ -67,7 +67,7 @@ public class OsnovneDownloader2017 {
                     e.printStackTrace();
                 }
             });
-            DownloadLogger.getLogger(DownloadLogger.OSNOVNE).log(DownloadLogger.Level.NORMAL, "Saved " + osnovne.size() + "osnovnih");
+            DownloadLogger.getLogger(DownloadLogger.OSNOVNE).log(DownloadLogger.Level.NORMAL, "Saved " + osnovne.size() + " osnovnih");
         } catch (IOException e) {
             e.printStackTrace();
         }

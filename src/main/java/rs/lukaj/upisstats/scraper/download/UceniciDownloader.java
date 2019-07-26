@@ -89,7 +89,7 @@ public class UceniciDownloader {
                 try {
                     do {
                         if(Main.DEBUG)System.out.println("downloading doc " + i + " za " + sifraProfila);
-                    doc = downloadDoc(generateUrl(sifraProfila, i), "", true);
+                        doc = downloadDoc(generateUrl(sifraProfila, i), "", true);
                     } while(doc == null);
                     if(Main.DEBUG)System.out.println("starting download of ucenici");
                     for (int j = 2; j <= UCENIKA_PO_STRANI * UCENIK_IDOVA_PO_TR; j += UCENIK_IDOVA_PO_TR) {
@@ -104,7 +104,8 @@ public class UceniciDownloader {
                         if(Main.DEBUG)System.out.print("added new ucenik: " + data);
                     }
                 } catch (NullPointerException ex) {
-                    Logger.getLogger(UceniciDownloader.class.getName()).log(Level.WARNING, "NPE@ucenici: poslednji put");
+                    System.err.println("NPE@ucenici: poslednji put");
+                    DownloadLogger.getLogger(DownloadLogger.UCENICI).log(DownloadLogger.Level.WARNING, "NPE@getSifreUcenika");
                     break;
                 }
                 i++;
@@ -121,7 +122,7 @@ public class UceniciDownloader {
             Connection c =  Jsoup.connect(url);
             return post ? c.requestBody(requestBody).post() : c.get();
         } catch (SocketTimeoutException ex) {
-            System.err.println("Socket timeout @ downloadDoc (UceniciDownloader)");
+            System.err.println("Socket timeout @ downloadDoc (UceniciDownloader): " + url);
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException ex1) {
