@@ -19,7 +19,7 @@ public class OsnovneBase {
     }
 
     public static void load() {
-        List<String> osnovne = FileMerger.readFromOne(OsnovneDownloader2017.DATAFILE);
+        List<String> osnovne = FileMerger.readFromOne(OsnovneDownloader2017.getDatafile());
         base = osnovne.stream().map(Osnovna2017::new)
                 .map(OsnovnaW::new)
                 .collect(Collectors.toMap(os -> os.id, os -> os));

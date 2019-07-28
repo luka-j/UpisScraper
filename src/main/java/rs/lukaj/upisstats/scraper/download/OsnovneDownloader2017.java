@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 public class OsnovneDownloader2017 {
     public static final String FILENAME = "osnovne";
     private static final File SAVEFILE = new File(DownloadController.DATA_FOLDER, "osnovneIds");
-    public static final File DATAFILE = new File(DownloadController.DATA_FOLDER, FILENAME);
 
     private static OsnovneDownloader2017 instance;
 
@@ -28,6 +27,10 @@ public class OsnovneDownloader2017 {
     }
 
     private Set<Integer> base = new HashSet<>();
+
+    public static File getDatafile() {
+        return new File(DownloadController.DATA_FOLDER, FILENAME);
+    }
 
     public void loadIdsFromFile() {
         if(!SAVEFILE.exists() || SAVEFILE.length()==0) return;
@@ -58,8 +61,8 @@ public class OsnovneDownloader2017 {
         }).collect(Collectors.toList());
         DownloadLogger.getLogger(DownloadLogger.OSNOVNE).log(DownloadLogger.Level.NORMAL, "Downloaded " + osnovne.size() + " osnovnih");
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(DATAFILE))) {
-            DATAFILE.createNewFile();
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(getDatafile()))) {
+            getDatafile().createNewFile();
             osnovne.forEach(o -> {
                 try {
                     bw.write(o.toCompactString() + "\n$\n");
