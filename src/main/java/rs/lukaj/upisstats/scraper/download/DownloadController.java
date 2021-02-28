@@ -9,14 +9,14 @@ import java.util.logging.Logger;
  * @author Luka
  */
 public class DownloadController {
-    public static String YEAR = "19";
-    public static int YEAR_INT = 2000 + Integer.parseInt(YEAR);
+    public static final String YEAR = "20";
+    public static final int YEAR_INT = 2000 + Integer.parseInt(YEAR);
     private static final boolean DOWNLOAD_OSNOVNE = true;
 
     public static File DATA_FOLDER = System.getProperty("os.name").toLowerCase().contains("nix")
             || System.getProperty("os.name").toLowerCase().contains("nux") ?
-            new File("/media/luka/Data/Shared/mined/UpisData/" + YEAR)
-            : new File("D:\\Shared\\mined\\UpisData\\" + YEAR);
+            new File("/tmpdata/UpisData/" + YEAR)
+            : new File("E:\\Shared\\mined\\UpisData\\" + YEAR);
     public static Thread mainThread;
     private static final String SAVE_FILENAME = "save";
     private static UceniciDownloader uceniciDownloader;
@@ -24,7 +24,7 @@ public class DownloadController {
     public static File generateDataFolder(String year) {
         return System.getProperty("os.name").toLowerCase().contains("nix")
                 || System.getProperty("os.name").toLowerCase().contains("nux") ?
-                new File("/data/Shared/mined/UpisData/" + year)
+                new File("/tmpdata/UpisData/" + year)
                 : new File("E:\\Shared\\mined\\UpisData\\" + year);
     }
 

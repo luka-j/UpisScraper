@@ -1,5 +1,5 @@
 group 'rs.lukaj'
-version '1.4.0-RELEASE'
+version '1.5.0-RELEASE'
 
 apply plugin: 'java'
 apply plugin: 'application'
@@ -18,6 +18,9 @@ run {
 jar {
     manifest {
         attributes 'Main-Class': 'rs.lukaj.upisstats.scraper.Main'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 

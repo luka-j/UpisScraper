@@ -14,7 +14,7 @@ import java.io.IOException;
  */
 public class Main {
 
-    public static final boolean    DEBUG             = false;
+    public static final boolean DEBUG            = false;
     public static final boolean REDOING_DOWNLOAD = false;
 
     /**
@@ -36,10 +36,6 @@ public class Main {
                 Exec.doExec(semPrvog);
             }
         }
-    }
-
-    public static void setYear(String year) {
-        DownloadController.YEAR = year;
     }
 
 }
