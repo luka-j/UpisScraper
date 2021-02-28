@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
@@ -18,11 +19,7 @@ public class UceniciGroupBuilder {
     private static UceniciGroup everyone;
 
     public UceniciGroupBuilder(Predicate<UcenikWrapper> op) {
-        if(op == null) {
-            this.op = u -> true;
-        } else {
-            this.op = op;
-        }
+        this.op = Objects.requireNonNullElseGet(op, () -> u -> true);
     }
     
     private static void loadEveryone() {
@@ -41,7 +38,7 @@ public class UceniciGroupBuilder {
     }
 
     void addOp(Predicate<UcenikWrapper> o) {
-        op.and(o);
+        op = op.and(o);
     }
     
     public UceniciGroup getGroup() {
@@ -54,7 +51,7 @@ public class UceniciGroupBuilder {
     public Map<UcenikWrapper.OsnovnaSkola, UceniciGroup> getByOS() {
         Map<UcenikWrapper.OsnovnaSkola, UceniciGroup> map = new HashMap<>();
         if(everyone == null) loadEveryone();
-        everyone.forEach((uc) -> {
+        everyone.forEach(uc -> {
             if(map.get(uc.osInfo) == null) {
                 map.put(uc.osInfo, new UceniciGroup(uc));
             } else {
@@ -67,7 +64,7 @@ public class UceniciGroupBuilder {
     public Map<String, UceniciGroup> getByCity() {
         Map<String, UceniciGroup> map = new HashMap<>();
         if(everyone == null) loadEveryone();
-        everyone.forEach((uc) -> {
+        everyone.forEach(uc -> {
             if(map.get(uc.osInfo.mesto) == null) {
                 map.put(uc.osInfo.mesto, new UceniciGroup(uc));
             } else {
@@ -76,10 +73,11 @@ public class UceniciGroupBuilder {
         });
         return map;
     }
+
     public Map<String, UceniciGroup> getByRegion() {
         Map<String, UceniciGroup> map = new HashMap<>();
         if(everyone == null) loadEveryone();
-        everyone.forEach((uc) -> {
+        everyone.forEach(uc -> {
             if(map.get(uc.osInfo.okrug) == null) {
                 map.put(uc.osInfo.okrug, new UceniciGroup(uc));
             } else {

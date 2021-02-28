@@ -7,8 +7,6 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created by luka on 2.7.17..
@@ -37,7 +35,7 @@ public class Smerovi2017 extends Smerovi {
                             .post();
                     Elements skole = doc.select(".tbody .kolona2");
                     Elements kvote = doc.select(".tbody .kolona3");
-                    if(skole.size() == 0) break;
+                    if(skole.isEmpty()) break;
                     for (int j = 0; j < skole.size(); j++) {
                         Element sk = skole.get(j);
                         String sifra = parseSifra(sk.text());

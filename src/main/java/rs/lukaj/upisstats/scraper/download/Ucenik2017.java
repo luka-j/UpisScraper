@@ -10,6 +10,7 @@ import rs.lukaj.upisstats.scraper.utils.StringTokenizer;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -116,7 +117,7 @@ public class Ucenik2017 extends Ucenik {
     }
 
     public static class Zelja {
-        private String sifraSmera, uslov, bodovaZaUpis;
+        private final String sifraSmera, uslov, bodovaZaUpis;
 
         public Zelja(String sifraSmera, String uslov, String bodovaZaUpis) {
             this.sifraSmera = sifraSmera;
@@ -146,7 +147,7 @@ public class Ucenik2017 extends Ucenik {
     }
 
     public static class Profil {
-        private String naziv, prijemni, takmicenje, ukupno;
+        private final String naziv, prijemni, takmicenje, ukupno;
 
         public Profil(String naziv, String prijemni, String takmicenje, String ukupno) {
             this.naziv = naziv;
@@ -293,19 +294,17 @@ public class Ucenik2017 extends Ucenik {
 
     @Override
     public String toCompactString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(osId).append("\\").append(upisana).append("\\").append(origKrug).append("\\").append(krug).append("\\").append(blizanac).append("\\").append(najboljiBlizanacBodovi).append("\\").append(prioritet).append("\n");
-        sb.append(srpski).append("\\").append(matematika).append("\\").append(kombinovani).append("\\").append(bodovaAM).append("\\").append(origUkupnoBodova).append("\\").append(ukupnoBodova).append("\n");
-        sb.append(maternji).append("\\").append(prviStrani).append("\\").append(drugiStrani).append("\n");
-        sb.append(UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(sestiRaz)));
-        sb.append(UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(sedmiRaz)));
-        sb.append(UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(osmiRaz)));
-        sb.append(UcenikUtils.mapToStringBuilder(takmicenja));
-        sb.append(UcenikUtils.mapToStringBuilder(prijemni));
-        sb.append(UcenikUtils.listToStringBuilder(profili));
-        sb.append(UcenikUtils.listToStringBuilder(listaZelja1));
-        sb.append(UcenikUtils.listToStringBuilder(listaZelja2));
-        return sb.toString();
+        return osId + "\\" + upisana + "\\" + origKrug + "\\" + krug + "\\" + blizanac + "\\" + najboljiBlizanacBodovi + "\\" + prioritet + "\n" +
+                srpski + "\\" + matematika + "\\" + kombinovani + "\\" + bodovaAM + "\\" + origUkupnoBodova + "\\" + ukupnoBodova + "\n" +
+                maternji + "\\" + prviStrani + "\\" + drugiStrani + "\n" +
+                UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(sestiRaz)) +
+                UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(sedmiRaz)) +
+                UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(osmiRaz)) +
+                UcenikUtils.mapToStringBuilder(takmicenja) +
+                UcenikUtils.mapToStringBuilder(prijemni) +
+                UcenikUtils.listToStringBuilder(profili) +
+                UcenikUtils.listToStringBuilder(listaZelja1) +
+                UcenikUtils.listToStringBuilder(listaZelja2);
     }
 
     @Override
@@ -378,7 +377,7 @@ public class Ucenik2017 extends Ucenik {
         super.saveToFile(folder);
         if(exists() && !OVERWRITE_OLD) return;
         File f = new File(folder, id + ".json");
-        try (Writer fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"))) {
+        try (Writer fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8))) {
             fw.write(jsonData);
         } catch (IOException ex) {
             Logger.getLogger(Ucenik.class.getName()).log(Level.SEVERE, null, ex);

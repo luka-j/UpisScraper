@@ -26,7 +26,7 @@ public class OsnovneDownloader2017 {
         return instance;
     }
 
-    private Set<Integer> base = new HashSet<>();
+    private final Set<Integer> base = new HashSet<>();
 
     public static File getDatafile() {
         return new File(DownloadController.DATA_FOLDER, FILENAME);
@@ -47,9 +47,9 @@ public class OsnovneDownloader2017 {
     public void addOsnovna(int id) throws IOException {
         if(base.contains(id)) return;
         base.add(id);
-        FileWriter fw = new FileWriter(SAVEFILE, true); //not the fastest one out there
-        fw.append(String.valueOf(id)).append('\n');
-        fw.close();
+        try(FileWriter fw = new FileWriter(SAVEFILE, true)) { //not the fastest one out there
+            fw.append(String.valueOf(id)).append('\n');
+        }
     }
 
     public void download() {

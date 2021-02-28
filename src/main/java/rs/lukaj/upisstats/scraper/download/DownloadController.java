@@ -9,15 +9,15 @@ import java.util.logging.Logger;
  * @author Luka
  */
 public class DownloadController {
+    private DownloadController() {}
+
     public static final String YEAR = "20";
     public static final int YEAR_INT = 2000 + Integer.parseInt(YEAR);
     private static final boolean DOWNLOAD_OSNOVNE = true;
 
-    public static File DATA_FOLDER = System.getProperty("os.name").toLowerCase().contains("nix")
-            || System.getProperty("os.name").toLowerCase().contains("nux") ?
-            new File("/tmpdata/UpisData/" + YEAR)
-            : new File("E:\\Shared\\mined\\UpisData\\" + YEAR);
-    public static Thread mainThread;
+    public static File DATA_FOLDER = generateDataFolder(YEAR);
+
+    private static Thread mainThread;
     private static final String SAVE_FILENAME = "save";
     private static UceniciDownloader uceniciDownloader;
 
@@ -94,7 +94,10 @@ public class DownloadController {
         return ret;
     }
     
-    
+    protected static void interruptMainThread() {
+        mainThread.interrupt();
+    }
+
 
     public static void test() {
         try {

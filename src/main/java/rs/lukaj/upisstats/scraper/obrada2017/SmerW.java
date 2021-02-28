@@ -39,6 +39,8 @@ public class SmerW {
 
     @Override
     public boolean equals(Object obj) {
+        if(!(obj instanceof SmerW)) return false;
+
         return sifra.equals(((SmerW)obj).sifra);
     }
 

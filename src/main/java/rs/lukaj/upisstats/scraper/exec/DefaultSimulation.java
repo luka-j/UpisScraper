@@ -34,9 +34,8 @@ public class DefaultSimulation {
 
             //if else fails, poredi se broj bodova na završnom
             //ako je i ovo jednako, oba učenika imaju isti prioritet i upisuju se preko kvote
-            int cmpZavrsni = -Double.compare(Math.max(zelja1.ucenik.bodovaZavrsni, zelja1.blizanac.bodovaZavrsni),
+            return -Double.compare(Math.max(zelja1.ucenik.bodovaZavrsni, zelja1.blizanac.bodovaZavrsni),
                     Math.max(zelja2.ucenik.bodovaZavrsni, zelja2.blizanac.bodovaZavrsni));
-            return cmpZavrsni;
         }
     };
 

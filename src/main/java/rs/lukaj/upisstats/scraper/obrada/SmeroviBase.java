@@ -44,11 +44,12 @@ public class SmeroviBase {
     }
 
     private static class SmerData {
+        final static Map<String, String> okruzi;
+
         String sifra;
         String podrucje;
         int kvota;
         String okrug;
-        final static Map<String, String> okruzi;
         static {
             okruzi = new HashMap<>();
             okruzi.put("BO", "borski");
@@ -110,7 +111,7 @@ public class SmeroviBase {
     }
 
 
-    private static Map<String, UcenikWrapper.SrednjaSkola> srednjeSkole = new HashMap<>();
+    private static final Map<String, UcenikWrapper.SrednjaSkola> srednjeSkole = new HashMap<>();
 
     static boolean skolaExists(String sifra) {
         return srednjeSkole.containsKey(sifra);

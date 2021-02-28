@@ -59,19 +59,19 @@ public class Smerovi {
             Document doc;
             Elements trSifra, trPodrucje, trKvota;
             for (int i = START_FROM; i <= END_AT; i++) {
-                doc = Jsoup.connect(SVI_SMEROVI_URL + String.valueOf(i)).post();
+                doc = Jsoup.connect(SVI_SMEROVI_URL + i).post();
                 try {
                     for (int j = 2; j <= SMEROVA_PO_STRANI * SMER_IDOVA_PO_TR; j += SMER_IDOVA_PO_TR) {
-                        trSifra = doc.select("#" + String.valueOf(j));
-                        trPodrucje = doc.select("#" + String.valueOf(j + 3));
-                        trKvota = doc.select("#" + String.valueOf(j + 4));
+                        trSifra = doc.select("#" + j);
+                        trPodrucje = doc.select("#" + (j + 3));
+                        trKvota = doc.select("#" + (j + 4));
                         addToBase(new Smer(trSifra.text(), trPodrucje.text(), trKvota.text()));
                     }
                 } catch (NullPointerException ex) {
                     DownloadLogger.getLogger(DownloadLogger.SMEROVI).log(DownloadLogger.Level.DEBUG, "NPE@smerovi: poslednji put");
                     Logger.getLogger(UceniciDownloader.class.getName()).log(Level.FINE, "NPE@smerovi: poslednji put");
                 }
-                System.out.println(String.valueOf(((double)i/END_AT) * 100) + "%...");
+                System.out.println(((double) i / END_AT) * 100 + "%...");
             }
         } catch (IOException ex) {
             Logger.getLogger(UceniciDownloader.class.getName()).log(Level.SEVERE, null, ex);
@@ -89,7 +89,7 @@ public class Smerovi {
     public void loadFromFile() {
         File f = new File(DownloadController.DATA_FOLDER, SAVEFILE_NAME);
         try {
-            String text = new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8);
+            String text = Files.readString(f.toPath());
             String[] smerovi = text.split("\\n");
             for(String smer : smerovi) {
                 addToBase(createSmer(smer));
@@ -110,9 +110,8 @@ public class Smerovi {
         StringBuilder out = new StringBuilder();
         base.values().forEach((Smer s) -> out.append(s.toCompactString()));
         File f = new File(DownloadController.DATA_FOLDER, SAVEFILE_NAME);
-        try (Writer bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"))) {
+        try (Writer bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8))) {
             bw.write(out.toString());
-            //if(Main.DEBUG) System.out.println("wrote to file");
         } catch (IOException ex) {
             Logger.getLogger(Smerovi.class.getName()).log(Level.SEVERE, null, ex);
         }

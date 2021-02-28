@@ -153,7 +153,7 @@ public class UceniciManager {
     }
     
     public void onExit() {
-        DownloadController.mainThread.interrupt();
+        DownloadController.interruptMainThread();
         new Saver().run();
     }
 

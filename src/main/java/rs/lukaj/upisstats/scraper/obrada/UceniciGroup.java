@@ -68,11 +68,11 @@ public class UceniciGroup extends HashSet<UcenikWrapper> {
     }
 
     public double getProsekOcena() {
-        return this.stream().mapToDouble((uc) -> uc.prosekUkupno).average().getAsDouble();
+        return this.stream().mapToDouble(uc -> uc.prosekUkupno).average().getAsDouble();
     }
 
     public double getProsekIzSkole() {
-        return this.stream().mapToDouble((uc) -> uc.bodoviIzSkole).average().getAsDouble();
+        return this.stream().mapToDouble(uc -> uc.bodoviIzSkole).average().getAsDouble();
     }
 
     public double getProsekNaZavrsnom() {

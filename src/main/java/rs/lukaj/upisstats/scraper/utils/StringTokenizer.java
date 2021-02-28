@@ -9,8 +9,8 @@ package rs.lukaj.upisstats.scraper.utils;
 public class StringTokenizer {
     private char delimiter;
     private int pos = -1;
-    private String str;
-    private boolean retLastEmpty;
+    private final String str;
+    private final boolean retLastEmpty;
 
     public StringTokenizer(String str, char delim) {
         this(str, delim, false);
@@ -39,8 +39,9 @@ public class StringTokenizer {
     public String nextToken() {
         pos++;
         int start = pos;
-        if(start > str.length())
-            throw new IndexOutOfBoundsException("No more elements! String: " + str + ", delimiter " + String.valueOf(delimiter));
+        if(start > str.length()) {
+            throw new IndexOutOfBoundsException("No more elements! String: " + str + ", delimiter " + delimiter);
+        }
         if(start == str.length()) {
             if(retLastEmpty) return "";
             else throw new IndexOutOfBoundsException("No more elements! String: " + str + ", delimiter " + delimiter);

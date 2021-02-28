@@ -84,7 +84,7 @@ public class UcenikWrapper {
 
         @Override
         public boolean equals(Object e) {
-            if (e == null || !(e instanceof SrednjaSkola)) {
+            if (!(e instanceof SrednjaSkola)) {
                 return false;
             } else {
                 return ((SrednjaSkola) e).sifra.equals(this.sifra);
@@ -243,8 +243,7 @@ public class UcenikWrapper {
 
     public double getProsekIz(String predmet) {
         if (predmet.equals(UcenikUtils.PredmetiDefault.HEMIJA)) {
-            return (double) sedmiRaz.get(predmet)
-                    + osmiRaz.get(predmet) / 2;
+            return (double) sedmiRaz.get(predmet) + osmiRaz.get(predmet) / 2;
         }
         return ((double) sestiRaz.get(predmet)
                 + sedmiRaz.get(predmet)

@@ -112,11 +112,9 @@ public class Osnovna2017 {
     }
 
     public String toCompactString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(id).append("\\").append(naziv).append("\\").append(sediste).append("\\").append(opstina).append("\\").append(okrug).append("\n");
-        sb.append(bodova6).append("\\").append(bodova7).append("\\").append(bodova8).append("\\").append(matematika).append("\\").append(srpski).append("\\").append(kombinovani).append("\n");
-        sb.append(brojUcenika).append("\\").append(ucenikaZavrsilo).append("\\").append(vukovaca).append("\\").append(nagradjenih).append("\n");
-        return sb.toString();
+        return id + "\\" + naziv + "\\" + sediste + "\\" + opstina + "\\" + okrug + "\n" +
+                bodova6 + "\\" + bodova7 + "\\" + bodova8 + "\\" + matematika + "\\" + srpski + "\\" + kombinovani + "\n" +
+                brojUcenika + "\\" + ucenikaZavrsilo + "\\" + vukovaca + "\\" + nagradjenih + "\n";
     }
 
     public void loadFromNet() {

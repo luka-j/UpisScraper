@@ -37,9 +37,9 @@ public class OsnovnaW {
         bodovaOcene = bodova6 + bodova7 + bodova8;
         bodovaZavrsni = matematika + srpski + kombinovani;
         ukupnoBodova = bodovaOcene + bodovaZavrsni;
-        prosek6 = bodova6 * (5/20);
-        prosek7 = bodova7 * (5/25);
-        prosek8 = bodova8 * (5/25);
+        prosek6 = bodova6 * (5.0/20);
+        prosek7 = bodova7 * (5.0/25);
+        prosek8 = bodova8 * (5.0/25);
         prosecnaOcena = (prosek6 + prosek7 + prosek8) / 3;
         nijeZavrsilo = brojUcenika - ucenikaZavrsilo;
     }

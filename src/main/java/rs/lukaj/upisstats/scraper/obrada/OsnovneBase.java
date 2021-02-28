@@ -23,7 +23,7 @@ public class OsnovneBase {
         base = new HashMap<>();
         File f = new File(DownloadController.DATA_FOLDER, "osnovne");
         try {
-            String text = new String(Files.readAllBytes(f.toPath()), StandardCharsets.UTF_8);
+            String text = Files.readString(f.toPath());
             String[] osnovne = text.split("\\n\\$\\n");
             for(String os : osnovne) {
                 Osnovna osnovna = new Osnovna(os);

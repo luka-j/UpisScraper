@@ -219,7 +219,7 @@ public class Ucenik {
         List<Skola> l = new ArrayList<>();
         Document doc = Jsoup.connect(UCENICI_URL + id + "&view_details=" + (krug+1)).post();
         Elements zelje = doc.select(".zelje_normal");
-        zelje.forEach((zelja) -> {
+        zelje.forEach(zelja -> {
             try {
                 String[] sifraOstalo = zelja.text().split("\\. ", 2)[1].split("\\Q - \\E", 2);
                 String[] ostalo = sifraOstalo[1].split(",");
@@ -262,7 +262,7 @@ public class Ucenik {
         if(Main.REDOING_DOWNLOAD)
             System.out.println("Found missing! " + id);
         File f = new File(folder, id);
-        try (Writer fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), "UTF-8"))) {
+        try (Writer fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), StandardCharsets.UTF_8))) {
             fw.write(this.toCompactString());
         } catch (IOException ex) {
             Logger.getLogger(Ucenik.class.getName()).log(Level.SEVERE, null, ex);
@@ -317,17 +317,15 @@ public class Ucenik {
     }
 
     public String toCompactString() {
-        StringBuilder compactString = new StringBuilder();
-        compactString.append(osnovnaSkola).append("\\").append(mestoOS).append("\\").append(okrugOS).append("\n");
-        compactString.append(UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(sestiRaz)));
-        compactString.append(UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(sedmiRaz)));
-        compactString.append(UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(osmiRaz)));
-        compactString.append(UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(takmicenja)));
-        compactString.append(matematika).append("\\").append(srpski).append("\\").append(kombinovani).append("\n");
-        compactString.append(ukupnoBodova).append("\n");
-        compactString.append(UcenikUtils.listToStringBuilder(listaZelja));
-        compactString.append(upisanaSkola).append("\\").append(upisanaZelja).append("\\").append(krug);
-        return compactString.toString();
+        return osnovnaSkola + "\\" + mestoOS + "\\" + okrugOS + "\n" +
+                UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(sestiRaz)) +
+                UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(sedmiRaz)) +
+                UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(osmiRaz)) +
+                UcenikUtils.mapToStringBuilder(UcenikUtils.PredmetiDefault.compress(takmicenja)) +
+                matematika + "\\" + srpski + "\\" + kombinovani + "\n" +
+                ukupnoBodova + "\n" +
+                UcenikUtils.listToStringBuilder(listaZelja) +
+                upisanaSkola + "\\" + upisanaZelja + "\\" + krug;
     }
 
     public static class Skola {

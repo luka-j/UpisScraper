@@ -2,6 +2,7 @@ package rs.lukaj.upisstats.scraper.obrada;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.logging.Logger;
  * @author Luka
  */
 public class FileMerger {
+    private FileMerger() {}
 
     private static final String DELIMETER = "$";
     public static final String FILENAME = "base";
@@ -34,7 +36,7 @@ public class FileMerger {
         }
         System.out.println("ucitao sve; ispisujem");
         File dest = new File(folder, FILENAME);
-        try (Writer bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dest), "UTF-8"))) {
+        try (Writer bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dest), StandardCharsets.UTF_8))) {
             for (String line : lines) {
                 bw.append(line).append("\n");
             }
@@ -53,7 +55,7 @@ public class FileMerger {
         List<String> ret = new LinkedList<>();
         StringBuilder curr = new StringBuilder();
         try {
-            List<String> lines = Files.readAllLines(db.toPath(), Charset.forName("UTF-8"));
+            List<String> lines = Files.readAllLines(db.toPath(), StandardCharsets.UTF_8);
             lines.forEach((line) -> {
                 if (!line.equals(DELIMETER)) {
                     curr.append(line).append("\n");

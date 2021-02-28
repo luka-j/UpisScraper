@@ -15,7 +15,7 @@ public class DownloadLogger {
 
     public enum Level {
         VERBOSE(2), DEBUG(1), NORMAL(0), WARNING(-1), ERROR(-2), PANIC(-5);
-        private int level;
+        private final int level;
         Level(int level) {
             this.level = level;
         }

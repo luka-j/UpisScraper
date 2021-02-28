@@ -45,7 +45,8 @@ public class UceniciDownloader {
         Deque<UcData> uc;
         Smerovi smerovi = config.getSmerovi();
         smerovi.iterate(getCurrentSmer());
-        double time, est; char oznaka;
+        double time, est;
+        char oznaka;
         if(Main.DEBUG)System.out.println("starting iteration");
         UceniciManager ucenici = config.getUceniciManager();
         while (smerovi.hasNext()) {

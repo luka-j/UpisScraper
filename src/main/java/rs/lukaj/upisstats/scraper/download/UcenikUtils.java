@@ -36,7 +36,8 @@ public class UcenikUtils {
     }
     
     public static class PredmetiDefault {
-        
+        private PredmetiDefault() {}
+
         public static final String MATEMATIKA = "Matematika";
         public static final String SRPSKI = "Srpski jezik";
         public static final String ENGLESKI = "Engleski jezik";

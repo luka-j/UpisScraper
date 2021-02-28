@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SmeroviBase {
-    private static Map<String, SmerW> base = new HashMap<>();
+    private static final Map<String, SmerW> base = new HashMap<>();
 
     public static boolean isLoaded() {
         return !base.isEmpty();
