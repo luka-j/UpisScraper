@@ -22,8 +22,9 @@ public class UceniciBase {
 
         List<String> ucenici = FileMerger.readFromOne(new File(DownloadController.DATA_FOLDER, FileMerger.FILENAME));
         for(String ucStr : ucenici) {
-            Ucenik2017 uc = new Ucenik2017(ucStr.substring(0, 6));
-            uc.loadFromString(ucStr.substring(7));
+            int sifraEndPosition = ucStr.indexOf('\n');
+            Ucenik2017 uc = new Ucenik2017(ucStr.substring(0, sifraEndPosition));
+            uc.loadFromString(ucStr.substring(sifraEndPosition+1));
             UcenikW uw = new UcenikW(uc);
             base.put(uw.sifra, uw);
         }
